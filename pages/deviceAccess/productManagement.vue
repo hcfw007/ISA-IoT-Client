@@ -1,3 +1,5 @@
 <template>
-  <div>1</div>
+  <div>
+    product
+  </div>
 </template>

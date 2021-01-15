@@ -57,16 +57,16 @@ export default {
 </script>
 
 <style lang="stylus">
-navbarHeight = 70px // height of navbar content
+navbarHeight = 64px // height of navbar content
 
 .navbar
   background: var(--color-3)
   height: navbarHeight // - 2 for border width
-  padding: 0 40px
+  padding: 20px
   color: #fff
 
-  .el-breadcrumb__inner
-    color: #fff !important
+  .ant-breadcrumb-link, .ant-breadcrumb-separator
+    color: #fff
 
   .nav-row
     height: 100%

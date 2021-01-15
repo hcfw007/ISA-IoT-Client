@@ -14,3 +14,29 @@ body
   --color-3: #3A506B
   --color-4: #5BC0BE
   --color-5: #6FFFE9
+
+.main-content
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 20px
+
+  &>div:not(:first-child)
+    margin-top: 20px
+
+  .block-white
+    background-color: #fff
+
+  .block-normal
+    width: calc(80vw - 200px)
+    border-radius: 5px
+    padding: 20px
+
+  .no-horizontal-padding
+    padding-left: 0
+    padding-right: 0
+
+  .block-title
+    font-size: 14px
+    font-weight: 700
+    color: #666
