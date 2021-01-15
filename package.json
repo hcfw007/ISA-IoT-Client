@@ -1,0 +1,33 @@
+{
+  "name": "web-prodadmin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "npm run lint:js"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.12.0",
+    "element-ui": "^2.14.1",
+    "js-base64": "^3.6.0",
+    "nuxt": "^2.14.0",
+    "nw-vue-toast": "^0.4.4",
+    "swiper": "^6.2.0",
+    "vue-awesome-swiper": "^4.1.1",
+    "vue-baidu-map": "^0.21.22"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^3.1.0",
+    "@nuxtjs/eslint-module": "^2.0.0",
+    "@nuxtjs/proxy": "^2.0.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.5.0",
+    "eslint-plugin-nuxt": "^1.0.0",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^3.0.2"
+  }
+}
