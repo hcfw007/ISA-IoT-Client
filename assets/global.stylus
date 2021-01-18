@@ -1,3 +1,4 @@
+
 body
   margin: 0
   background-color: var(--light-background)
@@ -15,28 +16,23 @@ body
   --color-4: #5BC0BE
   --color-5: #6FFFE9
 
-.main-content
-  display: flex
-  flex-direction: column
-  align-items: center
-  padding: 20px
+@import 'main-content.stylus'
 
-  &>div:not(:first-child)
-    margin-top: 20px
+.page-title-row
+  min-height: 50px
+  background-color: #fff
+  padding: 0 20px
 
-  .block-white
-    background-color: #fff
+  .page-title
+    padding-left: 10px
+    border-left: solid 5px #0079fe
+    margin-top: 15px
 
-  .block-normal
-    width: calc(80vw - 200px)
-    border-radius: 5px
-    padding: 20px
+.regular-input
+  width: 150px !important
 
-  .no-horizontal-padding
-    padding-left: 0
-    padding-right: 0
+.text-right
+  text-align: right
 
-  .block-title
-    font-size: 14px
-    font-weight: 700
-    color: #666
+th, td
+  padding: 10px !important
