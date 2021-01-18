@@ -17,3 +17,23 @@ export const productListTable = [
     title: '操作'
   }
 ]
+
+export const deviceListTable = [
+  {
+    title: '设备标识（展示后缀）'
+  }, {
+    title: '设备名称'
+  }, {
+    title: '所属产品'
+  }, {
+    title: '设备状态'
+  }, {
+    title: '节点类型'
+  }, {
+    title: '最近在线时间'
+  }, {
+    title: '添加时间'
+  }, {
+    title: '操作'
+  }
+]
