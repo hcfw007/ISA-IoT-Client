@@ -1,5 +1,5 @@
 <template>
-  <div class="device-management">
+  <div class="device-identification">
     <a-row class="page-title-row">
       <a-col :span="24">
         <h4 class="page-title">设备标识申请</h4>
