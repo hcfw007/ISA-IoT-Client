@@ -37,3 +37,19 @@ export const deviceListTable = [
     title: '操作'
   }
 ]
+
+export const deviceIdentificationListTable = [
+  {
+    title: '申请流水号'
+  }, {
+    title: '产品名称'
+  }, {
+    title: '审批状态'
+  }, {
+    title: '申请数量'
+  }, {
+    title: '申请时间'
+  }, {
+    title: '操作'
+  }
+]
