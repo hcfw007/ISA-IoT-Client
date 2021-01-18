@@ -53,3 +53,19 @@ export const deviceIdentificationListTable = [
     title: '操作'
   }
 ]
+
+export const deviceLogListTable = [
+  {
+    title: '设备名称'
+  }, {
+    title: '所属产品'
+  }, {
+    title: '业务类型'
+  }, {
+    title: '时间'
+  }, {
+    title: '结果'
+  }, {
+    title: '详情'
+  }
+]
