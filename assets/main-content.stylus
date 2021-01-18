@@ -11,7 +11,7 @@
     background-color: #fff
 
   .block-normal
-    width: calc(80vw - 200px)
+    width: calc(90vw - 200px)
     border-radius: 5px
     padding: 20px
 
