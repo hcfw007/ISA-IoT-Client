@@ -1,0 +1,169 @@
+<template>
+  <div class="login">
+    <div class="login-card">
+      <a-row>
+        <a-col :span="10" class="card-left">
+          <div class="rectangle" />
+        </a-col>
+        <a-col :span="14" class="card-right">
+          <a-row>
+            <a-col :span="18" :offset="3">
+              <a-row>
+                <a-col :span="24">
+                  <a-tabs default-active-key="password-login" class="login-tabs" style="margin-top: 20px">
+                    <a-tab-pane key="password-login" tab="密码登录">
+                      <a-form :form="passwordLoginForm" :wrapper-col="{ span: 24 }" style="margin-top: 80px">
+                        <a-form-item>
+                          <a-input v-decorator="['username', { rules: [{ required: true, message: '请输入用户名称/邮箱地址/手机号码' }] }]" placeholder="请输入用户名称/邮箱地址/手机号码" />
+                        </a-form-item>
+                        <a-form-item>
+                          <a-input v-decorator="['password', { rules: [{ required: true, message: '请输入登录密码' }] }]" placeholder="请输入登录密码" type="password" />
+                        </a-form-item>
+                        <a-form-item class="img-verify-form-item">
+                          <a-input v-decorator="['imageVerifyCode', { rules: [{ required: true, message: '请输入图形验证码' }] }]" placeholder="请输入图形验证码">
+                            <img slot="addonAfter" src="@/static/images/example-verify-img.png" alt="" class="verify-img">
+                          </a-input>
+                        </a-form-item>
+                        <a-form-item>
+                          <a-button type="primary" html-type="submit" class="login-button">
+                            登录
+                          </a-button>
+                        </a-form-item>
+                      </a-form>
+                    </a-tab-pane>
+                    <a-tab-pane key="verifycode-login" tab="验证码登录">
+                      <a-form :form="verifyCodeLoginForm" :wrapper-col="{ span: 24 }" style="margin-top: 80px">
+                        <a-form-item>
+                          <a-input v-decorator="['username', { rules: [{ required: true, message: '请输入邮箱地址/手机号码' }] }]" placeholder="请输入邮箱地址/手机号码" />
+                        </a-form-item>
+                        <a-form-item class="img-verify-form-item">
+                          <a-input v-decorator="['imageVerifyCode', { rules: [{ required: true, message: '请输入图形验证码' }] }]" placeholder="请输入图形验证码">
+                            <img slot="addonAfter" src="@/static/images/example-verify-img.png" alt="" class="verify-img">
+                          </a-input>
+                        </a-form-item>
+                        <a-form-item class="verify-code-form-item">
+                          <a-input v-decorator="['code', { rules: [{ required: true, message: '请输入验证码' }] }]" placeholder="请输入验证码">
+                            <span slot="addonAfter" class="clickable link-color send-verify">发送验证码</span>
+                          </a-input>
+                        </a-form-item>
+                        <a-form-item>
+                          <a-button type="primary" html-type="submit" class="login-button">
+                            登录
+                          </a-button>
+                        </a-form-item>
+                      </a-form>
+                    </a-tab-pane>
+                  </a-tabs>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="12" class="text-left"><span class="clickable">还没有账号？立即注册</span></a-col>
+                <a-col :span="12" class="text-right"><span class="clickable link-color">忘记登录密码？</span></a-col>
+              </a-row>
+            </a-col>
+          </a-row>
+        </a-col>
+      </a-row>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  layout: 'full-content',
+  data() {
+    return {
+      passwordLoginForm: this.$form.createForm(this, { name: 'passwordLoginForm' }),
+      verifyCodeLoginForm: this.$form.createForm(this, { name: 'verifyCodeLoginForm' })
+    }
+  }
+}
+</script>
+
+<style lang="stylus">
+.login
+  background-color: rgba(1, 92, 242, 1)
+  width: 100vw
+  height: 100vh
+  background-image: url('~static/images/user/background.png')
+  background-position: right bottom
+  background-repeat: no-repeat
+  background-attachment: scroll
+  text-align: center
+
+  .login-card
+    height: 620px
+    width: 850px
+    display: inline-block
+    margin: auto
+    margin-top: calc(50vh - 380px)
+
+    &>div
+      height: 100%
+
+    .card-left
+      background-color: rgba(64, 158, 255, 1)
+      height: 100%
+      border-radius: 10px 0 0 10px
+
+      .rectangle
+        height: 80px
+        width: 30px
+        border: solid 1px #fff
+        margin: auto
+        margin-top: calc(50% + 40px)
+
+    .card-right
+      background-color: #fff
+      height: 100%
+      border-radius: 0 10px 10px 0
+
+  .login-tabs
+    .ant-tabs-tab
+      font-size: 16px
+      font-weight: 700
+      font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑', sans-serif
+
+  .ant-input
+    height: 45px
+    padding: 10px 3px
+    text-align: left
+
+  .ant-input-group-addon
+    padding: 0
+    border: 0
+    position: absolute
+    top: 1px
+    z-index: 999
+    text-align: center
+
+  .img-verify-form-item
+    .ant-input
+      padding-right: 140px
+
+    .verify-img
+      height: 43px
+      width: 120px
+
+    .ant-input-group-addon
+      right: 120px
+
+  .verify-code-form-item
+    .ant-input-group-addon
+      right: 15px
+      width: 80px
+      background-color: transparent
+
+    .send-verify
+      display: inline-block
+      height: 43px
+      line-height: 43px
+      background-color: transparent
+
+    .ant-input
+      padding-right: 100px
+
+  .login-button
+    width: 100%
+    height: 45px
+</style>
