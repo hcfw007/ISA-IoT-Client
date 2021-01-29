@@ -57,7 +57,7 @@
                 </a-col>
               </a-row>
               <a-row>
-                <a-col :span="12" class="text-left"><span class="clickable">还没有账号？立即注册</span></a-col>
+                <a-col :span="12" class="text-left"><nuxt-link to="/user/register"><span class="clickable">还没有账号？立即注册</span></nuxt-link></a-col>
                 <a-col :span="12" class="text-right"><span class="clickable link-color">忘记登录密码？</span></a-col>
               </a-row>
             </a-col>
