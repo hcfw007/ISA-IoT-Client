@@ -19,10 +19,10 @@
                       <a-input v-decorator="['username', { rules: [ validators.requiredRuleFactory('用户名') ]}]" placeholder="设置用户名称" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" />
+                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" v-model="password1" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password ]}]" placeholder="再次输入登录密码" />
+                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password, { validator: validateConfirmPassword } ]}]" placeholder="再次输入登录密码" v-model="password2"/>
                     </a-form-item>
                     <a-form-item>
                       <a-input
@@ -44,7 +44,7 @@
                     </a-form-item>
                     <a-form-item class="verify-code-form-item">
                       <a-input v-decorator="['code', { rules: [ validators.requiredRuleFactory('验证码') ]}]" placeholder="请输入验证码">
-                        <span slot="addonAfter" class="clickable link-color send-verify">发送验证码</span>
+                        <span slot="addonAfter" class="clickable link-color send-verify" @click="sendVerify">发送验证码</span>
                       </a-input>
                     </a-form-item>
                     <a-form-item class="text-left">
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { getVerifyImg } from '~/assets/api/ajax'
+import { getVerifyImg, getSMSCode, getMailCode, postUserRegister } from '~/assets/api/ajax'
 import { validators } from '~/assets/validators'
 
 export default {
@@ -79,30 +79,59 @@ export default {
         uuid: '',
       },
       validators,
+      password1: '',
+      password2: '',
     }
   },
   mounted() {
     this.refreshVerifyImg()
   },
   methods: {
-    register(e) {
-      e.preventDefault()
+    validateConfirmPassword(rule, value, callback) {
+      if (this.password1 !== this.password2) {
+        callback('两次密码输入不一致！')
+      }
+      callback()
+    },
+    register() {
       this.registerForm.validateFields((err, values) => {
         if (!err) {
-          console.log(values)
+          let infoObj = {
+            userName: values.username,
+            password: values.password,
+            picCode: values.imageVerifyCode,
+            picUuid: this.imgVerify.uuid,
+            verifyNumber: values.mobileOrMail,
+            veryCode: values.code,
+          }
+          postUserRegister(this, infoObj, '注册成功！', '注册失败')
         }
       })
     },
-    refreshVerifyImg() {
+    async refreshVerifyImg() {
       let uuid = new Date().valueOf()
-      this.imgVerify.uuid = uuid
-      getVerifyImg(uuid).then((response) => {
+      await getVerifyImg(uuid).then((response) => {
         if (response.status === 200) {
           let data = response.data
           let fr = new FileReader()
           fr.readAsDataURL(data)
           fr.onload = (e) => {
             this.$refs.verifyImg.src = e.target.result
+          }
+          this.imgVerify.uuid = uuid
+        }
+      })
+    },
+    sendVerify() {
+      this.registerForm.validateFields(['mobileOrMail'],(err, values) => {
+        if (!err) {
+          let { mobileOrMail } = values
+          if (/^1[0-9]{10}$/.test(mobileOrMail)) {
+            let mobile = mobileOrMail
+            getSMSCode(this, null, { phone: mobile }, '发送验证码成功！', '发送验证码失败')
+          } else {
+            let mail = mobileOrMail
+            getMailCode(this, null, { email: mail }, '发送验证码成功！', '发送验证码失败')
           }
         }
       })

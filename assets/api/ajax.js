@@ -58,12 +58,73 @@ const urlReplace = (url, urlReplacementItem) => {
   return _url
 }
 
-const getRequestFactory = url => async(vueObj, dataItem, params = {}, successToast = '', failureToast = '', urlReplacer = {}) => {
+const getRequestFactory = url => async (vueObj, dataItem, params = {}, successToast = '', failureToast = '', urlReplacer = {}) => {
   let _url = urlReplace(url, urlReplacer)
   let flag = 'origin'
-  await instance.get(url).then((response) => {
-    console.log(1)
+  let payload = null
+  await instance.get(_url, { params }).then((response) => {
+    if (response.status !== 200) {
+      flag = false
+      throw new Error('Network Error')
+    }
+    if (response.data.code && response.data.code !== '200') {
+      flag = false
+      throw new Error(response.data.msg)
+    }
+    flag = true
+    payload = response.data
+    if (dataItem) {
+      dataItem = response.data
+    }
+    if (vueObj && successToast.length > 0) {
+      vueObj.$toast(successToast, successToastOption)
+    }
+  }).catch((error) => {
+    flag = false
+    payload = error.message
+    if (error.message === 'dense requests') return
+    if (vueObj && failureToast.length > 0) {
+      vueObj.$toast(failureToast + `，消息是${error.message }`, failureToastOption)
+    }
   })
+
+  return {
+    flag,
+    payload,
+  }
+}
+
+const postRequestFactory = url => async (vueObj, data = {}, successToast = '', failureToast = '', urlReplacer = {}) => {
+  let _url = urlReplace(url, urlReplacer)
+  let flag = 'origin'
+  let payload = null
+  await instance.post(_url, data).then((response) => {
+    if (response.status !== 200) {
+      flag = false
+      throw new Error('Network Error')
+    }
+    if (response.data.code && response.data.code !== '200') {
+      flag = false
+      throw new Error(response.data.msg)
+    }
+    flag = true
+    payload = response.data
+    if (vueObj && successToast.length > 0) {
+      vueObj.$toast(successToast, successToastOption)
+    }
+  }).catch((error) => {
+    flag = false
+    payload = error.message
+    if (error.message === 'dense requests') return
+    if (vueObj && failureToast.length > 0) {
+      vueObj.$toast(failureToast + `，消息是${error.message}`, failureToastOption)
+    }
+  })
+
+  return {
+    flag,
+    payload,
+  }
 }
 
 export const getVerifyImg = uuid =>
@@ -73,3 +134,9 @@ export const getVerifyImg = uuid =>
       uuid,
     },
   })
+
+// 用户注册登录
+export const getSMSCode = getRequestFactory('/usrmng/user/register/sms-code')
+export const getMailCode = getRequestFactory('/usrmng/user/register/email-code')
+
+export const postUserRegister = postRequestFactory('/usrmng/user/register')
