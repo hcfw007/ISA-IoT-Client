@@ -46,3 +46,6 @@ th, td
 
 .clickable
   cursor: pointer
+
+a
+  color: inherit !important
