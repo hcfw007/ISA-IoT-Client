@@ -16,13 +16,13 @@
                 <a-col :span="24">
                   <a-form :form="registerForm" :wrapper-col="{ span: 24 }" style="margin-top: 20px" class="text-left">
                     <a-form-item>
-                      <a-input v-decorator="['username', { rules: [{ required: true, message: '请输入用户名称' }] }]" placeholder="设置用户名称" />
+                      <a-input v-decorator="['username', { rules: [ validators.requiredRuleFactory('用户名') ]}]" placeholder="设置用户名称" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['password', { rules: [{ required: true, message: '请输入密码' }] }]" placeholder="请设置6-20位登录密码" />
+                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['confirmPassword', { rules: [{ required: true, message: '请再次输入密码' }] }]" placeholder="再次输入登录密码" />
+                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password ]}]" placeholder="再次输入登录密码" />
                     </a-form-item>
                     <a-form-item>
                       <a-input
@@ -31,7 +31,7 @@
                       />
                     </a-form-item>
                     <a-form-item class="img-verify-form-item">
-                      <a-input v-decorator="['imageVerifyCode', { rules: [ validators.requiredRuleFactory('图形验证码') ] }]" placeholder="请输入图形验证码">
+                      <a-input v-decorator="['imageVerifyCode', { rules: [ validators.requiredRuleFactory('图形验证码') ]}]" placeholder="请输入图形验证码">
                         <img
                           slot="addonAfter"
                           ref="verifyImg"
@@ -43,12 +43,12 @@
                       </a-input>
                     </a-form-item>
                     <a-form-item class="verify-code-form-item">
-                      <a-input v-decorator="['code', { rules: [ validators.requiredRuleFactory('验证码') ] }]" placeholder="请输入验证码">
+                      <a-input v-decorator="['code', { rules: [ validators.requiredRuleFactory('验证码') ]}]" placeholder="请输入验证码">
                         <span slot="addonAfter" class="clickable link-color send-verify">发送验证码</span>
                       </a-input>
                     </a-form-item>
                     <a-form-item class="text-left">
-                      <a-checkbox v-decorator="['agreement', { valuePropName: 'checked', rules: [ validators.agreement ] }]">勾选同意《用户服务协议》</a-checkbox>
+                      <a-checkbox v-decorator="['agreement', { valuePropName: 'checked', rules: [ validators.agreement ]}]" default-check="false">勾选同意《用户服务协议》</a-checkbox>
                     </a-form-item>
                     <a-form-item>
                       <a-button type="primary" html-type="submit" class="register-button" @click="register">
