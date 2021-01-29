@@ -69,5 +69,17 @@ export default {
   },
   router: {
     base: '/ISA-client/'
+  },
+  proxy: {
+    '/isa-api': {
+      changeOrigin: true,
+      target: 'http://10.10.22.3:8765',
+      pathRewrite: {
+        '/isa-api': ''
+      }
+    }
+  },
+  server: {
+    port: 8080
   }
 }
