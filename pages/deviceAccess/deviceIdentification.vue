@@ -56,16 +56,16 @@ export default {
   data() {
     return {
       config: {
-        deviceIdentificationListTable
+        deviceIdentificationListTable,
       },
       remoteData: {
         deviceIdentificationList: [
-        ]
+        ],
       },
       contentControl: {
-        deviceIdentificationListSelection: {}
-      }
+        deviceIdentificationListSelection: {},
+      },
     }
-  }
+  },
 }
 </script>

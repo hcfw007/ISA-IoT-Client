@@ -13,13 +13,13 @@ import { menuStructure } from '~/assets/config'
 export default {
   data() {
     return {
-      path: []
+      path: [],
     }
   },
   watch: {
     $route(to, from) {
       this.getPath(to.path)
-    }
+    },
   },
   created() {
     this.getPath(this.$route.path)
@@ -40,7 +40,7 @@ export default {
           if (menu.id === item) {
             currentPath.push({
               title: menu.title,
-              available: menu.available
+              available: menu.available,
             })
             currentMenu = menu.children
 
@@ -51,8 +51,8 @@ export default {
         }
       }
       this.path = currentPath
-    }
-  }
+    },
+  },
 }
 </script>
 

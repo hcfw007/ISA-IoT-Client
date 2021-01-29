@@ -34,7 +34,14 @@
                     <a-tab-pane key="verifycode-login" tab="验证码登录">
                       <a-form :form="verifyCodeLoginForm" :wrapper-col="{ span: 24 }" style="margin-top: 80px">
                         <a-form-item>
-                          <a-input v-decorator="['username', { rules: [{ required: true, message: '请输入邮箱地址/手机号码' }] }]" placeholder="请输入邮箱地址/手机号码" />
+                          <a-input
+                            v-decorator="['username', { rules: [{ required: true, message: '请输入邮箱地址/手机号码' },
+                                                                { validator: (rule, value, callback) => {
+                                                                  console.log(rule, value, callback)
+                                                                  return new Error('请输入合法的邮箱地址/手机号码')
+                                                                }, message: '请输入合法的邮箱地址/手机号码'}] }]"
+                            placeholder="请输入邮箱地址/手机号码"
+                          />
                         </a-form-item>
                         <a-form-item class="img-verify-form-item">
                           <a-input v-decorator="['imageVerifyCode', { rules: [{ required: true, message: '请输入图形验证码' }] }]" placeholder="请输入图形验证码">
@@ -74,9 +81,9 @@ export default {
   data() {
     return {
       passwordLoginForm: this.$form.createForm(this, { name: 'passwordLoginForm' }),
-      verifyCodeLoginForm: this.$form.createForm(this, { name: 'verifyCodeLoginForm' })
+      verifyCodeLoginForm: this.$form.createForm(this, { name: 'verifyCodeLoginForm' }),
     }
-  }
+  },
 }
 </script>
 

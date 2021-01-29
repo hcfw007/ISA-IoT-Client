@@ -26,13 +26,13 @@ export default {
     return {
       menuStructure,
       index0: 'menu0',
-      index1: 'menu0'
+      index1: 'menu0',
     }
   },
   watch: {
     $route(to, from) {
       this.setupMenu(to.path)
-    }
+    },
   },
   beforeMount() {
     this.setupMenu(this.$route.path)
@@ -71,8 +71,8 @@ export default {
       if (menu.available) {
         this.$router.push(menu.addr)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -123,14 +123,14 @@
 export default {
   data() {
     return {
-      current: 0
+      current: 0,
     }
   },
   methods: {
     onStepChange(current) {
       this.current = current
-    }
-  }
+    },
+  },
 }
 </script>
 

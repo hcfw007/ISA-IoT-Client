@@ -104,17 +104,17 @@ export default {
   data() {
     return {
       config: {
-        deviceListTable
+        deviceListTable,
       },
       remoteData: {
         deviceList: [
-        ]
+        ],
       },
       contentControl: {
-        deviceListSelection: {}
-      }
+        deviceListSelection: {},
+      },
     }
-  }
+  },
 }
 </script>
 

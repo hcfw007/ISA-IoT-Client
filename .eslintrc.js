@@ -1,26 +1,63 @@
 module.exports = {
-  root: true,
   env: {
-    browser: true,
-    node: true
-  },
-  parserOptions: {
-    parser: 'babel-eslint'
+    es2021: true,
+    node: true,
   },
   extends: [
-    '@nuxtjs',
-    'plugin:nuxt/recommended'
+    'plugin:vue/base',
+    'eslint:recommended',
   ],
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    ecmaVersion: 12,
+    parser: 'babel-eslint',
+    sourceType: 'module',
+  },
   plugins: [
+    'vue',
   ],
-  // add your custom rules here
   rules: {
-    'vue/singleline-html-element-content-newline': 0,
-    'space-before-function-paren': 0,
-    'prefer-const': 0,
-    'template-curly-spacing': 0,
-    'vue/no-unused-vars': 1,
-    'no-unused-vars': 1,
-    'no-template-curly-in-string': 0
-  }
+    indent: [
+      'error',
+      2,
+    ],
+    quotes: [
+      'error',
+      'single',
+    ],
+    semi: [
+      'error',
+      'never',
+    ],
+    'block-spacing': [
+      'error',
+      'always',
+    ],
+    'brace-style': [
+      'error',
+      '1tbs',
+    ],
+    'comma-dangle': [
+      'error',
+      'always-multiline',
+    ],
+    'space-before-blocks': [
+      'error',
+      'always',
+    ],
+    'space-before-function-paren': [
+      'error',
+      'never',
+    ],
+    'space-in-parens': [
+      'error',
+      'never',
+    ],
+    'space-infix-ops': [
+      'error',
+    ],
+    'no-unused-vars': [
+      'warn',
+    ],
+  },
 }

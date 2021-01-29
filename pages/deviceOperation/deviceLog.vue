@@ -61,17 +61,17 @@ export default {
   data() {
     return {
       config: {
-        deviceLogListTable
+        deviceLogListTable,
       },
       remoteData: {
         deviceLogList: [
-        ]
+        ],
       },
       contentControl: {
-        deviceLogListSelection: {}
-      }
+        deviceLogListSelection: {},
+      },
     }
-  }
+  },
 }
 </script>
 

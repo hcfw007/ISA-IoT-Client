@@ -25,20 +25,30 @@
                       <a-input v-decorator="['confirmPassword', { rules: [{ required: true, message: '请再次输入密码' }] }]" placeholder="再次输入登录密码" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['mobileOrMail', { rules: [{ required: true, message: '请输入邮箱地址/手机号' }] }]" placeholder="请输入邮箱地址/手机号" />
+                      <a-input
+                        v-decorator="['mobileOrMail', { rules: [ validators.requiredRuleFactory('手机号码/邮箱地址'), validators.mobileOrMail ]}]"
+                        placeholder="请输入邮箱地址/手机号码"
+                      />
                     </a-form-item>
                     <a-form-item class="img-verify-form-item">
-                      <a-input v-decorator="['imageVerifyCode', { rules: [{ required: true, message: '请输入图形验证码' }] }]" placeholder="请输入图形验证码">
-                        <img slot="addonAfter" ref="verifyImg" src="" alt="" class="verify-img">
+                      <a-input v-decorator="['imageVerifyCode', { rules: [ validators.requiredRuleFactory('图形验证码') ] }]" placeholder="请输入图形验证码">
+                        <img
+                          slot="addonAfter"
+                          ref="verifyImg"
+                          src=""
+                          alt=""
+                          class="verify-img"
+                          @click="refreshVerifyImg()"
+                        >
                       </a-input>
                     </a-form-item>
                     <a-form-item class="verify-code-form-item">
-                      <a-input v-decorator="['code', { rules: [{ required: true, message: '请输入验证码' }] }]" placeholder="请输入验证码">
+                      <a-input v-decorator="['code', { rules: [ validators.requiredRuleFactory('验证码') ] }]" placeholder="请输入验证码">
                         <span slot="addonAfter" class="clickable link-color send-verify">发送验证码</span>
                       </a-input>
                     </a-form-item>
                     <a-form-item class="text-left">
-                      <a-checkbox v-decorator="['agreement', { valuePropName: 'checked', rules: [{enum: [true], type: 'enum', message: '请同意用户服务协议以继续'}] }]">勾选同意《用户服务协议》</a-checkbox>
+                      <a-checkbox v-decorator="['agreement', { valuePropName: 'checked', rules: [ validators.agreement ] }]">勾选同意《用户服务协议》</a-checkbox>
                     </a-form-item>
                     <a-form-item>
                       <a-button type="primary" html-type="submit" class="register-button" @click="register">
@@ -57,13 +67,18 @@
 </template>
 
 <script>
-import { getverifyImg } from '~/assets/api/ajax'
+import { getVerifyImg } from '~/assets/api/ajax'
+import { validators } from '~/assets/validators'
 
 export default {
   layout: 'full-content',
   data() {
     return {
-      registerForm: this.$form.createForm(this, { name: 'registerForm' })
+      registerForm: this.$form.createForm(this, { name: 'registerForm' }),
+      imgVerify: {
+        uuid: '',
+      },
+      validators,
     }
   },
   mounted() {
@@ -80,11 +95,19 @@ export default {
     },
     refreshVerifyImg() {
       let uuid = new Date().valueOf()
-      getverifyImg(uuid).then((response) => {
-        console.log(response)
+      this.imgVerify.uuid = uuid
+      getVerifyImg(uuid).then((response) => {
+        if (response.status === 200) {
+          let data = response.data
+          let fr = new FileReader()
+          fr.readAsDataURL(data)
+          fr.onload = (e) => {
+            this.$refs.verifyImg.src = e.target.result
+          }
+        }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

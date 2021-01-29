@@ -7,7 +7,7 @@ const headers = {}
 const instance = axios.create({
   baseURL,
   headers,
-  timeout: 5000
+  timeout: 5000,
 })
 
 const requestList = []
@@ -33,21 +33,21 @@ instance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 const successToastOption = {
   customCss: {
     'background-color': '#67C23A',
-    color: '#fff'
-  }
+    color: '#fff',
+  },
 }
 
 const failureToastOption = {
   customCss: {
     'background-color': '#E6A23C',
-    color: '#fff'
-  }
+    color: '#fff',
+  },
 }
 
 const urlReplace = (url, urlReplacementItem) => {
@@ -70,6 +70,6 @@ export const getVerifyImg = uuid =>
   instance.get('/usrmng/user/register/picture-code', {
     responseType: 'blob',
     params: {
-      uuid
-    }
+      uuid,
+    },
   })

@@ -56,16 +56,16 @@ export default {
   data() {
     return {
       config: {
-        productListTable
+        productListTable,
       },
       remoteData: {
         productList: [
-        ]
+        ],
       },
       contentControl: {
-        productListSelection: {}
-      }
+        productListSelection: {},
+      },
     }
-  }
+  },
 }
 </script>
