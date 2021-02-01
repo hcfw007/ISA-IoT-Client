@@ -19,10 +19,10 @@
                       <a-input v-decorator="['username', { rules: [ validators.requiredRuleFactory('用户名') ]}]" placeholder="设置用户名称" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" v-model="password1" />
+                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password, { validator: validateConfirmPassword } ]}]" placeholder="再次输入登录密码" v-model="password2"/>
+                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password, { validator: validateConfirmPassword } ]}]" placeholder="再次输入登录密码" />
                     </a-form-item>
                     <a-form-item>
                       <a-input
@@ -88,7 +88,9 @@ export default {
   },
   methods: {
     validateConfirmPassword(rule, value, callback) {
-      if (this.password1 !== this.password2) {
+      let password1 = this.registerForm.getFieldValue('password')
+      let password2 = this.registerForm.getFieldValue('confirmPassword')
+      if (password1 !== password2) {
         callback('两次密码输入不一致！')
       }
       callback()
