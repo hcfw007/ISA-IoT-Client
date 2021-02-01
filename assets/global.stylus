@@ -41,6 +41,9 @@ body
 .text-left
   text-align: left
 
+.text-center
+  text-align: center
+
 th, td
   padding: 10px !important
 

@@ -103,7 +103,6 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
   let flag = 'origin'
   let payload = null
   await instance.post(_url, data).then((response) => {
-    console.log(response)
     if (response.status !== 200) {
       flag = false
       throw new Error('Network Error')
@@ -145,5 +144,8 @@ export const getSMSCode = getRequestFactory('/usrmng/user/register/sms-code')
 export const getMailCode = getRequestFactory('/usrmng/user/register/email-code')
 
 export const postUserRegister = postRequestFactory('/usrmng/user/register')
+
 export const postUserPasswordLogin = postRequestFactory('/usrmng/user/login/account')
+
+export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
 
