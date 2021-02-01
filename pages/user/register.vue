@@ -88,8 +88,13 @@ export default {
     validateConfirmPassword(rule, value, callback) {
       let password1 = this.registerForm.getFieldValue('password')
       let password2 = this.registerForm.getFieldValue('confirmPassword')
+      if (password2.length < 6 || password1.length > 20) {
+        callback()
+        return
+      }
       if (password1 !== password2) {
         callback('两次密码输入不一致！')
+        return
       }
       callback()
     },
