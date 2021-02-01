@@ -122,6 +122,9 @@ export default {
           }
           this.imgVerify.uuid = uuid
         }
+      }).catch((error) => {
+        if (error.message === 'dense requests') return
+        console.debug(error.message)
       })
     },
     sendVerify() {

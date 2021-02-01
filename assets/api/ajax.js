@@ -8,6 +8,7 @@ const instance = axios.create({
   baseURL,
   headers,
   timeout: 5000,
+  antiShake: true,
 })
 
 const requestList = []
@@ -18,6 +19,9 @@ const removeFlag = (flag) => {
 
 instance.interceptors.request.use(
   (config) => {
+    if (!config.antiShake) {
+      return config
+    }
     config.cancelToken = new CancelToken((cancel) => {
       let requestFlag = JSON.stringify(config.url) + JSON.stringify(config.data) + '&' + config.method
       if (requestList.includes(requestFlag)) {
