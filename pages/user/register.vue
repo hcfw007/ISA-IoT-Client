@@ -79,8 +79,6 @@ export default {
         uuid: '',
       },
       validators,
-      password1: '',
-      password2: '',
     }
   },
   mounted() {
@@ -128,7 +126,7 @@ export default {
       })
     },
     sendVerify() {
-      this.registerForm.validateFields(['mobileOrMail'],(err, values) => {
+      this.registerForm.validateFields(['mobileOrMail'], (err, values) => {
         if (!err) {
           let { mobileOrMail } = values
           if (/^1[0-9]{10}$/.test(mobileOrMail)) {
