@@ -146,6 +146,8 @@ export const getMailCode = getRequestFactory('/usrmng/user/register/email-code')
 export const postUserRegister = postRequestFactory('/usrmng/user/register')
 
 export const postUserPasswordLogin = postRequestFactory('/usrmng/user/login/account')
+export const postUserMailLogin = postRequestFactory('/usrmng/user/login/quick/phone')
+export const postUserMobileLogin = postRequestFactory('/usrmng/user/login/quick/phone')
 
 export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
 
