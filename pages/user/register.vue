@@ -19,10 +19,10 @@
                       <a-input v-decorator="['username', { rules: [ validators.requiredRuleFactory('用户名') ]}]" placeholder="设置用户名称" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" />
+                      <a-input v-decorator="['password', { rules: [ validators.requiredRuleFactory('密码'), validators.password ]}]" placeholder="请设置6-20位登录密码" type="password" />
                     </a-form-item>
                     <a-form-item>
-                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password, { validator: validateConfirmPassword } ]}]" placeholder="再次输入登录密码" />
+                      <a-input v-decorator="['confirmPassword', { rules: [ validators.confirmPassword, validators.password, { validator: validateConfirmPassword } ]}]" placeholder="再次输入登录密码" type="password" />
                     </a-form-item>
                     <a-form-item>
                       <a-input
@@ -109,7 +109,10 @@ export default {
             verifyNumber: values.mobileOrMail,
             veryCode: values.code,
           }
-          postUserRegister(this, infoObj, '注册成功！', '注册失败')
+          let { flag, payload } = postUserRegister(this, infoObj, '注册成功！', '注册失败')
+          if (flag) {
+            this.$router.push('/user/login')
+          }
         }
       })
     },
