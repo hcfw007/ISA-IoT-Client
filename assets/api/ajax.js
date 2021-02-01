@@ -71,12 +71,12 @@ const getRequestFactory = url => async (vueObj, dataItem, params = {}, successTo
       flag = false
       throw new Error('Network Error')
     }
-    if (response.data.code && response.data.code !== '200') {
+    if (response.data.code && Number(response.data.code) !== 200) {
       flag = false
       throw new Error(response.data.msg)
     }
     flag = true
-    payload = response.data
+    payload = response.data.data
     if (dataItem) {
       dataItem = response.data
     }
@@ -103,16 +103,17 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
   let flag = 'origin'
   let payload = null
   await instance.post(_url, data).then((response) => {
+    console.log(response)
     if (response.status !== 200) {
       flag = false
       throw new Error('Network Error')
     }
-    if (response.data.code && response.data.code !== '200') {
+    if (response.data.code && Number(response.data.code) !== 200) {
       flag = false
       throw new Error(response.data.msg)
     }
     flag = true
-    payload = response.data
+    payload = response.data.data
     if (vueObj && successToast.length > 0) {
       vueObj.$toast(successToast, successToastOption)
     }
@@ -144,3 +145,5 @@ export const getSMSCode = getRequestFactory('/usrmng/user/register/sms-code')
 export const getMailCode = getRequestFactory('/usrmng/user/register/email-code')
 
 export const postUserRegister = postRequestFactory('/usrmng/user/register')
+export const postUserPasswordLogin = postRequestFactory('/usrmng/user/login/account')
+
