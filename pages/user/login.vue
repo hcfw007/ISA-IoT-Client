@@ -74,6 +74,7 @@
 <script>
 import { getVerifyImg, getSMSCode, getMailCode, postUserPasswordLogin, postUserMailLogin, postUserMobileLogin } from '~/assets/api/ajax'
 import { validators } from '~/assets/validators'
+import { decode } from 'js-base64'
 
 export default {
   layout: 'full-content',
@@ -132,7 +133,7 @@ export default {
             picCode: values.imageVerifyCode,
             uuid: this.imgVerify.uuid,
           }
-          this.loginHandluer(await postUserPasswordLogin(this, infoObj, '登陆成功', '登陆失败'))
+          this.loginHandler(await postUserPasswordLogin(this, infoObj, '登陆成功', '登陆失败'))
         }
       })
     },
@@ -146,19 +147,21 @@ export default {
           if (/^1[0-9]{10}$/.test(values.mobileOrMail)) {
             infoObj.phone = values.mobileOrMail
             infoObj.smsCode = values.code
-            this.loginHandluer(await postUserMobileLogin(this, infoObj, '登陆成功', '登陆失败'))
+            this.loginHandler(await postUserMobileLogin(this, infoObj, '登陆成功', '登陆失败'))
           } else {
             infoObj.email = values.mobileOrMail
             infoObj.emailCode = values.code
-            this.loginHandluer(await postUserMailLogin(this, infoObj, '登陆成功', '登陆失败'))
+            this.loginHandler(await postUserMailLogin(this, infoObj, '登陆成功', '登陆失败'))
           }
         }
       })
     },
-    loginHandluer({flag, payload}) {
+    loginHandler({flag, payload}) {
       if (flag) {
         let token = payload.token
         localStorage.setItem('token', token)
+        let userInfo = decode(token.split('.')[1])
+        localStorage.setItem('userInfo', userInfo)
         this.$router.push('/')
       }
     },

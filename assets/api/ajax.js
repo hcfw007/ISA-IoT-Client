@@ -21,7 +21,7 @@ instance.interceptors.request.use(
   (config) => {
     let token = localStorage.getItem('token')
     if (token) {
-      config.headers.Authorization = 'Bearer' + token
+      config.headers.Authorization = 'Bearer ' + token
     }
     if (!config.antiShake) {
       return config
@@ -155,3 +155,5 @@ export const postUserMobileLogin = postRequestFactory('/usrmng/user/login/quick/
 
 export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
 
+// 产品信息子模块
+export const getProductList = getRequestFactory('/thing-models/products/ops')
