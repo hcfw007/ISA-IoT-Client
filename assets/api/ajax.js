@@ -66,7 +66,7 @@ const urlReplace = (url, urlReplacementItem) => {
   return _url
 }
 
-const getRequestFactory = url => async (vueObj, dataItem, params = {}, successToast = '', failureToast = '', urlReplacer = {}) => {
+const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, successToast = '', failureToast = '', urlReplacer = {}) => {
   let _url = urlReplace(url, urlReplacer)
   let flag = 'origin'
   let payload = null
@@ -81,8 +81,8 @@ const getRequestFactory = url => async (vueObj, dataItem, params = {}, successTo
     }
     flag = true
     payload = response.data.data
-    if (dataItem) {
-      dataItem = response.data
+    if (dataItem.obj && dataItem.name) {
+      dataItem.obj[dataItem.name] = payload
     }
     if (vueObj && successToast.length > 0) {
       vueObj.$toast(successToast, successToastOption)
@@ -157,3 +157,9 @@ export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset
 
 // 产品信息子模块
 export const getProductList = getRequestFactory('/thing-models/products/ops')
+
+export const postNewProduct = postRequestFactory('/thing-models/products/ops')
+
+// 行业/类别信息
+export const getIndustryList = getRequestFactory('/thing-models/industry/ops')
+export const getCategoryList = getRequestFactory('/thing-models/product-categories/ops')
