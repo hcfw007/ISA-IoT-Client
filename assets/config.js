@@ -47,3 +47,15 @@ export const menuStructure = [{
     available: true,
   }],
 }]
+
+export const drawerConfig = {
+  width: 700,
+  form: {
+    labelCol: {
+      span: 4,
+    },
+    wrapperCol: {
+      span: 20,
+    },
+  },
+}
