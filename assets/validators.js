@@ -33,10 +33,18 @@ export const validators = {
     },
     message: '请同意用户服务协议以继续',
   },
-  requiredRuleFactory(itemName) {
-    return {
-      required: true,
-      message: `请输入${itemName}`,
+  requiredRuleFactory(itemName, mode = 'input') {
+    if (mode === 'input') {
+      return {
+        required: true,
+        message: `请输入${itemName}`,
+      }
+    }
+    if (mode === 'select') {
+      return {
+        required: true,
+        message: `请选择${itemName}`,
+      }
     }
   },
 }
