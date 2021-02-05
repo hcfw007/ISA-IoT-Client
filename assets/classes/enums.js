@@ -13,19 +13,20 @@ const enumCreator = (obj) => {
     enumObj.transferList.push(key)
   }
   enumObj.getDisplay = function(str) {
-    let index = this.transferList.indexof(str)
+    let index = this.transferList.indexOf(str)
     if (index === -1) {
       return null
     }
     return this.displayList[index]
   }
   enumObj.getTransfer = function(str) {
-    let index = this.displayList.indexof(str)
+    let index = this.displayList.indexOf(str)
     if (index === -1) {
       return null
     }
     return this.transferList[index]
   }
+  return enumObj
 }
 
 export const connectionTypeEnum = enumCreator({
