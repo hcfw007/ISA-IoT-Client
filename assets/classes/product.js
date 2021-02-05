@@ -56,4 +56,14 @@ export default class Product {
       this[key] = product[key]
     }
   }
+  toRemoteObj() {
+    let obj = {}
+    for (let key in this) {
+      if (key == 'Structure') {
+        continue
+      }
+      obj[key] = this[key]
+    }
+    return obj
+  }
 }
