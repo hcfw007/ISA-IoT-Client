@@ -50,10 +50,16 @@ export default class Product {
   constructor(product = {}) {
     let { result, message } = checker.check(product, this.Structure)
     if (!result) {
-      throw new Error(message)
+      // throw new Error(message)
+      console.debug(message)
     }
     for (let key in product) {
-      this[key] = product[key]
+      if (product[key] !== undefined) {
+        this[key] = product[key]
+      } else {
+        this[key] = 'N/A'
+      }
+
     }
   }
   toRemoteObj() {
