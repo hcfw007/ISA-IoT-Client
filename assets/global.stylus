@@ -49,6 +49,7 @@ th, td
 
 .clickable
   cursor: pointer
+  color: var(--default-link-color)
 
 a
   color: inherit !important
