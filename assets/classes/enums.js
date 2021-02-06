@@ -19,12 +19,34 @@ const enumCreator = (obj) => {
     }
     return this.displayList[index]
   }
+  enumObj.getDisplayList = function(arr) {
+    let str = ''
+    for (let index in arr) {
+      let item = arr[index]
+      if (index > 0) {
+        str += ', '
+      }
+      str += this.getDisplay(item)
+    }
+    return str
+  }
   enumObj.getTransfer = function(str) {
     let index = this.displayList.indexOf(str)
     if (index === -1) {
       return null
     }
     return this.transferList[index]
+  }
+  enumObj.getTransferList = function(arr) {
+    let str = ''
+    for (let index in arr) {
+      let item = arr[index]
+      if (index > 0) {
+        str += ', '
+      }
+      str += this.getTransfer(item)
+    }
+    return str
   }
   return enumObj
 }
