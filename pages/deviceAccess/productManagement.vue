@@ -49,7 +49,29 @@
           </a-row>
           <a-row class="block-content-row">
             <a-col :span="24">
-              <a-table :columns="config.productListTable" :data-source="remoteData.productList.products" bordered :row-selection="contentControl.productListSelection" />
+              <a-table
+                :columns="config.productListTable"
+                :data-source="remoteData.productList.products"
+                bordered
+                :row-selection="contentControl.productListSelection"
+                :row-key="record => record.pid"
+                :pagination="{ pageSize: 10, showTotal: total => `共 ${ total } 条`}"
+                class="product-table"
+              >
+                <span slot="protocol" slot-scope="text">{{ enums.protocolEnum.getDisplay(text) }}</span>
+                <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
+                <span slot="release_status" slot-scope="record">{{ record.publish ? '已发布' : '未发布' }}</span>
+                <div slot="operators" slot-scope="record">
+                  <span class="clickable">查看详情</span>
+                  <span class="clickable" v-if="record.publish">申请设备标识</span>
+                  <span class="clickable">设备管理</span>
+                  <span class="clickable">编辑</span>
+                  <a-popconfirm title="确定要删除吗？" v-if="!record.publish">
+                    <span class="clickable">删除</span>
+                  </a-popconfirm>
+                  <span class="clickable" v-if="!record.publish">发布</span>
+                </div>
+              </a-table>
             </a-col>
           </a-row>
         </a-col>
@@ -90,7 +112,7 @@
           </a-form-item>
         </a-form-item>
         <a-form-item label="协议类型">
-          <a-select v-decorator="['protocol', { rules: [ validators.requiredRuleFactory('协议类型', 'select')]}]" placeholder="请选择协议类型">
+          <a-select v-decorator="['protocol_type', { rules: [ validators.requiredRuleFactory('协议类型', 'select')]}]" placeholder="请选择协议类型">
             <a-select-option v-for="(item, index) in enums.protocolEnum.displayList" :key="`protocol${ index }`" :value="enums.protocolEnum.getTransfer(item)">
               {{ item }}
             </a-select-option>
@@ -127,9 +149,10 @@
 
 <script>
 import { productListTable } from '@/assets/tables'
-import { getProductList, postNewProduct, getIndustryList, getCategoryList } from '@/assets/api/ajax'
+import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList } from '@/assets/api/ajax'
 import { validators } from '~/assets/validators'
 import { drawerConfig } from '~/assets/config'
+import { setFormItems } from '~/assets/utils'
 import enums from '~/assets/classes/enums'
 import Product from '@/assets/classes/product'
 
@@ -154,6 +177,7 @@ export default {
         display: false,
         productForm: this.$form.createForm(this, { name: 'productForm' }),
         mode: '新增',
+        pid: '',
         posting: false,
       },
       validators,
@@ -168,6 +192,11 @@ export default {
   methods: {
     getProductList() {
       getProductList(this, { obj: this.remoteData, name: 'productList' }, {}, '', '获取产品列表失败')
+      let productList = []
+      for (let item of this.remoteData.productList.products) {
+        productList.push(new Product(item))
+      }
+      this.remoteData.productList.products = productList
     },
     getStaticData() {
       getIndustryList(this, { obj: this.remoteData, name: 'industryList' }, {}, '', '获取行业列表失败')
@@ -183,13 +212,27 @@ export default {
         if (!err) {
           this.productDrawer.posting = true
           let product = new Product(values)
-          let { flag, payload } = await postNewProduct(this, product, '保存产品信息成功', '保存产品信息失败')
+          let result
+          if (this.productDrawer.mode === '新增') {
+            result = await postNewProduct(this, product, '保存产品信息成功', '保存产品信息失败')
+          } else {
+            product.pid = this.productDrawer.pid
+            result = await postEditedProduct(this, product, '保存产品信息成功', '保存产品信息失败')
+          }
           this.productDrawer.posting = false
-          if (flag) {
+          if (result.flag) {
             this.productDrawer.display = false
             this.getProductList()
           }
         }
+      })
+    },
+    editProduct(product) {
+      this.productDrawer.display = true
+      this.productDrawer.mode = '编辑'
+      this.productDrawer.pid = product.pid
+      this.$nextTick(() => {
+        setFormItems(product, this.productDrawer.productForm)
       })
     },
   },

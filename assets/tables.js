@@ -1,20 +1,40 @@
 export const productListTable = [
   {
     title: '产品名称',
+    dataIndex: 'name',
   }, {
     title: '产品ID',
+    dataIndex: 'pid',
   }, {
     title: '行业类型',
+    dataIndex: 'industry_name',
   }, {
     title: '节点类型',
+    dataIndex: 'category_name',
   }, {
     title: '接入协议',
+    dataIndex: 'protocol_type',
+    scopedSlots: {
+      customRender: 'protocol',
+    },
   }, {
     title: '添加时间',
+    dataIndex: 'created_at',
+    scopedSlots: {
+      customRender: 'created_at',
+    },
   }, {
     title: '发布状态',
+    dataIndex: 'publish',
+    scopedSlots: {
+      customRender: 'release_status',
+    },
   }, {
     title: '操作',
+    scopedSlots: {
+      customRender: 'operators',
+    },
+    width: '280px',
   },
 ]
 

@@ -29,7 +29,7 @@ export default class Product {
       required: true,
       description: '产品名称',
     },
-    protocol: {
+    protocol_type: {
       type: 'enum',
       enum: enums.protocolEnum,
       required: true,
@@ -57,9 +57,12 @@ export default class Product {
       if (product[key] !== undefined) {
         this[key] = product[key]
       } else {
-        this[key] = 'N/A'
+        if (this.Structure[key] && (this.Structure[key].type === 'array' || this.Structure[key].type === 'enum')) {
+          this[key] = []
+        } else {
+          this[key] = ''
+        }
       }
-
     }
   }
   toRemoteObj() {
