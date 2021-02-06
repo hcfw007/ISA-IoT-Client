@@ -11,6 +11,8 @@ const instance = axios.create({
   antiShake: true,
 })
 
+// 防抖
+
 const requestList = []
 const CancelToken = axios.CancelToken
 const removeFlag = (flag) => {
@@ -43,6 +45,17 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   },
 )
+
+// 回到登录
+const loginUrl = '/user/login'
+
+const gotoLogin = () => {
+  const jump = () => {
+    location.href = loginUrl
+  }
+
+  setTimeout(jump, 3000)
+}
 
 const successToastOption = {
   customCss: {
@@ -91,6 +104,13 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
+    if (error.response.status === 401) {
+      if (vueObj) {
+        vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
+        gotoLogin()
+      }
+      return
+    }
     if (vueObj && failureToast.length > 0) {
       vueObj.$toast(failureToast + `，消息是${error.message }`, failureToastOption)
     }
@@ -124,6 +144,13 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
+    if (error.response.status === 401) {
+      if (vueObj) {
+        vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
+        gotoLogin()
+      }
+      return
+    }
     if (vueObj && failureToast.length > 0) {
       vueObj.$toast(failureToast + `，消息是${error.message}`, failureToastOption)
     }
