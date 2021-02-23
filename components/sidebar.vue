@@ -87,26 +87,4 @@ export default {
     margin: 20px auto
     display: block
 
-  .el-menu
-    background-color: transparent
-    border: none
-
-    .el-menu-item, .el-submenu__title, .el-submenu__title i
-      color: #fff
-
-    .el-submenu__title
-      font-size: 18px
-      padding-left: 40px !important
-
-    .el-menu-item
-      font-size: 16px
-      padding-left: 60px !important
-
-    .el-submenu__title:hover, .el-menu-item:hover, .el-menu-item.is-active, .el-submenu__title.is-active
-      background-color: var(--sub-primary)
-
-    .menu-icon
-      margin-right: 15px
-      height: 18px
-
 </style>
