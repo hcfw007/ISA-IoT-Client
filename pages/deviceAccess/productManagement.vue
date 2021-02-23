@@ -8,7 +8,7 @@
     <div class="main-content">
       <a-row class="block-normal block-white">
         <a-col :span="16">
-          <a-select default-value="all" class="regular-input">
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.industry">
             <a-select-option value="all">
               全部行业类型
             </a-select-option>
@@ -16,7 +16,7 @@
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-select default-value="all" class="regular-input">
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.publish">
             <a-select-option value="all">
               全部发布状态
             </a-select-option>
@@ -27,11 +27,11 @@
               未发布
             </a-select-option>
           </a-select>
-          <a-input placeholder="请输入产品名称搜索" class="regular-input" />
+          <a-input placeholder="请输入产品名称搜索" class="regular-input" v-model="contentControl.filters.name" />
         </a-col>
         <a-col :span="8" class="text-right">
-          <a-button type="primary">查询</a-button>
-          <a-button>重置</a-button>
+          <a-button type="primary" @click="executeFilter">查询</a-button>
+          <a-button @click="resetFilter">重置</a-button>
         </a-col>
       </a-row>
       <a-row class="block-normal block-white">
@@ -176,6 +176,14 @@ import { setFormItems } from '~/assets/utils'
 import enums from '~/assets/classes/enums'
 import Product from '@/assets/classes/product'
 
+const getBaseFilter = () => {
+  return {
+    name: '',
+    publish: 'all',
+    industry: 'all',
+  }
+}
+
 export default {
   data() {
     return {
@@ -192,6 +200,8 @@ export default {
       },
       contentControl: {
         productListSelection: [],
+        filters: getBaseFilter(),
+        cachedFilters: getBaseFilter(),
       },
       productDrawer: {
         display: false,
@@ -235,8 +245,25 @@ export default {
       let categoryList = this.remoteData.categoryList
       this.productDrawer.filteredCategoryList = categoryList.filter(ele => ele.industry === industryId)
     },
+    resetFilter() {
+      this.contentControl.filters = getBaseFilter()
+      this.contentControl.cachedFilters = getBaseFilter()
+      this.getProductList()
+    },
+    executeFilter() {
+      let filters = this.contentControl.filters
+      this.contentControl.cachedFilters = JSON.parse(JSON.stringify(filters))
+      this.getProductList()
+    },
     async getProductList() {
-      await getProductList(this, { obj: this.remoteData, name: 'productList' }, {}, '', '获取产品列表失败')
+      let filters = this.contentControl.cachedFilters
+      let filterObj = {}
+      for (let key in filters) {
+        if (filters[key] !== 'all' && filters[key] !== '') {
+          filterObj[key] = filters[key]
+        }
+      }
+      await getProductList(this, { obj: this.remoteData, name: 'productList' }, filterObj, '', '获取产品列表失败')
       let productList = []
       for (let item of this.remoteData.productList.products) {
         productList.push(new Product(item))
