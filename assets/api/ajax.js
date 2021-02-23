@@ -74,7 +74,7 @@ const failureToastOption = {
 const urlReplace = (url, urlReplacementItem) => {
   let _url = url
   for (let item in urlReplacementItem) {
-    _url = _url.replace('${' + item + '}', urlReplacementItem[item])
+    _url = _url.replace('{' + item + '}', urlReplacementItem[item])
   }
   return _url
 }
@@ -187,6 +187,7 @@ export const getProductList = getRequestFactory('/thing-models/products/ops')
 
 export const postNewProduct = postRequestFactory('/thing-models/products/ops')
 export const postEditedProduct = postRequestFactory('/thing-models/products/ops/put')
+export const deleteProduct = postRequestFactory('/thing-models/products/ops/delete/{pid}')
 
 // 行业/类别信息
 export const getIndustryList = getRequestFactory('/thing-models/industry/ops')

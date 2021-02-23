@@ -65,8 +65,8 @@
                   <span class="clickable">查看详情</span>
                   <span class="clickable" v-if="record.publish">申请设备标识</span>
                   <span class="clickable">设备管理</span>
-                  <span class="clickable">编辑</span>
-                  <a-popconfirm title="确定要删除吗？" v-if="!record.publish">
+                  <span class="clickable" @click="editProduct(record)">编辑</span>
+                  <a-popconfirm title="确定要删除吗？" v-if="!record.publish" @confirm="deleteProduct(record)">
                     <span class="clickable">删除</span>
                   </a-popconfirm>
                   <span class="clickable" v-if="!record.publish">发布</span>
@@ -149,7 +149,7 @@
 
 <script>
 import { productListTable } from '@/assets/tables'
-import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList } from '@/assets/api/ajax'
+import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList, deleteProduct } from '@/assets/api/ajax'
 import { validators } from '~/assets/validators'
 import { drawerConfig } from '~/assets/config'
 import { setFormItems } from '~/assets/utils'
@@ -234,6 +234,10 @@ export default {
       this.$nextTick(() => {
         setFormItems(product, this.productDrawer.productForm)
       })
+    },
+    async deleteProduct(product) {
+      await deleteProduct(this, null, '删除成功', '删除失败', {pid: product.pid})
+      this.getProductList()
     },
   },
 }
