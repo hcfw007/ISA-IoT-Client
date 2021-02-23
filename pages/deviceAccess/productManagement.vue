@@ -43,7 +43,7 @@
               </h5>
             </a-col>
             <a-col class="text-right" :span="16">
-              <a-button>批量删除</a-button>
+              <a-button @click="confirmDeletion(deleteConfirmationModal.tableSelectedProducts)">批量删除</a-button>
               <a-button type="primary" @click="createProduct">添加产品</a-button>
             </a-col>
           </a-row>
@@ -53,22 +53,23 @@
                 :columns="config.productListTable"
                 :data-source="remoteData.productList.products"
                 bordered
-                :row-selection="contentControl.productListSelection"
+                :row-selection="{ selectedRowKeys: contentControl.productListSelection, onChange: onProductTableSelectChange }"
                 :row-key="record => record.pid"
                 :pagination="{ pageSize: 10, showTotal: total => `共 ${ total } 条`}"
                 class="product-table"
               >
                 <span slot="protocol" slot-scope="text">{{ enums.protocolEnum.getDisplay(text) }}</span>
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
-                <span slot="release_status" slot-scope="publish">{{ publish ? '已发布' : '未发布' }}</span>
+                <template slot="release_status" slot-scope="publish">
+                  <span v-if="publish" class="positive">已发布</span>
+                  <span v-else class="negative">未发布</span>
+                </template>
                 <div slot="operators" slot-scope="record">
                   <span class="clickable">查看详情</span>
                   <span class="clickable" v-if="record.publish">申请设备标识</span>
                   <span class="clickable">设备管理</span>
                   <span class="clickable" @click="editProduct(record)">编辑</span>
-                  <a-popconfirm title="确定要删除吗？" v-if="!record.publish" @confirm="deleteProduct(record)">
-                    <span class="clickable">删除</span>
-                  </a-popconfirm>
+                  <span class="clickable" v-if="!record.publish" @click="confirmDeletion([record])">删除</span>
                   <span class="clickable" v-if="!record.publish" @click="publishProduct(record)">发布</span>
                 </div>
               </a-table>
@@ -144,6 +145,25 @@
         <a-button type="primary" class="execute-btn" @click="saveProduct" :loading="productDrawer.posting">保存</a-button>
       </div>
     </a-drawer>
+    <a-modal v-model="deleteConfirmationModal.display" title="操作确认" class="deleteConfirmationModal">
+      <template slot="footer">
+        <a-button @click="deleteConfirmationModal.display = false">
+          取消
+        </a-button>
+        <a-button type="danger" @click="executeDelete" :loading="deleteConfirmationModal.loading">
+          删除
+        </a-button>
+      </template>
+      <a-row class="title-row">
+        <a-col :span="2"><a-icon type="question-circle" /></a-col>
+        <a-col :span="22">确认删除以下产品？</a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="22" :offset="2">
+          {{ deleteConfirmationModal.productNameStr }}
+        </a-col>
+      </a-row>
+    </a-modal>
   </div>
 </template>
 
@@ -171,7 +191,7 @@ export default {
         categoryList: [],
       },
       contentControl: {
-        productListSelection: {},
+        productListSelection: [],
       },
       productDrawer: {
         display: false,
@@ -180,6 +200,13 @@ export default {
         pid: '',
         posting: false,
         filteredCategoryList: [],
+      },
+      deleteConfirmationModal: {
+        display: false,
+        productNameStr: '',
+        products: [],
+        tableSelectedProducts: [],
+        loading: false,
       },
       validators,
       drawerConfig,
@@ -191,6 +218,19 @@ export default {
     this.getStaticData()
   },
   methods: {
+    onProductTableSelectChange(selectedRowKeys) {
+      this.contentControl.productListSelection = selectedRowKeys
+      let productSelectedList = []
+      for (let pid of selectedRowKeys) {
+        for (let product of this.remoteData.productList.products) {
+          if (product.pid === pid) {
+            productSelectedList.push(product)
+            break
+          }
+        }
+      }
+      this.deleteConfirmationModal.tableSelectedProducts = productSelectedList
+    },
     drawerIndustryChangeHandler(industryId) {
       let categoryList = this.remoteData.categoryList
       this.productDrawer.filteredCategoryList = categoryList.filter(ele => ele.industry === industryId)
@@ -240,8 +280,37 @@ export default {
         setFormItems(product, this.productDrawer.productForm)
       })
     },
-    async deleteProduct(product) {
-      await deleteProduct(this, null, '删除成功', '删除失败', {pid: product.pid})
+    confirmDeletion(products) {
+      if (products.length === 0) {
+        this.$toast('请先选择产品')
+        return
+      }
+      let str = ''
+      for (let index in products) {
+        let item = products[index]
+        if (item.publish) {
+          this.$toast(`无法删除${ item.name }， 该产品已发布`)
+          return
+        }
+        if (index > 0) {
+          str += '，'
+        }
+        str += item.name
+      }
+      this.deleteConfirmationModal.productNameStr = str
+      this.deleteConfirmationModal.products = products
+      this.deleteConfirmationModal.display = true
+    },
+    async executeDelete() {
+      let products = this.deleteConfirmationModal.products
+      let promises = []
+      this.deleteConfirmationModal.loading = true
+      for (let product of products) {
+        promises.push(deleteProduct(this, null, `删除${ product.name }成功`, `删除${ product.name }失败`, {pid: product.pid}))
+      }
+      await Promise.all(promises)
+      this.deleteConfirmationModal.loading = false
+      this.deleteConfirmationModal.display = false
       this.getProductList()
     },
     async publishProduct(product) {

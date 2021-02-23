@@ -43,3 +43,9 @@
 
   &:not(:first-child)
     margin-left: 5px;
+
+span.negative
+  color: #999
+
+span.positive
+  color: #03BF16

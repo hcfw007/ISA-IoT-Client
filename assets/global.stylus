@@ -53,3 +53,13 @@ th, td
 
 a
   color: inherit !important
+
+.deleteConfirmationModal
+  .ant-modal-body
+    font-size: 16px
+
+    .title-row
+      font-weight: 700
+
+    i
+      color: #faad14
