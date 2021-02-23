@@ -188,6 +188,7 @@ export const getProductList = getRequestFactory('/thing-models/products/ops')
 export const postNewProduct = postRequestFactory('/thing-models/products/ops')
 export const postEditedProduct = postRequestFactory('/thing-models/products/ops/put')
 export const deleteProduct = postRequestFactory('/thing-models/products/ops/delete/{pid}')
+export const publishProduct = postRequestFactory('/thing-models/products/publish/{pid}')
 
 // 行业/类别信息
 export const getIndustryList = getRequestFactory('/thing-models/industry/ops')

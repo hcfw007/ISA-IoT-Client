@@ -60,7 +60,7 @@
               >
                 <span slot="protocol" slot-scope="text">{{ enums.protocolEnum.getDisplay(text) }}</span>
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
-                <span slot="release_status" slot-scope="record">{{ record.publish ? '已发布' : '未发布' }}</span>
+                <span slot="release_status" slot-scope="publish">{{ publish ? '已发布' : '未发布' }}</span>
                 <div slot="operators" slot-scope="record">
                   <span class="clickable">查看详情</span>
                   <span class="clickable" v-if="record.publish">申请设备标识</span>
@@ -69,7 +69,7 @@
                   <a-popconfirm title="确定要删除吗？" v-if="!record.publish" @confirm="deleteProduct(record)">
                     <span class="clickable">删除</span>
                   </a-popconfirm>
-                  <span class="clickable" v-if="!record.publish">发布</span>
+                  <span class="clickable" v-if="!record.publish" @click="publishProduct(record)">发布</span>
                 </div>
               </a-table>
             </a-col>
@@ -149,7 +149,7 @@
 
 <script>
 import { productListTable } from '@/assets/tables'
-import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList, deleteProduct } from '@/assets/api/ajax'
+import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList, deleteProduct, publishProduct } from '@/assets/api/ajax'
 import { validators } from '~/assets/validators'
 import { drawerConfig } from '~/assets/config'
 import { setFormItems } from '~/assets/utils'
@@ -195,8 +195,8 @@ export default {
       let categoryList = this.remoteData.categoryList
       this.productDrawer.filteredCategoryList = categoryList.filter(ele => ele.industry === industryId)
     },
-    getProductList() {
-      getProductList(this, { obj: this.remoteData, name: 'productList' }, {}, '', '获取产品列表失败')
+    async getProductList() {
+      await getProductList(this, { obj: this.remoteData, name: 'productList' }, {}, '', '获取产品列表失败')
       let productList = []
       for (let item of this.remoteData.productList.products) {
         productList.push(new Product(item))
@@ -242,6 +242,10 @@ export default {
     },
     async deleteProduct(product) {
       await deleteProduct(this, null, '删除成功', '删除失败', {pid: product.pid})
+      this.getProductList()
+    },
+    async publishProduct(product) {
+      await publishProduct(this, null, '发布成功', '发布失败', {pid: product.pid})
       this.getProductList()
     },
   },
