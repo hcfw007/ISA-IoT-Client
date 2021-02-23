@@ -94,7 +94,7 @@
         </a-form-item>
         <a-form-item label="行业-产品类别" style="margin-bottom: 0" required>
           <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-            <a-select v-decorator="['industry_id', { rules: [ validators.requiredRuleFactory('产品行业', 'select')]}]" placeholder="请选择产品行业">
+            <a-select v-decorator="['industry_id', { rules: [ validators.requiredRuleFactory('产品行业', 'select')]}]" placeholder="请选择产品行业" @change="drawerIndustryChangeHandler">
               <a-select-option v-for="(item, index) in remoteData.industryList" :key="`industry${ index }`" :value="item.id">
                 {{ item.name }}
               </a-select-option>
@@ -105,7 +105,7 @@
           </span>
           <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
             <a-select v-decorator="['category_id', { rules: [ validators.requiredRuleFactory('产品类型', 'select')]}]" placeholder="请选择产品类型">
-              <a-select-option v-for="(item, index) in remoteData.categoryList" :key="`category${ index }`" :value="item.id">
+              <a-select-option v-for="(item, index) in productDrawer.filteredCategoryList" :key="`category${ index }`" :value="item.id">
                 {{ item.name }}
               </a-select-option>
             </a-select>
@@ -179,6 +179,7 @@ export default {
         mode: '新增',
         pid: '',
         posting: false,
+        filteredCategoryList: [],
       },
       validators,
       drawerConfig,
@@ -190,6 +191,10 @@ export default {
     this.getStaticData()
   },
   methods: {
+    drawerIndustryChangeHandler(industryId) {
+      let categoryList = this.remoteData.categoryList
+      this.productDrawer.filteredCategoryList = categoryList.filter(ele => ele.industry === industryId)
+    },
     getProductList() {
       getProductList(this, { obj: this.remoteData, name: 'productList' }, {}, '', '获取产品列表失败')
       let productList = []
