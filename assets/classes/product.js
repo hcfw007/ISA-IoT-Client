@@ -64,6 +64,14 @@ export default class Product {
         }
       }
     }
+    for (let key in this.Structure) {
+      if (this[key] !== undefined) continue
+      if (this.Structure[key].type === 'array' || this.Structure[key].type === 'enum') {
+        this[key] = []
+      } else {
+        this[key] = ''
+      }
+    }
   }
   toRemoteObj() {
     let obj = {}
