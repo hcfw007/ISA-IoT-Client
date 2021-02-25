@@ -175,7 +175,7 @@ import { validators } from '~/assets/validators'
 import { drawerConfig } from '~/assets/config'
 import { setFormItems } from '~/assets/utils'
 import enums from '~/assets/classes/enums'
-import Product from '@/assets/classes/product'
+import Product from '@/assets/classes/Product'
 
 const getBaseFilter = () => {
   return {

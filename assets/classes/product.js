@@ -38,7 +38,7 @@ export default class Product extends BaseClass {
       },
       remark: {
         type: 'string',
-        required: true,
+        required: false,
         description: '备注',
       },
       device_node: {

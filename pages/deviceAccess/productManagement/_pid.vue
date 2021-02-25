@@ -74,7 +74,8 @@
 
 <script>
 import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList } from '@/assets/api/ajax'
-import Product from '@/assets/classes/product'
+import Product from '@/assets/classes/Product'
+import FunctionPoint from '@/assets/classes/FunctionPoint'
 import enums from '~/assets/classes/enums'
 
 export default {
@@ -85,7 +86,7 @@ export default {
           product: {},
           functionList: {},
         },
-        product: new Product({}),
+        product: new Product(),
         totalDeviceIdentity: 0,
         totalDevice: 0,
       },

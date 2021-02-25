@@ -1,30 +1,47 @@
 import checker from './checkers'
 
 export default class BaseClass {
-  constructor(base = {}, structure = {}) {
-    this.$Structure = structure
-    let { result, message } = checker.check(base, this.$Structure)
-    if (!result) {
-      // throw new Error(message)
-      console.debug(message)
+  constructor(base, structure = {}) {
+    if (!base) {
+      base = {}
+    } else {
+      let { result, message } = checker.check(base, structure)
+      if (!result) {
+        // throw new Error(message)
+        console.debug(message)
+      }
     }
+
     for (let key in base) {
       if (base[key] !== undefined) {
         this[key] = base[key]
-      } else {
-        if (this.$Structure[key] && (this.$Structure[key].type === 'array' || this.$Structure[key].type === 'enum')) {
-          this[key] = []
-        } else {
-          this[key] = ''
-        }
       }
     }
-    for (let key in this.$Structure) {
+    for (let key in structure) {
       if (this[key] !== undefined) continue
-      if (this.$Structure[key].type === 'array' || this.$Structure[key].type === 'enum') {
+      if (structure[key].type === 'array' || structure[key].type === 'enum') {
         this[key] = []
-      } else {
+        continue
+      }
+      if (structure[key].type === 'object') {
+        this[key] = {}
+        continue
+      }
+      if (structure[key].type === 'number') {
+        this[key] = 0
+        continue
+      }
+      if (structure[key].type === 'string') {
         this[key] = ''
+        continue
+      }
+      if (structure[key].type === 'boolean') {
+        this[key] = false
+        continue
+      }
+      if (typeof(structure[key].type) === 'function') {
+        this[key] = new structure[key].type()
+        continue
       }
     }
   }

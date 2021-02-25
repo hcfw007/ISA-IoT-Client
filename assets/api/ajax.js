@@ -200,6 +200,10 @@ export const getCategoryList = getRequestFactory('/thing-models/product-categori
 export const getProductDetailWithDeviceStastic = getRequestFactory('/devmng/devices/statistics/{pid}')
 
 // 功能点
+export const getFunctionList = getRequestFactory('/thing-models/functions/opts')
+
+export const postCustomFunction = postRequestFactory('/thing-models/functions/custom')
+
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {
     headers: {
