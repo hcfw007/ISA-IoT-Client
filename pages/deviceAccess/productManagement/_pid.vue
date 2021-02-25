@@ -62,7 +62,7 @@
           </div>
         </a-col>
         <a-col :span="14" class="function-info-operators text-right">
-          <a-button :loading="uploadingFunctionFile" @click="chooseImportFile">导入功能点</a-button>
+          <a-button :loading="contentControl.uploadingFunctionFile" @click="chooseImportFile">导入功能点</a-button>
           <a-button>导出功能点</a-button>
           <a-button type="primary">下载SDK</a-button>
           <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList } from '@/assets/api/ajax'
 import Product from '@/assets/classes/product'
 import enums from '~/assets/classes/enums'
 
@@ -83,6 +83,7 @@ export default {
       remoteData: {
         original: {
           product: {},
+          functionList: {},
         },
         product: new Product({}),
         totalDeviceIdentity: 0,
@@ -96,22 +97,22 @@ export default {
   },
   created() {
     this.getProductDetail()
+    this.getFunctionList()
   },
   methods: {
     async getProductDetail() {
       let pid =  this.$route.params.pid
-      if (!pid) {
-        this.$toase('请先选择产品进行查看')
-        this.$router.push('/deviceAccess/productManagement/')
-        return
-      }
       await getProductDetailWithDeviceStastic(this, {obj: this.remoteData.original, name: 'product'}, null, '', '', {pid})
       this.remoteData.product = new Product(this.remoteData.original.product.product)
       this.remoteData.totalDevice = this.remoteData.original.product.device_total
       this.remoteData.totalDeviceIdentity = this.remoteData.original.product.device_identity_total
     },
+    async getFunctionList() {
+      let pid =  this.$route.params.pid
+      await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, null, '', '')
+    },
     async handleImportUpload(event) {
-      this.uploadingFunctionFile = true
+      this.contentControl.uploadingFunctionFile = true
       let file = event.target.files[0]
       let data = new FormData()
       data.append('file', file)
@@ -142,7 +143,7 @@ export default {
           },
         })
       })
-      this.uploadingFunctionFile = false
+      this.contentControl.uploadingFunctionFile = false
     },
     chooseImportFile() {
       document.getElementById('import').click()
