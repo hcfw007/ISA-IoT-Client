@@ -185,6 +185,8 @@ export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset
 // 产品信息子模块
 export const getProductList = getRequestFactory('/thing-models/products/ops')
 
+export const getProductDetail = getRequestFactory('/thing-models/products/ops/{pid}')
+
 export const postNewProduct = postRequestFactory('/thing-models/products/ops')
 export const postEditedProduct = postRequestFactory('/thing-models/products/ops/put')
 export const deleteProduct = postRequestFactory('/thing-models/products/ops/delete/{pid}')
