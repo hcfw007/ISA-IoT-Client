@@ -35,6 +35,9 @@ export const check = (obj, proto) => {
       message: 'success',
     }
   }
+  return {
+    result: true,
+  }
 }
 
 export default {
