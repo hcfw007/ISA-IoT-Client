@@ -10,7 +10,10 @@ export const productListTable = [
     dataIndex: 'industry_name',
   }, {
     title: '节点类型',
-    dataIndex: 'category_name',
+    dataIndex: 'device_node',
+    scopedSlots: {
+      customRender: 'node',
+    },
   }, {
     title: '接入协议',
     dataIndex: 'protocol_type',

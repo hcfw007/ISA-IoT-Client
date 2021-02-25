@@ -51,13 +51,14 @@
             <a-col :span="24">
               <a-table
                 :columns="config.productListTable"
-                :data-source="remoteData.productList.products"
+                :data-source="remoteData.productList"
                 bordered
                 :row-selection="{ selectedRowKeys: contentControl.productListSelection, onChange: onProductTableSelectChange }"
                 :row-key="record => record.pid"
                 :pagination="{ pageSize: 10, showTotal: total => `共 ${ total } 条`}"
                 class="product-table"
               >
+                <span slot="node" slot-scope="text">{{ enums.deviceTypeEnum.getDisplay(text) }}</span>
                 <span slot="protocol" slot-scope="text">{{ enums.protocolEnum.getDisplay(text) }}</span>
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
                 <template slot="release_status" slot-scope="publish">
@@ -191,10 +192,11 @@ export default {
         productListTable,
       },
       remoteData: {
-        productList: {
+        originalProductList: {
           count: 0,
           products: [],
         },
+        productList: [],
         industryList: [],
         categoryList: [],
       },
@@ -263,12 +265,12 @@ export default {
           filterObj[key] = filters[key]
         }
       }
-      await getProductList(this, { obj: this.remoteData, name: 'productList' }, filterObj, '', '获取产品列表失败')
+      await getProductList(this, { obj: this.remoteData, name: 'originalProductList' }, filterObj, '', '获取产品列表失败')
       let productList = []
-      for (let item of this.remoteData.productList.products) {
+      for (let item of this.remoteData.originalProductList.products) {
         productList.push(new Product(item))
       }
-      this.remoteData.productList.products = productList
+      this.remoteData.productList = productList
     },
     getStaticData() {
       getIndustryList(this, { obj: this.remoteData, name: 'industryList' }, {}, '', '获取行业列表失败')
