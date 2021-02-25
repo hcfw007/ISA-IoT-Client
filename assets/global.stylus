@@ -63,3 +63,8 @@ a
 
     i
       color: #faad14
+
+.seperator
+  min-height: 80px
+  width: 0
+  border: solid 1px #CCC

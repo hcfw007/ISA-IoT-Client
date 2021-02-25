@@ -29,11 +29,11 @@
           </div>
           <div class="product-info-block">
             <div class="product-info-label">设备总数</div>
-            <div class="product-info-value">{{  }}</div>
+            <div class="product-info-value">{{ remoteData.totalDevice }}</div>
           </div>
           <div class="product-info-block">
             <div class="product-info-label">设备标识总数</div>
-            <div class="product-info-value">{{  }}</div>
+            <div class="product-info-value">{{ remoteData.totalDeviceIdentity }}</div>
           </div>
           <div class="product-info-block">
             <div class="product-info-datetime">·更新时间： <span class="product-info-datetime-value">{{ remoteData.product.updated_at.split('.')[0] }}</span></div>
@@ -41,12 +41,39 @@
           </div>
         </a-col>
       </a-row>
+      <a-row class="block-normal block-white">
+        <a-col :span="4">
+          <div class="function-info-label">
+            基础功能点
+          </div>
+          <div class="function-info-value">
+            {{ 0 }}
+          </div>
+        </a-col>
+        <a-col :span="2">
+          <div class="seperator" />
+        </a-col>
+        <a-col :span="4">
+          <div class="function-info-label">
+            组合功能点
+          </div>
+          <div class="function-info-value">
+            {{ 0 }}
+          </div>
+        </a-col>
+        <a-col :span="14" class="function-info-operators text-right">
+          <a-button :loading="uploadingFunctionFile" @click="chooseImportFile">导入功能点</a-button>
+          <a-button>导出功能点</a-button>
+          <a-button type="primary">下载SDK</a-button>
+          <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
+        </a-col>
+      </a-row>
     </div>
   </div>
 </template>
 
 <script>
-import { getProductDetail } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile } from '@/assets/api/ajax'
 import Product from '@/assets/classes/product'
 import enums from '~/assets/classes/enums'
 
@@ -54,8 +81,15 @@ export default {
   data() {
     return {
       remoteData: {
-        originalProduct: {},
+        original: {
+          product: {},
+        },
         product: new Product({}),
+        totalDeviceIdentity: 0,
+        totalDevice: 0,
+      },
+      contentControl: {
+        uploadingFunctionFile: false,
       },
       enums,
     }
@@ -71,8 +105,47 @@ export default {
         this.$router.push('/deviceAccess/productManagement/')
         return
       }
-      await getProductDetail(this, {obj: this.remoteData, name: 'originalProduct'}, null, '', '', {pid})
-      this.remoteData.product = new Product(this.remoteData.originalProduct)
+      await getProductDetailWithDeviceStastic(this, {obj: this.remoteData.original, name: 'product'}, null, '', '', {pid})
+      this.remoteData.product = new Product(this.remoteData.original.product.product)
+      this.remoteData.totalDevice = this.remoteData.original.product.device_total
+      this.remoteData.totalDeviceIdentity = this.remoteData.original.product.device_identity_total
+    },
+    async handleImportUpload(event) {
+      this.uploadingFunctionFile = true
+      let file = event.target.files[0]
+      let data = new FormData()
+      data.append('file', file)
+      await postFunctionFile(data).then((response) => {
+        let data = response.data
+        if (data.code === 200) {
+          this.$toast('导入成功', {
+            customCss: {
+              'background-color': '#67C23A',
+              color: '#fff',
+            },
+          })
+          this.getProductFunctionList()
+        } else {
+          this.$toast('导入失败， 消息为：' + data.msg, {
+            customCss: {
+              'background-color': '#E6A23C',
+              color: '#fff',
+            },
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$toast('导入失败', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+      })
+      this.uploadingFunctionFile = false
+    },
+    chooseImportFile() {
+      document.getElementById('import').click()
     },
   },
 }
@@ -122,4 +195,20 @@ export default {
 
       div:not(:first-child)
         margin-top: 10px
+
+  .function-info-label
+    color: #666
+    font-size: 16px
+
+  .function-info-value
+    font-size: 30px
+    margin-top: 10px
+
+  .function-info-operators
+    .ant-btn
+      padding: 10px 30px
+      height: auto
+
+      &:not(:first-child)
+        margin-left: 30px
 </style>

@@ -46,6 +46,16 @@ export default class Product {
       required: true,
       description: '设备类型',
     },
+    created_at: {
+      type: 'string',
+      required: true,
+      description: '创建时间',
+    },
+    updated_at: {
+      type: 'string',
+      required: true,
+      description: '更新时间',
+    },
   }
   constructor(product = {}) {
     let { result, message } = checker.check(product, this.Structure)

@@ -104,7 +104,7 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       if (vueObj) {
         vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
         gotoLogin()
@@ -195,3 +195,20 @@ export const publishProduct = postRequestFactory('/thing-models/products/publish
 // 行业/类别信息
 export const getIndustryList = getRequestFactory('/thing-models/industry/ops')
 export const getCategoryList = getRequestFactory('/thing-models/product-categories/ops')
+
+// 设备管理
+export const getProductDetailWithDeviceStastic = getRequestFactory('/devmng/devices/statistics/{pid}')
+
+// 功能点
+export const postFunctionFile = (data, progressCallback) =>
+  instance.post('/functions/import/', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    onUploadProgress: (progressEvent) => {
+      let complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+      if (progressCallback) {
+        progressCallback(complete)
+      }
+    },
+  })
