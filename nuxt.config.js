@@ -14,17 +14,17 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    ],
   },
   /*
   ** Global CSS
   */
   css: [
-    '@/assets/global.stylus'
+    '@/assets/global.stylus',
   ],
   /*
   ** Plugins to load before mounting the App
@@ -33,7 +33,8 @@ export default {
   plugins: [
     '@/plugins/ant-design',
     '@/plugins/awesome-swiper',
-    '@/plugins/toast'
+    '@/plugins/toast',
+    '@/plugins/mixins',
   ],
   /*
   ** Auto import components
@@ -45,7 +46,7 @@ export default {
   */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
   ],
   /*
   ** Nuxt.js modules
@@ -53,7 +54,7 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
   ],
   /*
   ** Axios module configuration
@@ -65,21 +66,21 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
-    transpile: [/^element-ui/]
+    transpile: [/^element-ui/],
   },
   router: {
-    base: '/ISA-client/'
+    base: '/ISA-client/',
   },
   proxy: {
     '/isa-api': {
       changeOrigin: true,
       target: 'http://10.10.22.3:8765',
       pathRewrite: {
-        '/isa-api': ''
-      }
-    }
+        '/isa-api': '',
+      },
+    },
   },
   server: {
-    port: 8080
-  }
+    port: 8080,
+  },
 }

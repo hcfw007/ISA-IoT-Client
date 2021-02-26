@@ -171,10 +171,7 @@
 <script>
 import { productListTable } from '@/assets/tables'
 import { getProductList, postNewProduct, postEditedProduct, getIndustryList, getCategoryList, deleteProduct, publishProduct } from '@/assets/api/ajax'
-import { validators } from '~/assets/validators'
-import { drawerConfig } from '~/assets/config'
 import { setFormItems } from '~/assets/utils'
-import enums from '~/assets/classes/enums'
 import Product from '@/assets/classes/Product'
 
 const getBaseFilter = () => {
@@ -220,9 +217,6 @@ export default {
         tableSelectedProducts: [],
         loading: false,
       },
-      validators,
-      drawerConfig,
-      enums,
     }
   },
   mounted() {
