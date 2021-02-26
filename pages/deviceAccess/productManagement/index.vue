@@ -84,6 +84,7 @@
       :visible="productDrawer.display"
       :width="drawerConfig.width"
       :body-style="{ paddingBottom: '80px' }"
+      @close="productDrawer.display = false"
     >
       <a-form
         :form="productDrawer.productForm"
