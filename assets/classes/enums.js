@@ -73,8 +73,33 @@ export const deviceTypeEnum = enumCreator({
   GATEWAY: '网关设备',
 })
 
+export const functionTypeEnum = enumCreator({
+  COMMON: '属性类型',
+  EVENT: '事件类型',
+})
+
+export const commonFunctionDataTypeEnum = enumCreator({
+  BOOLEAN: '布尔型',
+  INTEGER: '整数型',
+  FLOAT: '浮点型',
+  ENUM: '枚举型',
+  EXCEPTION: '故障型',
+  STRING: '字符串型',
+  BUFFER: '透传型',
+  DATE: '日期型',
+})
+
+export const transferTypeEnum = enumCreator({
+  upAndDown: '可下发可上报',
+  up: '只可上报',
+  down: '只可下发',
+})
+
 export default {
   protocolEnum,
   deviceTypeEnum,
   connectionTypeEnum,
+  functionTypeEnum,
+  commonFunctionDataTypeEnum,
+  transferTypeEnum,
 }

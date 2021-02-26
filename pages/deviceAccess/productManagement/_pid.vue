@@ -68,7 +68,187 @@
           <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
         </a-col>
       </a-row>
+      <a-row class="block-normal block-white">
+        <a-col :span="24">
+          <a-tabs>
+            <a-tab-pane key="1" tab="基础功能点">
+              <a-row>
+                <a-col :span="16">
+                  <span class="function-table-title">设备功能</span>
+                  <span class="function-table-subtitle">标准功能无法满足你的需求时，你可以添加自定义功能</span>
+                </a-col>
+                <a-col :span="8" class="text-right">
+                  <div class="add-function-button">
+                    <div class="add-function-icon">+</div>
+                    <div class="add-function-text">标准功能点</div>
+                  </div>
+                  <div class="add-function-button" @click="createFunction">
+                    <div class="add-function-icon">+</div>
+                    <div class="add-function-text">自定义功能点</div>
+                  </div>
+                </a-col>
+              </a-row>
+            </a-tab-pane>
+            <a-tab-pane key="2" tab="组合功能点">
+              2
+            </a-tab-pane>
+          </a-tabs>
+        </a-col>
+      </a-row>
     </div>
+    <a-drawer
+      :title="`${functionEditDrawer.mode}产品`"
+      :visible="functionEditDrawer.display"
+      :width="drawerConfig.width"
+      :body-style="{ paddingBottom: '80px' }"
+      @close="functionEditDrawer.display = false"
+    >
+      <a-form
+        :form="functionEditDrawer.functionForm"
+        :label-col="drawerConfig.form.labelCol"
+        :wrapper-col="drawerConfig.form.wrapperCol"
+        class="drawer-form"
+      >
+        <a-form-item label="功能类型" required>
+          <a-select v-decorator="['fn_type', { rules: [ validators.requiredRuleFactory('功能类型', 'select')], initialValue: 'COMMON'}]" placeholder="请选择功能点类型">
+            <a-select-option :value="'COMMON'">
+              属性类型
+            </a-select-option>
+            <a-select-option :value="'EVENT'">
+              事件类型
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="功能点名称">
+          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('功能点名称')]}]" placeholder="请输入产品名称" />
+        </a-form-item>
+        <a-form-item label="字段名称">
+          <a-input v-decorator="['subject', { rules: [ validators.requiredRuleFactory('字段名称'), validators.startWithLetter, validators.legalCharTypeFactory(['letter', 'number', 'Chinese', 'underline']) ]}]" placeholder="请输入产品名称" />
+        </a-form-item>
+        <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'COMMON' || !functionEditDrawer.functionForm.getFieldValue('fn_type')">
+          <a-form-item label="数据类型">
+            <a-select v-decorator="['type', { rules: [ validators.requiredRuleFactory('数据类型', 'select')], initialValue: 'BOOLEAN'}]" placeholder="请选择数据类型">
+              <a-select-option v-for="(item, index) in enums.commonFunctionDataTypeEnum.displayList" :value="enums.commonFunctionDataTypeEnum.getTransfer(item)" :key="`commonFunctionDataType${ index }`" >
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'BOOLEAN' || !functionEditDrawer.functionForm.getFieldValue('type')">
+            <a-form
+              :form="functionEditDrawer.booleanForm"
+              :label-col="drawerConfig.form.labelCol"
+              :wrapper-col="drawerConfig.form.wrapperCol"
+              class="drawer-form"
+            >
+              <a-form-item label="True - ">
+                <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('真值') ]}]" placeholder="请输入真值" />
+              </a-form-item>
+              <a-form-item label="False - ">
+                <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('假值') ]}]" placeholder="请输入假值" />
+              </a-form-item>
+            </a-form>
+          </section>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'INTEGER'">
+            <a-form
+              :form="functionEditDrawer.integerForm"
+              :label-col="drawerConfig.form.labelCol"
+              :wrapper-col="drawerConfig.form.wrapperCol"
+              class="drawer-form"
+            >
+              <a-form-item label="取值范围" style="margin-bottom: 0" required>
+                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
+                </a-form-item>
+                <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+                  -
+                </span>
+                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
+                </a-form-item>
+              </a-form-item>
+              <a-form-item label="间距">
+                <a-input v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+              </a-form-item>
+              <a-form-item label="单位">
+                <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+              </a-form-item>
+            </a-form>
+          </section>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'FLOAT'">
+            <a-form
+              :form="functionEditDrawer.floatForm"
+              :label-col="drawerConfig.form.labelCol"
+              :wrapper-col="drawerConfig.form.wrapperCol"
+              class="drawer-form"
+            >
+              <a-form-item label="取值范围" style="margin-bottom: 0" required>
+                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
+                </a-form-item>
+                <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+                  -
+                </span>
+                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
+                </a-form-item>
+              </a-form-item>
+              <a-form-item label="间距">
+                <a-input v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+              </a-form-item>
+              <a-form-item label="单位">
+                <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+              </a-form-item>
+            </a-form>
+          </section>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'ENUM'">
+            <a-form
+              :form="functionEditDrawer.enumForm"
+              :label-col="drawerConfig.form.labelCol"
+              :wrapper-col="drawerConfig.form.wrapperCol"
+              class="drawer-form"
+            >
+              <a-form-item label="枚举值" required>
+                <enum-editor v-decorator="['items', { initialValue: [] }]" />
+              </a-form-item>
+            </a-form>
+          </section>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'EXCEPTION'">
+            <a-form
+              :form="functionEditDrawer.exceptionForm"
+              :label-col="drawerConfig.form.labelCol"
+              :wrapper-col="drawerConfig.form.wrapperCol"
+              class="drawer-form"
+            >
+              <a-form-item label="故障值" required>
+                <enum-editor v-decorator="['items', { initialValue: [] }]" typeLabel="故障" />
+              </a-form-item>
+            </a-form>
+          </section>
+          <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'STRING' || functionEditDrawer.functionForm.getFieldValue('type') === 'BUFFER'">
+            <a-form-item label="最大长度">
+              <span>最大长度不超过255字节</span>
+            </a-form-item>
+          </section>
+        </section>
+        <a-form-item label="传输类型">
+            <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型">
+              <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`" >
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="备注">
+            <a-textarea v-decorator="['remark']" maxLength="100" placeholder="最多100字符" />
+          </a-form-item>
+        <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'EVENT'">
+          event
+        </section>
+      </a-form>
+      <div class="drawer-feet">
+        <a-button @click="functionEditDrawer.display = false" class="dismiss-btn">取消</a-button>
+        <a-button type="primary" class="execute-btn" @click="saveFunction" :loading="functionEditDrawer.posting">保存</a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
@@ -76,7 +256,6 @@
 import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
-import enums from '~/assets/classes/enums'
 
 export default {
   data() {
@@ -93,7 +272,17 @@ export default {
       contentControl: {
         uploadingFunctionFile: false,
       },
-      enums,
+      functionEditDrawer: {
+        display: false,
+        functionForm: this.$form.createForm(this, { name: 'functionForm' }),
+        booleanForm: this.$form.createForm(this, { name: 'booleanForm' }),
+        integerForm: this.$form.createForm(this, { name: 'integerForm'}),
+        floatForm: this.$form.createForm(this, { name: 'floatForm'}),
+        exceptionForm: this.$form.createForm(this, { name: 'exceptionForm' }),
+        enumForm: this.$form.createForm(this, { name: 'enumForm' }),
+        mode: '新增',
+        posting: false,
+      },
     }
   },
   created() {
@@ -148,6 +337,14 @@ export default {
     },
     chooseImportFile() {
       document.getElementById('import').click()
+    },
+    createFunction() {
+      this.functionEditDrawer.mode = '新增'
+      this.functionEditDrawer.functionForm.resetFields()
+      this.functionEditDrawer.display = true
+    },
+    saveFunction() {
+      this.functionEditDrawer.functionForm.validateFields()
     },
   },
 }
@@ -213,4 +410,36 @@ export default {
 
       &:not(:first-child)
         margin-left: 30px
+
+  .function-table-title
+    font-size: 20px
+
+  .function-table-subtitle
+    margin-left: 10px
+    font-size: 14px
+    color: #666
+
+  .add-function-button
+    display: inline-block
+    cursor: pointer
+
+    &:not(:first-child)
+      margin-left: 25px
+
+    .add-function-icon
+      color: var(--default-link-color)
+      border: solid 1px var(--default-link-color)
+      border-radius: 8px
+      text-align: center
+      height: 30px
+      width: 30px
+      line-height: 22px
+      font-size: 24px
+      font-weight: bold
+      vertical-align: middle
+      display: inline-block
+
+    .add-function-text
+      display: inline-block
+      margin-left: 15px
 </style>
