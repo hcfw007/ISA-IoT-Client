@@ -306,7 +306,7 @@ export default {
     async saveFunction() {
       this.functionEditDrawer.functionForm.validateFields(async (err, result) => {
         if (err) return
-        result.pid = this.$route.params.pid
+        result.product_id = this.$route.params.pid
         this.functionEditDrawer.posting = true
         let funObj = new FunctionPoint(result)
         result = await postCustomFunction(this, funObj, '保存自定义功能点成功', '保存自定义功能点失败')

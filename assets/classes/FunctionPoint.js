@@ -98,13 +98,8 @@ export default class FunctionPoint extends BaseClass {
       },
       params: {
         type: Param,
-        required: true,
+        required: false,
         description: '事件类型参数数组',
-      },
-      pid: {
-        type: 'string',
-        required: true,
-        description: '产品短id',
       },
     }
     // 处理数据类型
