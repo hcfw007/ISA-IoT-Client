@@ -5,8 +5,31 @@ import NumberValue from './NumberValue'
 import ExceptionValue from './ExceptionValue'
 import Param from './Param'
 
+const CommonFunctionTypeMapping = {
+  INTEGER: {
+    propertyName: 'number',
+    type: NumberValue,
+  },
+  FLOAT: {
+    propertyName: 'number',
+    type: NumberValue,
+  },
+  BOOLEAN: {
+    propertyName: 'boolean_value',
+    type: BooleanValue,
+  },
+  ENUM: {
+    propertyName: 'enum_value',
+    type: EnumValue,
+  },
+  EXCEPTION: {
+    propertyName: 'exception',
+    type: EnumValue,
+  },
+}
+
 export default class FunctionPoint extends BaseClass {
-  constructor(product) {
+  constructor(functionPoint) {
     let structure = {
       name: {
         type: 'string',
@@ -79,6 +102,24 @@ export default class FunctionPoint extends BaseClass {
         description: '事件类型参数数组',
       },
     }
-    super(product, structure)
+    // 处理数据类型
+    if (functionPoint.fn_type === 'COMMON') {
+      if (functionPoint.type in CommonFunctionTypeMapping) {
+        let type = CommonFunctionTypeMapping[functionPoint.type]
+        console.log(type)
+        functionPoint[type.propertyName] = new type.type(functionPoint).trim()
+      } else {
+        throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
+      }
+    }
+
+    // 处理上下行
+    functionPoint.up = functionPoint.transferType.toUpperCase().indexOf('UP') > -1
+    functionPoint.down = functionPoint.transferType.toLowerCase().indexOf('DOWN') > -1
+
+    super(functionPoint, structure)
+
+    // 删除无关属性
+    this.trim()
   }
 }

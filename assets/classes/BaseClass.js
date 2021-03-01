@@ -44,6 +44,10 @@ export default class BaseClass {
         continue
       }
     }
+    Object.defineProperty(this, '$Structure', {
+      value: structure,
+      enumerable: false,
+    })
   }
   toRemoteObj() {
     let obj = {}
@@ -54,5 +58,13 @@ export default class BaseClass {
       obj[key] = this[key]
     }
     return obj
+  }
+  trim() {
+    for (let key in this) {
+      if (key !== '$Structure' && !(key in this.$Structure)) {
+        delete this[key]
+      }
+    }
+    return this
   }
 }
