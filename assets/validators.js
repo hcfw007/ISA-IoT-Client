@@ -64,6 +64,12 @@ export const validators = {
     pattern: /^[a-zA-Z]/,
     message: '必须以字母开头',
   },
+  integerChecker: {
+    validator: (rule, value, callback) => {
+      return String(value).indexOf('.') === -1
+    },
+    message: '必须为整数',
+  },
   legalCharTypeFactory(charTypeList = []) {
     let regStr = '^['
     let message = '只能包含'
