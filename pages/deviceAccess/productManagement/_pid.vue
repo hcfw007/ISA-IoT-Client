@@ -150,11 +150,11 @@
                 -
               </span>
               <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-                <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
+                <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值'), validators.integerChecker ]}]" placeholder="请输入最大值" />
               </a-form-item>
             </a-form-item>
             <a-form-item label="间距">
-              <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+              <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距'), validators.integerChecker ]}]" placeholder="请输入间距" />
             </a-form-item>
             <a-form-item label="单位">
               <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
@@ -218,7 +218,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 
@@ -306,8 +306,15 @@ export default {
     async saveFunction() {
       this.functionEditDrawer.functionForm.validateFields(async (err, result) => {
         if (err) return
+        result.pid = this.$route.params.pid
+        this.functionEditDrawer.posting = true
         let funObj = new FunctionPoint(result)
-        console.log(funObj)
+        result = await postCustomFunction(this, funObj, '保存自定义功能点成功', '保存自定义功能点失败')
+        this.functionEditDrawer.posting = false
+        if (result.flag) {
+          this.functionEditDrawer.display = false
+          this.getFunctionList()
+        }
       })
     },
   },
