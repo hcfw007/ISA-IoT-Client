@@ -101,12 +101,16 @@ export default class FunctionPoint extends BaseClass {
         required: true,
         description: '事件类型参数数组',
       },
+      pid: {
+        type: 'string',
+        required: true,
+        description: '产品短id',
+      },
     }
     // 处理数据类型
     if (functionPoint.fn_type === 'COMMON') {
       if (functionPoint.type in CommonFunctionTypeMapping) {
         let type = CommonFunctionTypeMapping[functionPoint.type]
-        console.log(type)
         functionPoint[type.propertyName] = new type.type(functionPoint).trim()
       } else {
         throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
@@ -115,7 +119,7 @@ export default class FunctionPoint extends BaseClass {
 
     // 处理上下行
     functionPoint.up = functionPoint.transferType.toUpperCase().indexOf('UP') > -1
-    functionPoint.down = functionPoint.transferType.toLowerCase().indexOf('DOWN') > -1
+    functionPoint.down = functionPoint.transferType.toUpperCase().indexOf('DOWN') > -1
 
     super(functionPoint, structure)
 
