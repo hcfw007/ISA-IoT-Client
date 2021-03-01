@@ -1,7 +1,7 @@
 import BaseClass from './BaseClass'
 
 export default class BooleanValue extends BaseClass {
-  constructor(product) {
+  constructor(booleanObj) {
     let structure = {
       true_value: {
         type: 'string',
@@ -14,6 +14,6 @@ export default class BooleanValue extends BaseClass {
         description: '假值含义',
       },
     }
-    super(product, structure)
+    super(booleanObj, structure)
   }
 }

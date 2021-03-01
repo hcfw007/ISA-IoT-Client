@@ -1,7 +1,7 @@
 import BaseClass from './BaseClass'
 
 export default class NumberValue extends BaseClass {
-  constructor(product) {
+  constructor(numberValue) {
     let structure = {
       max: {
         type: 'number',
@@ -24,6 +24,6 @@ export default class NumberValue extends BaseClass {
         description: '单位',
       },
     }
-    super(product, structure)
+    super(numberValue, structure)
   }
 }

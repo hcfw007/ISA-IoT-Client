@@ -1,7 +1,7 @@
 import BaseClass from './BaseClass'
 
-export default class BooleanValue extends BaseClass {
-  constructor(product) {
+export default class ExceptionValue extends BaseClass {
+  constructor(exception) {
     let structure = {
       items: {
         type: 'array',
@@ -9,6 +9,6 @@ export default class BooleanValue extends BaseClass {
         description: '项目',
       },
     }
-    super(product, structure)
+    super(exception, structure)
   }
 }
