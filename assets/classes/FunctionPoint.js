@@ -48,7 +48,7 @@ export default class FunctionPoint extends BaseClass {
       },
       event_type: {
         type: 'string',
-        required: true,
+        required: false,
         description: '事件类型',
       },
       type: {
@@ -115,6 +115,10 @@ export default class FunctionPoint extends BaseClass {
       } else {
         throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
       }
+    }
+
+    if (functionPoint.fn_type === 'EVENT') {
+      structure.event_type.required = true
     }
 
     // 处理上下行

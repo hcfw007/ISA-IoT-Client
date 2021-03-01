@@ -19,6 +19,7 @@ export default class BaseClass {
     }
     for (let key in structure) {
       if (this[key] !== undefined) continue
+      if (!structure[key].required) continue
       if (structure[key].type === 'array' || structure[key].type === 'enum') {
         this[key] = []
         continue
