@@ -144,7 +144,7 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       if (vueObj) {
         vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
         gotoLogin()
