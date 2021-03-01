@@ -68,3 +68,6 @@ a
   min-height: 80px
   width: 0
   border: solid 1px #CCC
+
+.ant-input-number
+  width: 100% !important
