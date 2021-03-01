@@ -134,95 +134,60 @@
             </a-select>
           </a-form-item>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'BOOLEAN' || !functionEditDrawer.functionForm.getFieldValue('type')">
-            <a-form
-              :form="functionEditDrawer.booleanForm"
-              :label-col="drawerConfig.form.labelCol"
-              :wrapper-col="drawerConfig.form.wrapperCol"
-              class="drawer-form"
-            >
-              <a-form-item label="True - ">
-                <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('真值') ]}]" placeholder="请输入真值" />
-              </a-form-item>
-              <a-form-item label="False - ">
-                <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('假值') ]}]" placeholder="请输入假值" />
-              </a-form-item>
-            </a-form>
+            <a-form-item label="True - ">
+              <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('真值') ]}]" placeholder="请输入真值" />
+            </a-form-item>
+            <a-form-item label="False - ">
+              <a-input v-decorator="['false_value', { rules: [ validators.requiredRuleFactory('假值') ]}]" placeholder="请输入假值" />
+            </a-form-item>
           </section>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'INTEGER'">
-            <a-form
-              :form="functionEditDrawer.integerForm"
-              :label-col="drawerConfig.form.labelCol"
-              :wrapper-col="drawerConfig.form.wrapperCol"
-              class="drawer-form"
-            >
-              <a-form-item label="取值范围" style="margin-bottom: 0" required>
-                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
-                </a-form-item>
-                <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
-                  -
-                </span>
-                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
-                </a-form-item>
+            <a-form-item label="取值范围" style="margin-bottom: 0" required>
+              <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                <a-input-number v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值'), validators.integerChecker ]}]" placeholder="请输入最小值" />
               </a-form-item>
-              <a-form-item label="间距">
-                <a-input v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+              <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+                -
+              </span>
+              <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
               </a-form-item>
-              <a-form-item label="单位">
-                <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
-              </a-form-item>
-            </a-form>
+            </a-form-item>
+            <a-form-item label="间距">
+              <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+            </a-form-item>
+            <a-form-item label="单位">
+              <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+            </a-form-item>
           </section>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'FLOAT'">
-            <a-form
-              :form="functionEditDrawer.floatForm"
-              :label-col="drawerConfig.form.labelCol"
-              :wrapper-col="drawerConfig.form.wrapperCol"
-              class="drawer-form"
-            >
-              <a-form-item label="取值范围" style="margin-bottom: 0" required>
-                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
-                </a-form-item>
-                <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
-                  -
-                </span>
-                <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-                  <a-input v-decorator="['min', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
-                </a-form-item>
+            <a-form-item label="取值范围" style="margin-bottom: 0" required>
+              <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                <a-input-number v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
               </a-form-item>
-              <a-form-item label="间距">
-                <a-input v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+              <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+                -
+              </span>
+              <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
               </a-form-item>
-              <a-form-item label="单位">
-                <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
-              </a-form-item>
-            </a-form>
+            </a-form-item>
+            <a-form-item label="间距">
+              <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+            </a-form-item>
+            <a-form-item label="单位">
+              <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+            </a-form-item>
           </section>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'ENUM'">
-            <a-form
-              :form="functionEditDrawer.enumForm"
-              :label-col="drawerConfig.form.labelCol"
-              :wrapper-col="drawerConfig.form.wrapperCol"
-              class="drawer-form"
-            >
-              <a-form-item label="枚举值" required>
-                <enum-editor v-decorator="['items', { initialValue: [] }]" />
-              </a-form-item>
-            </a-form>
+            <a-form-item label="枚举值" required>
+              <enum-editor v-decorator="['items', { initialValue: [] }]" />
+            </a-form-item>
           </section>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'EXCEPTION'">
-            <a-form
-              :form="functionEditDrawer.exceptionForm"
-              :label-col="drawerConfig.form.labelCol"
-              :wrapper-col="drawerConfig.form.wrapperCol"
-              class="drawer-form"
-            >
-              <a-form-item label="故障值" required>
-                <enum-editor v-decorator="['items', { initialValue: [] }]" typeLabel="故障" />
-              </a-form-item>
-            </a-form>
+            <a-form-item label="故障值" required>
+              <enum-editor v-decorator="['items', { initialValue: [] }]" typeLabel="故障" />
+            </a-form-item>
           </section>
           <section v-if="functionEditDrawer.functionForm.getFieldValue('type') === 'STRING' || functionEditDrawer.functionForm.getFieldValue('type') === 'BUFFER'">
             <a-form-item label="最大长度">
@@ -238,7 +203,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="备注">
-            <a-textarea v-decorator="['remark']" maxLength="100" placeholder="最多100字符" />
+            <a-textarea v-decorator="['remark']" :maxLength="100" placeholder="最多100字符" />
           </a-form-item>
         <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'EVENT'">
           event
@@ -275,11 +240,6 @@ export default {
       functionEditDrawer: {
         display: false,
         functionForm: this.$form.createForm(this, { name: 'functionForm' }),
-        booleanForm: this.$form.createForm(this, { name: 'booleanForm' }),
-        integerForm: this.$form.createForm(this, { name: 'integerForm'}),
-        floatForm: this.$form.createForm(this, { name: 'floatForm'}),
-        exceptionForm: this.$form.createForm(this, { name: 'exceptionForm' }),
-        enumForm: this.$form.createForm(this, { name: 'enumForm' }),
         mode: '新增',
         posting: false,
       },
@@ -343,8 +303,12 @@ export default {
       this.functionEditDrawer.functionForm.resetFields()
       this.functionEditDrawer.display = true
     },
-    saveFunction() {
-      this.functionEditDrawer.functionForm.validateFields()
+    async saveFunction() {
+      this.functionEditDrawer.functionForm.validateFields(async (err, result) => {
+        if (err) return
+        let funObj = new FunctionPoint(result)
+        console.log(funObj)
+      })
     },
   },
 }
