@@ -92,3 +92,38 @@ export const deviceLogListTable = [
     title: '详情',
   },
 ]
+
+export const functionListTable = [
+  {
+    title: '功能ID',
+    dataIndex: 'index',
+  }, {
+    title: '功能类型',
+    dataIndex: 'fn_type',
+    scopedSlots: {
+      customRender: 'functionType',
+    },
+  }, {
+    title: '功能点名称',
+    dataIndex: 'name',
+  }, {
+    title: '字段名称',
+    dataIndex: 'subject',
+  }, {
+    title: '数据类型',
+    dataIndex: 'type',
+    scopedSlots: {
+      customRender: 'dataType',
+    },
+  }, {
+    title: '传输类型',
+    scopedSlots: {
+      customRender: 'transferType',
+    },
+  }, {
+    title: '操作',
+    scopedSlots: {
+      customRender: 'operators',
+    },
+  },
+]

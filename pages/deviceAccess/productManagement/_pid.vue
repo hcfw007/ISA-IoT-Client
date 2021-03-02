@@ -88,6 +88,33 @@
                   </div>
                 </a-col>
               </a-row>
+              <a-row>
+                <a-col :span="24">
+                  <a-table
+                    :columns="config.functionListTable"
+                    :data-source="remoteData.functionList"
+                    bordered
+                    :row-key="record => record.index"
+                    :pagination="{ pageSize: 10, showTotal: total => `共 ${ total } 条`}"
+                    class="functionPoint-table"
+                  >
+                    <span slot="functionType" slot-scope="text">{{ enums.functionTypeEnum.getDisplay(text) }}</span>
+                    <span slot="dataType" slot-scope="text">{{ enums.commonFunctionDataTypeEnum.getDisplay(text) }}</span>
+                    <span slot="transferType" slot-scope="record">{{ record.getTransferType() }}</span>
+                    <div slot="operators" slot-scope="record">
+                      <span class="clickable" @click="editFunction(record)">编辑</span>
+                      <a-popconfirm
+                        title="确定要删除嘛？"
+                        ok-text="确定"
+                        cancel-text="取消"
+                        @confirm="deleteFunction(record)"
+                      >
+                        <span class="clickable">删除</span>
+                      </a-popconfirm>
+                    </div>
+                  </a-table>
+                </a-col>
+              </a-row>
             </a-tab-pane>
             <a-tab-pane key="2" tab="组合功能点">
               2
@@ -221,16 +248,22 @@
 import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
+import { functionListTable } from '@/assets/tables'
+import { setFormItems } from '~/assets/utils'
 
 export default {
   data() {
     return {
+      config: {
+        functionListTable,
+      },
       remoteData: {
         original: {
           product: {},
           functionList: {},
         },
         product: new Product(),
+        functionList: [],
         totalDeviceIdentity: 0,
         totalDevice: 0,
       },
@@ -258,8 +291,12 @@ export default {
       this.remoteData.totalDeviceIdentity = this.remoteData.original.product.device_identity_total
     },
     async getFunctionList() {
-      let pid =  this.$route.params.pid
       await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, null, '', '')
+      let functionList = []
+      for (let item of this.remoteData.original.functionList.functions) {
+        functionList.push(new FunctionPoint(item))
+      }
+      this.remoteData.functionList = functionList
     },
     async handleImportUpload(event) {
       this.contentControl.uploadingFunctionFile = true

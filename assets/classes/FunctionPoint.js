@@ -153,4 +153,5 @@ export default class FunctionPoint extends BaseClass {
     }
     return '你猜'
   }
+
 }
