@@ -352,6 +352,8 @@ export default {
           result = await postCustomFunction(this, funObj, '保存自定义功能点成功', '保存自定义功能点失败')
         } else {
           funObj.index = this.functionEditDrawer.index
+          funObj.meta_type = 'BASE'
+          funObj.standard = true
           result = await editFunction(this, funObj, '修改自定义功能点成功', '修改自己定义功能点失败')
         }
         this.functionEditDrawer.posting = false
