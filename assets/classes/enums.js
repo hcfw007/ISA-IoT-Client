@@ -90,7 +90,7 @@ export const commonFunctionDataTypeEnum = enumCreator({
 })
 
 export const transferTypeEnum = enumCreator({
-  upAndDown: '可下发可上报',
+  upAndDown: '可上报可下发',
   up: '只可上报',
   down: '只可下发',
 })

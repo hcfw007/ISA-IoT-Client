@@ -4,6 +4,7 @@ import EnumValue from './EnumValue'
 import NumberValue from './NumberValue'
 import ExceptionValue from './ExceptionValue'
 import Param from './Param'
+import { transferTypeEnum } from './enums'
 
 const CommonFunctionTypeMapping = {
   INTEGER: {
@@ -154,4 +155,24 @@ export default class FunctionPoint extends BaseClass {
     return '你猜'
   }
 
+  getFormTransferType() {
+    return transferTypeEnum.getTransfer(this.getTransferType())
+  }
+
+  toFormObject() {
+    let flatternObject = (root, object) => {
+      for (let item in object) {
+        if (typeof(object[item]) !== 'object') {
+          root[item] = object[item]
+        } else {
+          flatternObject(root, object[item])
+        }
+      }
+    }
+
+    let obj = {}
+    flatternObject(obj, this)
+    obj.transferType = this.getFormTransferType()
+    return obj
+  }
 }

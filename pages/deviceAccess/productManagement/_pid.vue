@@ -245,7 +245,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import { functionListTable } from '@/assets/tables'
@@ -275,6 +275,7 @@ export default {
         functionForm: this.$form.createForm(this, { name: 'functionForm' }),
         mode: '新增',
         posting: false,
+        index: 0,
       },
     }
   },
@@ -341,17 +342,31 @@ export default {
       this.functionEditDrawer.display = true
     },
     async saveFunction() {
-      this.functionEditDrawer.functionForm.validateFields(async (err, result) => {
+      this.functionEditDrawer.functionForm.validateFields(async (err, values) => {
         if (err) return
-        result.product_id = this.$route.params.pid
+        values.product_id = this.$route.params.pid
         this.functionEditDrawer.posting = true
-        let funObj = new FunctionPoint(result)
-        result = await postCustomFunction(this, funObj, '保存自定义功能点成功', '保存自定义功能点失败')
+        let funObj = new FunctionPoint(values)
+        let result
+        if (this.functionEditDrawer.mode === '新增') {
+          result = await postCustomFunction(this, funObj, '保存自定义功能点成功', '保存自定义功能点失败')
+        } else {
+          funObj.index = this.functionEditDrawer.index
+          result = await editFunction(this, funObj, '修改自定义功能点成功', '修改自己定义功能点失败')
+        }
         this.functionEditDrawer.posting = false
         if (result.flag) {
           this.functionEditDrawer.display = false
           this.getFunctionList()
         }
+      })
+    },
+    editFunction(functionPoint) {
+      this.functionEditDrawer.mode = '编辑'
+      this.functionEditDrawer.display = true
+      this.functionEditDrawer.index = functionPoint.index
+      this.$nextTick(() => {
+        setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
       })
     },
   },

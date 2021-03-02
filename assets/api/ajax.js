@@ -203,6 +203,7 @@ export const getProductDetailWithDeviceStastic = getRequestFactory('/devmng/devi
 export const getFunctionList = getRequestFactory('/thing-models/functions/opts')
 
 export const postCustomFunction = postRequestFactory('/thing-models/functions/custom')
+export const editFunction = postRequestFactory('/thing-models/functions/opts/put')
 
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {
