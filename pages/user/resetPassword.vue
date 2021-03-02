@@ -148,7 +148,7 @@ export default {
           } else {
             infoObj.email = values.mobileOrMail
           }
-          let { flag, payload } = await postPasswordReset(this, infoObj, '重置成功', '重置失败')
+          let { flag } = await postPasswordReset(this, infoObj, '重置成功', '重置失败')
           if (flag) {
             this.currentStep = 2
           }

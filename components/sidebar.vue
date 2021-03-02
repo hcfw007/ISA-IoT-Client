@@ -30,7 +30,7 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
+    $route(to) {
       this.setupMenu(to.path)
     },
   },

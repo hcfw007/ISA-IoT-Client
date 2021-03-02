@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+
+
 const charTypeMappings = {
   letter: {
     reg: 'A-Za-z',

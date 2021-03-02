@@ -109,7 +109,7 @@ export default {
             verifyNumber: values.mobileOrMail,
             veryCode: values.code,
           }
-          let { flag, payload } = postUserRegister(this, infoObj, '注册成功！', '注册失败')
+          let { flag } = postUserRegister(this, infoObj, '注册成功！', '注册失败')
           if (flag) {
             this.$router.push('/user/login')
           }
