@@ -101,12 +101,25 @@ export default class FunctionPoint extends BaseClass {
         required: false,
         description: '事件类型参数数组',
       },
+      id: {
+        type: 'string',
+        required: false,
+      },
+      index: {
+        type: 'number',
+        required: false,
+        description: '序号，比id更常用',
+      },
     }
     // 处理数据类型
     if (functionPoint.fn_type === 'COMMON') {
       if (functionPoint.type in CommonFunctionTypeMapping) {
         let type = CommonFunctionTypeMapping[functionPoint.type]
-        functionPoint[type.propertyName] = new type.type(functionPoint).trim()
+        if (functionPoint[type.propertyName]) {
+          functionPoint[type.propertyName] = new type.type(functionPoint[type.propertyName]).trim()
+        } else {
+          functionPoint[type.propertyName] = new type.type(functionPoint).trim()
+        }
       } else {
         throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
       }
@@ -117,12 +130,27 @@ export default class FunctionPoint extends BaseClass {
     }
 
     // 处理上下行
-    functionPoint.up = functionPoint.transferType.toUpperCase().indexOf('UP') > -1
-    functionPoint.down = functionPoint.transferType.toUpperCase().indexOf('DOWN') > -1
+    if (functionPoint.transferType) {
+      functionPoint.up = functionPoint.transferType.toUpperCase().indexOf('UP') > -1
+      functionPoint.down = functionPoint.transferType.toUpperCase().indexOf('DOWN') > -1
+    }
 
     super(functionPoint, structure)
 
     // 删除无关属性
     this.trim()
+  }
+
+  getTransferType() {
+    if (this.up && this.down) {
+      return '可上报可下发'
+    }
+    if (this.up) {
+      return '只上报'
+    }
+    if (this.down) {
+      return '只下发'
+    }
+    return '你猜'
   }
 }
