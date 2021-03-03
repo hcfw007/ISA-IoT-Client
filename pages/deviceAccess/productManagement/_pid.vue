@@ -147,10 +147,10 @@
           </a-select>
         </a-form-item>
         <a-form-item label="功能点名称">
-          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('功能点名称')]}]" placeholder="请输入产品名称" />
+          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('功能点名称')]}]" placeholder="请输入功能点名称" />
         </a-form-item>
         <a-form-item label="字段名称">
-          <a-input v-decorator="['subject', { rules: [ validators.requiredRuleFactory('字段名称'), validators.startWithLetter, validators.legalCharTypeFactory(['letter', 'number', 'Chinese', 'underline']) ]}]" placeholder="请输入产品名称" />
+          <a-input v-decorator="['subject', { rules: [ validators.requiredRuleFactory('字段名称'), validators.startWithLetter, validators.legalCharTypeFactory(['letter', 'number', 'Chinese', 'underline']) ]}]" placeholder="请输入字段名称" />
         </a-form-item>
         <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'COMMON' || !functionEditDrawer.functionForm.getFieldValue('fn_type')">
           <a-form-item label="数据类型">
