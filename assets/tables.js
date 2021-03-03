@@ -127,3 +127,32 @@ export const functionListTable = [
     },
   },
 ]
+
+export const combinedFunctionListTable = [
+  {
+    title: '功能ID',
+    dataIndex: 'index',
+  }, {
+    title: '功能类型',
+    dataIndex: 'fn_type',
+    scopedSlots: {
+      customRender: 'functionType',
+    },
+  }, {
+    title: '功能点名称',
+    dataIndex: 'name',
+  }, {
+    title: '字段名称',
+    dataIndex: 'subject',
+  }, {
+    title: '传输类型',
+    scopedSlots: {
+      customRender: 'transferType',
+    },
+  }, {
+    title: '操作',
+    scopedSlots: {
+      customRender: 'operators',
+    },
+  },
+]

@@ -117,7 +117,44 @@
               </a-row>
             </a-tab-pane>
             <a-tab-pane key="2" tab="组合功能点">
-              2
+              <a-row>
+                <a-col :span="16">
+                  <span class="function-table-title">组合功能点</span>
+                  <span class="function-table-subtitle">可以将多个独立功能点组合，进行上报或者下发</span>
+                </a-col>
+                <a-col :span="8" class="text-right">
+                  <div class="add-function-button" @click="createCombinedFunction">
+                    <div class="add-function-icon">+</div>
+                    <div class="add-function-text">组合功能点</div>
+                  </div>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="24">
+                  <a-table
+                    :columns="config.combinedFunctionListTable"
+                    :data-source="remoteData.combinedFunctionList"
+                    bordered
+                    :row-key="record => record.index"
+                    :pagination="{ pageSize: 10, showTotal: total => `共 ${ total } 条`}"
+                    class="functionPoint-table"
+                  >
+                    <span slot="functionType" slot-scope="text">{{ enums.functionTypeEnum.getDisplay(text) }}</span>
+                    <span slot="transferType" slot-scope="record">{{ record.getTransferType() }}</span>
+                    <div slot="operators" slot-scope="record">
+                      <span class="clickable" @click="editFunction(record)">编辑</span>
+                      <a-popconfirm
+                        title="确定要删除嘛？"
+                        ok-text="确定"
+                        cancel-text="取消"
+                        @confirm="deleteFunction(record)"
+                      >
+                        <span class="clickable">删除</span>
+                      </a-popconfirm>
+                    </div>
+                  </a-table>
+                </a-col>
+              </a-row>
             </a-tab-pane>
           </a-tabs>
         </a-col>
@@ -349,7 +386,7 @@ import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, p
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import Param from '@/assets/classes/Param'
-import { functionListTable } from '@/assets/tables'
+import { functionListTable, combinedFunctionListTable } from '@/assets/tables'
 import { setFormItems } from '~/assets/utils'
 
 export default {
@@ -357,14 +394,19 @@ export default {
     return {
       config: {
         functionListTable,
+        combinedFunctionListTable,
       },
       remoteData: {
         original: {
           product: {},
           functionList: {},
+          combinedFunctionList: {},
+          standardFunctionList: {},
         },
         product: new Product(),
         functionList: [],
+        combinedFunctionList: [],
+        standardFunctionList: [],
         totalDeviceIdentity: 0,
         totalDevice: 0,
       },
@@ -378,6 +420,13 @@ export default {
         posting: false,
         index: 0,
       },
+      combinedFunctionEditDrawer: {
+        display: false,
+        combinedFunctionForm: this.$form.createForm(this, { name: 'combinedFunctionForm' }),
+        mode: '新增',
+        posting: false,
+        index: 0,
+      },
       paramEditDrawer: {
         display: false,
         paramForm: this.$form.createForm(this, { name: 'paramForm' }),
@@ -386,9 +435,11 @@ export default {
       },
     }
   },
-  created() {
-    this.getProductDetail()
+  async created() {
     this.getFunctionList()
+    this.getCombinedFunctionList()
+    await this.getProductDetail()
+    this.getStandardFunctionList()
   },
   methods: {
     async getProductDetail() {
@@ -399,12 +450,32 @@ export default {
       this.remoteData.totalDeviceIdentity = this.remoteData.original.product.device_identity_total
     },
     async getFunctionList() {
-      await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, null, '', '')
+      let pid = this.$route.params.pid
+      await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, { pid, meta_type: 'BASE', standard: false }, '', '')
       let functionList = []
       for (let item of this.remoteData.original.functionList.functions) {
         functionList.push(new FunctionPoint(item))
       }
       this.remoteData.functionList = functionList
+    },
+    async getCombinedFunctionList() {
+      let pid = this.$route.params.pid
+      await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
+      let functionList = []
+      for (let item of this.remoteData.original.combinedFunctionList.functions) {
+        functionList.push(new FunctionPoint(item))
+      }
+      this.remoteData.combinedFunctionList = functionList
+    },
+    async getStandardFunctionList() {
+      let industry_id = this.remoteData.product.industry_id
+      let category_id = this.remoteData.product.category_id
+      await getFunctionList(this, {obj: this.remoteData.original, name: 'standardFunctionList'}, { industry_id, category_id, meta_type: 'BASE', standard: true }, '', '')
+      let functionList = []
+      for (let item of this.remoteData.original.standardFunctionList.functions) {
+        functionList.push(new FunctionPoint(item))
+      }
+      this.remoteData.combinedFunctionList = functionList
     },
     async handleImportUpload(event) {
       this.contentControl.uploadingFunctionFile = true
@@ -447,6 +518,11 @@ export default {
       this.functionEditDrawer.mode = '新增'
       this.functionEditDrawer.functionForm.resetFields()
       this.functionEditDrawer.display = true
+    },
+    createCombinedFunction() {
+      this.combinedFunctionEditDrawer.mode = '新增'
+      this.combinedFunctionEditDrawer.combinedFunctionForm.resetFields()
+      this.combinedFunctionEditDrawer.display = true
     },
     async saveFunction() {
       this.functionEditDrawer.functionForm.validateFields(async (err, values) => {
