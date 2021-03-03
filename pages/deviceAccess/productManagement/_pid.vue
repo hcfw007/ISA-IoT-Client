@@ -124,7 +124,7 @@
       </a-row>
     </div>
     <a-drawer
-      :title="`${functionEditDrawer.mode}产品`"
+      :title="`${functionEditDrawer.mode}基础功能点`"
       :visible="functionEditDrawer.display"
       :width="drawerConfig.width"
       :body-style="{ paddingBottom: '80px' }"
