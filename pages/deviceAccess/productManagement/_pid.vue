@@ -245,7 +245,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import { functionListTable } from '@/assets/tables'
@@ -370,6 +370,14 @@ export default {
       this.$nextTick(() => {
         setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
       })
+    },
+    async deleteFunction(functionPoint) {
+      let pid = this.$route.params.pid
+      let index = functionPoint.index
+      let result = await deleteFunction(this, null, '删除功能点成功', '删除功能点失败', { pid, index})
+      if (result.flag) {
+        this.getFunctionList()
+      }
     },
   },
 }
