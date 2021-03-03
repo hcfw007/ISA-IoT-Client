@@ -222,23 +222,123 @@
             </a-form-item>
           </section>
         </section>
-        <a-form-item label="传输类型">
-            <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型">
-              <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`" >
+        <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'EVENT'">
+          <a-form-item label="事件类型">
+            <a-select v-decorator="['event_type', { rules: [ validators.requiredRuleFactory('事件类型', 'select')], initialValue: 'INFO'}]" placeholder="请选择事件类型">
+              <a-select-option v-for="(item, index) in enums.eventTypeEnum.displayList" :value="enums.eventTypeEnum.getTransfer(item)" :key="`eventType${ index }`" >
                 {{ item }}
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="备注">
-            <a-textarea v-decorator="['remark']" :maxLength="100" placeholder="最多100字符" />
+          <a-form-item label="输出参数">
+            <param-display v-decorator="['params', { initialValue: [] }]" @addParam="addParamHandler" @deleteParam="deleteParamHandler" @editParam="editParamHandler" />
           </a-form-item>
-        <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'EVENT'">
-          event
         </section>
+        <a-form-item label="传输类型">
+          <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型">
+            <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`" >
+              {{ item }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="备注">
+          <a-textarea v-decorator="['remark']" :maxLength="100" placeholder="最多100字符" />
+        </a-form-item>
       </a-form>
       <div class="drawer-feet">
         <a-button @click="functionEditDrawer.display = false" class="dismiss-btn">取消</a-button>
         <a-button type="primary" class="execute-btn" @click="saveFunction" :loading="functionEditDrawer.posting">保存</a-button>
+      </div>
+    </a-drawer>
+    <a-drawer
+      :title="`${paramEditDrawer.mode}输出参数`"
+      :visible="paramEditDrawer.display"
+      :width="drawerConfig.width"
+      :body-style="{ paddingBottom: '80px' }"
+      @close="paramEditDrawer.display = false"
+    >
+      <a-form
+        :form="paramEditDrawer.paramForm"
+        :label-col="drawerConfig.form.labelCol"
+        :wrapper-col="drawerConfig.form.wrapperCol"
+        class="drawer-form"
+      >
+        <a-form-item label="参数名称">
+          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('功能点名称')]}]" placeholder="请输入参数名称" />
+        </a-form-item>
+        <a-form-item label="参数字段">
+          <a-input v-decorator="['subject', { rules: [ validators.requiredRuleFactory('字段名称'), validators.startWithLetter, validators.legalCharTypeFactory(['letter', 'number', 'Chinese', 'underline']) ]}]" placeholder="请输入参数字段" />
+        </a-form-item>
+        <a-form-item label="数据类型">
+          <a-select v-decorator="['type', { rules: [ validators.requiredRuleFactory('数据类型', 'select')], initialValue: 'BOOLEAN'}]" placeholder="请选择数据类型">
+            <a-select-option v-for="(item, index) in enums.paramDataTypeEnum.displayList" :value="enums.paramDataTypeEnum.getTransfer(item)" :key="`paramDataType${ index }`" >
+              {{ item }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <section v-if="paramEditDrawer.paramForm.getFieldValue('type') === 'BOOLEAN' || !paramEditDrawer.paramForm.getFieldValue('type')">
+          <a-form-item label="True - ">
+            <a-input v-decorator="['true_value', { rules: [ validators.requiredRuleFactory('真值') ]}]" placeholder="请输入真值" />
+          </a-form-item>
+          <a-form-item label="False - ">
+            <a-input v-decorator="['false_value', { rules: [ validators.requiredRuleFactory('假值') ]}]" placeholder="请输入假值" />
+          </a-form-item>
+        </section>
+        <section v-if="paramEditDrawer.paramForm.getFieldValue('type') === 'INTEGER'">
+          <a-form-item label="取值范围" style="margin-bottom: 0" required>
+            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+              <a-input-number v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值'), validators.integerChecker ]}]" placeholder="请输入最小值" />
+            </a-form-item>
+            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+              -
+            </span>
+            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+              <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值'), validators.integerChecker ]}]" placeholder="请输入最大值" />
+            </a-form-item>
+          </a-form-item>
+          <a-form-item label="间距">
+            <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距'), validators.integerChecker ]}]" placeholder="请输入间距" />
+          </a-form-item>
+          <a-form-item label="单位">
+            <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+          </a-form-item>
+        </section>
+        <section v-if="paramEditDrawer.paramForm.getFieldValue('type') === 'FLOAT'">
+          <a-form-item label="取值范围" style="margin-bottom: 0" required>
+            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+              <a-input-number v-decorator="['min', { rules: [ validators.requiredRuleFactory('最小值') ]}]" placeholder="请输入最小值" />
+            </a-form-item>
+            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+              -
+            </span>
+            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+              <a-input-number v-decorator="['max', { rules: [ validators.requiredRuleFactory('最大值') ]}]" placeholder="请输入最大值" />
+            </a-form-item>
+          </a-form-item>
+          <a-form-item label="间距">
+            <a-input-number v-decorator="['step', { rules: [ validators.requiredRuleFactory('间距') ]}]" placeholder="请输入间距" />
+          </a-form-item>
+          <a-form-item label="单位">
+            <a-input v-decorator="['unit', { rules: []}]" placeholder="请输入单位" />
+          </a-form-item>
+        </section>
+        <section v-if="paramEditDrawer.paramForm.getFieldValue('type') === 'ENUM'">
+          <a-form-item label="枚举值" required>
+            <enum-editor v-decorator="['items', { initialValue: [] }]" />
+          </a-form-item>
+        </section>
+        <section v-if="paramEditDrawer.paramForm.getFieldValue('type') === 'STRING'">
+          <a-form-item label="最大长度">
+            <span>最大长度不超过255字节</span>
+          </a-form-item>
+        </section>
+        <a-form-item label="备注">
+          <a-textarea v-decorator="['remark']" :maxLength="100" placeholder="最多100字符" />
+        </a-form-item>
+      </a-form>
+      <div class="drawer-feet">
+        <a-button @click="paramEditDrawer.display = false" class="dismiss-btn">取消</a-button>
+        <a-button type="primary" class="execute-btn" @click="saveParam">保存</a-button>
       </div>
     </a-drawer>
   </div>
@@ -248,6 +348,7 @@
 import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
+import Param from '@/assets/classes/Param'
 import { functionListTable } from '@/assets/tables'
 import { setFormItems } from '~/assets/utils'
 
@@ -275,6 +376,12 @@ export default {
         functionForm: this.$form.createForm(this, { name: 'functionForm' }),
         mode: '新增',
         posting: false,
+        index: 0,
+      },
+      paramEditDrawer: {
+        display: false,
+        paramForm: this.$form.createForm(this, { name: 'paramForm' }),
+        mode: '新增',
         index: 0,
       },
     }
@@ -363,10 +470,26 @@ export default {
         }
       })
     },
+    saveParam() {
+      this.paramEditDrawer.paramForm.validateFields(async (err, values) => {
+        if (err) return
+        let paramObj = new Param(values)
+        let params = this.functionEditDrawer.functionForm.getFieldValue('params')
+        if (this.paramEditDrawer.mode === '新增') {
+          params.push(paramObj)
+          this.functionEditDrawer.functionForm.setFieldsValue({params})
+        } else {
+          params[this.paramEditDrawer.index] = paramObj
+          this.functionEditDrawer.functionForm.setFieldsValue({params})
+        }
+        this.paramEditDrawer.display = false
+      })
+    },
     editFunction(functionPoint) {
       this.functionEditDrawer.mode = '编辑'
       this.functionEditDrawer.display = true
       this.functionEditDrawer.index = functionPoint.index
+      setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
       this.$nextTick(() => {
         setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
       })
@@ -378,6 +501,26 @@ export default {
       if (result.flag) {
         this.getFunctionList()
       }
+    },
+    addParamHandler() {
+      this.paramEditDrawer.mode = '新增'
+      this.paramEditDrawer.paramForm.resetFields()
+      this.paramEditDrawer.display = true
+    },
+    deleteParamHandler(index) {
+      let params = this.functionEditDrawer.functionForm.getFieldValue('params')
+      params.splice(index, 1)
+      this.functionEditDrawer.functionForm.setFieldsValue({params})
+    },
+    editParamHandler(index) {
+      this.paramEditDrawer.mode = '编辑'
+      this.paramEditDrawer.display = true
+      this.paramEditDrawer.index = index
+      let param = this.functionEditDrawer.functionForm.getFieldValue('params')[index]
+      setFormItems(param.toFormObject(), this.paramEditDrawer.paramForm)
+      this.$nextTick(() => {
+        setFormItems(param.toFormObject(), this.paramEditDrawer.paramForm)
+      })
     },
   },
 }

@@ -3,7 +3,6 @@ import BooleanValue from './BooleanValue'
 import EnumValue from './EnumValue'
 import NumberValue from './NumberValue'
 import ExceptionValue from './ExceptionValue'
-import Param from './Param'
 import { transferTypeEnum } from './enums'
 
 const CommonFunctionTypeMapping = {
@@ -54,7 +53,7 @@ export default class FunctionPoint extends BaseClass {
       },
       type: {
         type: 'string',
-        required: true,
+        required: false,
         description: '数据类型',
       },
       remark: {
@@ -98,7 +97,7 @@ export default class FunctionPoint extends BaseClass {
         description: '故障功能点',
       },
       params: {
-        type: Param,
+        type: 'array',
         required: false,
         description: '事件类型参数数组',
       },
@@ -147,10 +146,10 @@ export default class FunctionPoint extends BaseClass {
       return '可上报可下发'
     }
     if (this.up) {
-      return '只上报'
+      return '只可上报'
     }
     if (this.down) {
-      return '只下发'
+      return '只可下发'
     }
     return '你猜'
   }
@@ -162,7 +161,7 @@ export default class FunctionPoint extends BaseClass {
   toFormObject() {
     let flatternObject = (root, object) => {
       for (let item in object) {
-        if (typeof(object[item]) !== 'object') {
+        if (typeof(object[item]) !== 'object' || Array.isArray(object[item])) {
           root[item] = object[item]
         } else {
           flatternObject(root, object[item])

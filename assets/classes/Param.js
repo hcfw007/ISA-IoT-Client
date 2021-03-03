@@ -3,8 +3,27 @@ import BooleanValue from './BooleanValue'
 import EnumValue from './EnumValue'
 import NumberValue from './NumberValue'
 
+const paramTypeMapping = {
+  INTEGER: {
+    propertyName: 'num_type',
+    type: NumberValue,
+  },
+  FLOAT: {
+    propertyName: 'num_type',
+    type: NumberValue,
+  },
+  BOOLEAN: {
+    propertyName: 'boolean_type',
+    type: BooleanValue,
+  },
+  ENUM: {
+    propertyName: 'enum_type',
+    type: EnumValue,
+  },
+}
+
 export default class Param extends BaseClass {
-  constructor(product) {
+  constructor(param) {
     let structure = {
       name: {
         type: 'string',
@@ -42,6 +61,37 @@ export default class Param extends BaseClass {
         description: '数值功能点',
       },
     }
-    super(product, structure)
+
+    // 处理数据类型
+    if (param.type in paramTypeMapping) {
+      let type = paramTypeMapping[param.type]
+      if (param[type.propertyName]) {
+        param[type.propertyName] = new type.type(param[type.propertyName]).trim()
+      } else {
+        param[type.propertyName] = new type.type(param).trim()
+      }
+    } else {
+      throw new Error('Cannot create corresponding data type object for ' + param.type)
+    }
+    super(param, structure)
+
+    // 删除无关属性
+    this.trim()
+  }
+
+  toFormObject() {
+    let flatternObject = (root, object) => {
+      for (let item in object) {
+        if (typeof (object[item]) !== 'object') {
+          root[item] = object[item]
+        } else {
+          flatternObject(root, object[item])
+        }
+      }
+    }
+
+    let obj = {}
+    flatternObject(obj, this)
+    return obj
   }
 }

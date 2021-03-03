@@ -89,10 +89,24 @@ export const commonFunctionDataTypeEnum = enumCreator({
   DATE: '日期型',
 })
 
+export const paramDataTypeEnum = enumCreator({
+  BOOLEAN: '布尔型',
+  INTEGER: '整数型',
+  FLOAT: '浮点型',
+  ENUM: '枚举型',
+  STRING: '字符串型',
+})
+
 export const transferTypeEnum = enumCreator({
   upAndDown: '可上报可下发',
   up: '只可上报',
   down: '只可下发',
+})
+
+export const eventTypeEnum = enumCreator({
+  INFO: '信息型',
+  WARNING: '告警型',
+  FAULT: '故障型',
 })
 
 export default {
@@ -102,4 +116,6 @@ export default {
   functionTypeEnum,
   commonFunctionDataTypeEnum,
   transferTypeEnum,
+  eventTypeEnum,
+  paramDataTypeEnum,
 }
