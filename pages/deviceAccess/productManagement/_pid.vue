@@ -386,9 +386,8 @@
       @close="standardFunctionSelectionDrawer.display = false"
     >
       <a-transfer
-        :data-source="remoteData.standardFunctionList"
+        :data-source="remoteData.standardFunctionTransferList"
         :titles="['全部标准功能点', '要添加的功能点']"
-        :rowKey="record => record.index"
         :render="item => item.name"
         :target-keys="standardFunctionSelectionDrawer.targetKeys"
         :selected-keys="standardFunctionSelectionDrawer.selectedKeys"
@@ -429,7 +428,9 @@ export default {
         product: new Product(),
         functionList: [],
         combinedFunctionList: [],
+        combinedFunctionTransferList: [],
         standardFunctionList: [],
+        standardFunctionTransferList: [],
         totalDeviceIdentity: 0,
         totalDevice: 0,
       },
@@ -491,9 +492,17 @@ export default {
       let pid = this.$route.params.pid
       await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
       let functionList = []
+      let functionListForTransfer = []
       for (let item of this.remoteData.original.combinedFunctionList.functions) {
+        // 穿梭框不能用FunctionPoint，不知为何
+        let functionPoint = item
+        functionPoint.key = String(functionPoint.index)
+        functionPoint.title = functionPoint.name
+        functionListForTransfer.push(functionPoint)
+
         functionList.push(new FunctionPoint(item))
       }
+      this.remoteData.combinedFunctionTransferList = functionListForTransfer
       this.remoteData.combinedFunctionList = functionList
     },
     handleChange(nextTargetKeys) {
@@ -507,9 +516,17 @@ export default {
       let category_id = this.remoteData.product.category_id
       await getFunctionList(this, {obj: this.remoteData.original, name: 'standardFunctionList'}, { industry_id, category_id, meta_type: 'BASE', standard: true }, '', '')
       let functionList = []
+      let functionListForTransfer = []
       for (let item of this.remoteData.original.standardFunctionList.functions) {
+        // 穿梭框不能用FunctionPoint，不知为何
+        let functionPoint = item
+        functionPoint.key = String(functionPoint.index)
+        functionPoint.title = functionPoint.name
+        functionListForTransfer.push(functionPoint)
+
         functionList.push(new FunctionPoint(item))
       }
+      this.remoteData.standardFunctionTransferList = functionListForTransfer
       this.remoteData.standardFunctionList = functionList
     },
     async handleImportUpload(event) {
