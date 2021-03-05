@@ -99,6 +99,7 @@
 
 <script>
 import { deviceListTable } from '@/assets/tables'
+import { getDeviceList, postDevice } from '@/assets/api/ajax'
 
 export default {
   data() {
@@ -107,13 +108,23 @@ export default {
         deviceListTable,
       },
       remoteData: {
-        deviceList: [
-        ],
+        oroginal: {
+          deviceList: {},
+        },
+        deviceList: [],
       },
       contentControl: {
         deviceListSelection: {},
       },
     }
+  },
+  created() {
+    this.getDeviceList()
+  },
+  methods: {
+    getDeviceList() {
+      getDeviceList(this, {obj: this.remoteData.original, name: 'deviceList'})
+    },
   },
 }
 </script>

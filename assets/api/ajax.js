@@ -214,6 +214,16 @@ export const editCombinedFunction = postRequestFactory('/thing-models/functions/
 
 export const deleteFunction = postRequestFactory('/thing-models/functions/opts/delete/{pid}:{index}')
 
+// 设备
+export const getDeviceList = getRequestFactory('/devmng/devices/ops')
+
+export const postDevice = postRequestFactory('/devmng/devices/ops')
+
+// 设备标识
+export const getDeviceIdentificationList = getRequestFactory('/devmng/devices/identities/ops')
+
+export const postDeviceIdentification = postRequestFactory('/devmng/devices/identities/ops')
+
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {
     headers: {
