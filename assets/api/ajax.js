@@ -209,6 +209,8 @@ export const postStandardFunction = postRequestFactory('/thing-models/functions/
 export const postCustomFunction = postRequestFactory('/thing-models/functions/custom')
 export const editFunction = postRequestFactory('/thing-models/functions/opts/put')
 
+export const postCombinedFunction = postRequestFactory('/thing-models/functions/combine')
+
 export const deleteFunction = postRequestFactory('/thing-models/functions/opts/delete/{pid}:{index}')
 
 export const postFunctionFile = (data, progressCallback) =>

@@ -391,8 +391,8 @@
         :render="item => item.name"
         :target-keys="standardFunctionSelectionDrawer.targetKeys"
         :selected-keys="standardFunctionSelectionDrawer.selectedKeys"
-        @change="handleChange"
-        @selectChange="handleSelectChange"
+        @change="handleStandardDrawerChange"
+        @selectChange="handleStandardDrawerSelectChange"
       >
       </a-transfer>
       <div class="drawer-feet">
@@ -400,13 +400,66 @@
         <a-button type="primary" class="execute-btn" @click="saveStandardFunction" :loading="standardFunctionSelectionDrawer.posting">保存</a-button>
       </div>
     </a-drawer>
+    <a-drawer
+      :title="`${combinedFunctionEditDrawer.mode}组合功能点`"
+      :visible="combinedFunctionEditDrawer.display"
+      :width="drawerConfig.width"
+      :body-style="{ paddingBottom: '80px' }"
+      @close="combinedFunctionEditDrawer.display = false"
+    >
+      <a-form
+        :form="combinedFunctionEditDrawer.combinedFunctionForm"
+        :label-col="drawerConfig.form.labelCol"
+        :wrapper-col="drawerConfig.form.wrapperCol"
+        class="drawer-form"
+      >
+        <a-form-item label="功能点名称">
+          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('功能点名称')]}]" placeholder="请输入功能点名称" />
+        </a-form-item>
+        <a-form-item label="字段名称">
+          <a-input v-decorator="['subject', { rules: [ validators.requiredRuleFactory('字段名称'), validators.startWithLetter, validators.legalCharTypeFactory(['letter', 'number', 'Chinese', 'underline']) ]}]" placeholder="请输入字段名称" />
+        </a-form-item>
+        <a-form-item label="功能类型" required>
+          <a-select v-decorator="['fn_type', { rules: [ validators.requiredRuleFactory('功能类型', 'select')], initialValue: 'COMMON'}]" placeholder="请选择功能点类型">
+            <a-select-option :value="'COMMON'">
+              属性类型
+            </a-select-option>
+            <a-select-option :value="'EVENT'">
+              事件类型
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="传输类型">
+          <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型" @change="combinedFunctionEditDrawerTransferTypeChangeHandler">
+            <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`" >
+              {{ item }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-form>
+      <a-transfer
+        :data-source="combinedFunctionEditDrawerFunctionFilterList"
+        :titles="['全部标准功能点', '要添加的功能点']"
+        :render="item => item.name"
+        :target-keys="combinedFunctionEditDrawer.targetKeys"
+        :selected-keys="combinedFunctionEditDrawer.selectedKeys"
+        @change="handleCombinedDrawerChange"
+        @selectChange="handleCombinedDrawerSelectChange"
+      >
+      </a-transfer>
+      <div class="drawer-feet">
+        <a-button @click="combinedFunctionEditDrawer.display = false" class="dismiss-btn">取消</a-button>
+        <a-button type="primary" class="execute-btn" @click="saveCombinedFunction" :loading="combinedFunctionEditDrawer.posting">保存</a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
+import CombinedFunctionPoint from '@/assets/classes/CombinedFunctionPoint'
 import Param from '@/assets/classes/Param'
 import { functionListTable, combinedFunctionListTable } from '@/assets/tables'
 import { setFormItems } from '~/assets/utils'
@@ -428,7 +481,7 @@ export default {
         product: new Product(),
         functionList: [],
         combinedFunctionList: [],
-        combinedFunctionTransferList: [],
+        functionTransferList: [],
         standardFunctionList: [],
         standardFunctionTransferList: [],
         totalDeviceIdentity: 0,
@@ -447,6 +500,9 @@ export default {
       combinedFunctionEditDrawer: {
         display: false,
         combinedFunctionForm: this.$form.createForm(this, { name: 'combinedFunctionForm' }),
+        targetKeys: [],
+        selectedKeys: [],
+        transferType: 'upAndDown',
         mode: '新增',
         posting: false,
         index: 0,
@@ -471,7 +527,22 @@ export default {
     await this.getProductDetail()
     this.getStandardFunctionList()
   },
+  computed: {
+    combinedFunctionEditDrawerFunctionFilterList() {
+      let [up, down] = [false, false]
+      if (this.combinedFunctionEditDrawer.transferType.includes('up')) {
+        up = true
+      }
+      if (this.combinedFunctionEditDrawer.transferType.includes('down')) {
+        down = true
+      }
+      return this.remoteData.functionTransferList.filter(ele => ((ele.up === up && ele.down === down) || (ele.up && ele.down)))
+    },
+  },
   methods: {
+    combinedFunctionEditDrawerTransferTypeChangeHandler(transferType) {
+      this.combinedFunctionEditDrawer.transferType = transferType
+    },
     async getProductDetail() {
       let pid =  this.$route.params.pid
       await getProductDetailWithDeviceStastic(this, {obj: this.remoteData.original, name: 'product'}, null, '', '', {pid})
@@ -483,17 +554,8 @@ export default {
       let pid = this.$route.params.pid
       await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, { pid, meta_type: 'BASE', standard: false }, '', '')
       let functionList = []
-      for (let item of this.remoteData.original.functionList.functions) {
-        functionList.push(new FunctionPoint(item))
-      }
-      this.remoteData.functionList = functionList
-    },
-    async getCombinedFunctionList() {
-      let pid = this.$route.params.pid
-      await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
-      let functionList = []
       let functionListForTransfer = []
-      for (let item of this.remoteData.original.combinedFunctionList.functions) {
+      for (let item of this.remoteData.original.functionList.functions) {
         // 穿梭框不能用FunctionPoint，不知为何
         let functionPoint = item
         functionPoint.key = String(functionPoint.index)
@@ -502,14 +564,29 @@ export default {
 
         functionList.push(new FunctionPoint(item))
       }
-      this.remoteData.combinedFunctionTransferList = functionListForTransfer
+      this.remoteData.functionTransferList = functionListForTransfer
+      this.remoteData.functionList = functionList
+    },
+    async getCombinedFunctionList() {
+      let pid = this.$route.params.pid
+      await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
+      let functionList = []
+      for (let item of this.remoteData.original.combinedFunctionList.functions) {
+        functionList.push(new FunctionPoint(item))
+      }
       this.remoteData.combinedFunctionList = functionList
     },
-    handleChange(nextTargetKeys) {
+    handleStandardDrawerChange(nextTargetKeys) {
       this.standardFunctionSelectionDrawer.targetKeys = nextTargetKeys
     },
-    handleSelectChange(sourceSelectedKeys, targetSelectedKeys) {
+    handleStandardDrawerSelectChange(sourceSelectedKeys, targetSelectedKeys) {
       this.standardFunctionSelectionDrawer.selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
+    },
+    handleCombinedDrawerChange(nextTargetKeys) {
+      this.combinedFunctionEditDrawer.targetKeys = nextTargetKeys
+    },
+    handleCombinedDrawerSelectChange(sourceSelectedKeys, targetSelectedKeys) {
+      this.combinedFunctionEditDrawer.selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
     },
     async getStandardFunctionList() {
       let industry_id = this.remoteData.product.industry_id
@@ -574,6 +651,8 @@ export default {
     createCombinedFunction() {
       this.combinedFunctionEditDrawer.mode = '新增'
       this.combinedFunctionEditDrawer.combinedFunctionForm.resetFields()
+      this.combinedFunctionEditDrawer.targetKeys = []
+      this.combinedFunctionEditDrawer.selectedKeys = []
       this.combinedFunctionEditDrawer.display = true
     },
     selectStandardFunction() {
@@ -616,6 +695,28 @@ export default {
         this.getFunctionList()
       }
       this.standardFunctionSelectionDrawer.posting = false
+    },
+    async saveCombinedFunction() {
+      this.combinedFunctionEditDrawer.combinedFunctionForm.validateFields(async (err, values) => {
+        if (err) return
+        this.combinedFunctionEditDrawer.posting = true
+        values.product_id = this.$route.params.pid
+        values.combination = this.combinedFunctionEditDrawer.targetKeys
+        this.functionEditDrawer.posting = true
+        let funObj = new CombinedFunctionPoint(values)
+        let result
+        if (this.combinedFunctionEditDrawer.mode === '新增') {
+          result = await postCombinedFunction(this, funObj, '保存组合功能点成功', '保存组合功能点失败')
+        } else {
+          funObj.index = this.combinedFunctionEditDrawer.index
+          result = await editFunction(this, funObj, '修改组合功能点成功', '修改组合功能点失败')
+        }
+        this.combinedFunctionEditDrawer.posting = false
+        if (result.flag) {
+          this.combinedFunctionEditDrawer.display = false
+          this.getCombinedFunctionList()
+        }
+      })
     },
     saveParam() {
       this.paramEditDrawer.paramForm.validateFields(async (err, values) => {
