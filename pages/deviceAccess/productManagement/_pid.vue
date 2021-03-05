@@ -102,7 +102,7 @@
                     <span slot="dataType" slot-scope="text">{{ enums.commonFunctionDataTypeEnum.getDisplay(text) }}</span>
                     <span slot="transferType" slot-scope="record">{{ record.getTransferType() }}</span>
                     <div slot="operators" slot-scope="record">
-                      <span class="clickable" @click="editCombinedFunction(record)">编辑</span>
+                      <span class="clickable" @click="editFunction(record)">编辑</span>
                       <a-popconfirm
                         title="确定要删除嘛？"
                         ok-text="确定"
@@ -142,7 +142,7 @@
                     <span slot="functionType" slot-scope="text">{{ enums.functionTypeEnum.getDisplay(text) }}</span>
                     <span slot="transferType" slot-scope="record">{{ record.getTransferType() }}</span>
                     <div slot="operators" slot-scope="record">
-                      <span class="clickable" @click="editFunction(record)">编辑</span>
+                      <span class="clickable" @click="editCombinedFunction(record)">编辑</span>
                       <a-popconfirm
                         title="确定要删除嘛？"
                         ok-text="确定"
@@ -572,7 +572,7 @@ export default {
       await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
       let functionList = []
       for (let item of this.remoteData.original.combinedFunctionList.functions) {
-        functionList.push(new FunctionPoint(item))
+        functionList.push(new CombinedFunctionPoint(item))
       }
       this.remoteData.combinedFunctionList = functionList
     },
@@ -701,7 +701,12 @@ export default {
         if (err) return
         this.combinedFunctionEditDrawer.posting = true
         values.product_id = this.$route.params.pid
-        values.combination = this.combinedFunctionEditDrawer.targetKeys
+        values.combination = []
+        this.combinedFunctionEditDrawer.targetKeys.forEach(ele => {
+          values.combination.push({
+            index: ele,
+          })
+        })
         this.functionEditDrawer.posting = true
         let funObj = new CombinedFunctionPoint(values)
         let result
@@ -748,7 +753,7 @@ export default {
       this.combinedFunctionEditDrawer.index = functionPoint.index
       let combinations = []
       for (let item of functionPoint.combination) {
-        combinations.push(String(item))
+        combinations.push(String(item.index))
       }
       this.combinedFunctionEditDrawer.selectedKeys = []
       this.combinedFunctionEditDrawer.targetKeys = combinations
