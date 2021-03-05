@@ -49,3 +49,11 @@ span.negative
 
 span.positive
   color: #03BF16
+
+.ant-drawer-content
+  .ant-input-number
+    width: 100% !important
+
+  .ant-transfer-list
+    width: 300px
+    height: 400px
