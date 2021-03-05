@@ -50,6 +50,15 @@ span.negative
 span.positive
   color: #03BF16
 
+span.good
+  color: #03BF16
+
+span.bad
+  color: #D9001B
+
+span.pending
+  color: #999999
+
 .ant-drawer-content
   .ant-input-number
     width: 100% !important

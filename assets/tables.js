@@ -64,16 +64,30 @@ export const deviceListTable = [
 export const deviceIdentificationListTable = [
   {
     title: '申请流水号',
+    dataIndex: 'apply_sn',
   }, {
     title: '产品名称',
+    dataIndex: 'product_name',
   }, {
     title: '审批状态',
+    dataIndex: 'status',
+    scopedSlots: {
+      customRender: 'status',
+    },
   }, {
     title: '申请数量',
+    dataIndex: 'amount',
   }, {
     title: '申请时间',
+    dataIndex: 'created_at',
+    scopedSlots: {
+      customRender: 'created_at',
+    },
   }, {
     title: '操作',
+    scopedSlots: {
+      customRender: 'operators',
+    },
   },
 ]
 

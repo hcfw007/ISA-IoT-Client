@@ -40,7 +40,19 @@
           </a-row>
           <a-row class="block-content-row">
             <a-col :span="24">
-              <a-table :columns="config.deviceIdentificationListTable" :data-source="remoteData.deviceIdentificationList" bordered />
+              <a-table :columns="config.deviceIdentificationListTable" :data-source="remoteData.deviceIdentificationList" bordered :rowKey="record => record.apply_sn">
+                <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
+                <div slot="operators" slot-scope="record">
+                  <span class="clickable">查看详情</span>
+                  <span class="clickable" v-if="record.status === 'APPROVED'">下载设备标识</span>
+                  <span class="clickable" v-if="record.status === 'REJECTED'">查看驳回原因</span>
+                </div>
+                <template slot="status" slot-scope="text">
+                  <span class="good" v-if="text === 'APPROVED'">已通过</span>
+                  <span class="bad" v-if="text === 'REJECTED'">已驳回</span>
+                  <span class="pending" v-if="text === 'APPLYING'">待审批</span>
+                </template>
+              </a-table>
             </a-col>
           </a-row>
         </a-col>
@@ -147,8 +159,9 @@ export default {
     this.getProductList()
   },
   methods: {
-    getDeviceIdentificationList() {
-      getDeviceIdentificationList(this, {obj: this.remoteData.original, name: 'deviceIdentificationList'})
+    async getDeviceIdentificationList() {
+      await getDeviceIdentificationList(this, {obj: this.remoteData.original, name: 'deviceIdentificationList'})
+      this.remoteData.deviceIdentificationList = this.remoteData.original.deviceIdentificationList.identities
     },
     getStaticData() {
       getIndustryList(this, { obj: this.remoteData, name: 'industryList' }, {}, '', '获取行业列表失败')
