@@ -102,7 +102,7 @@
                     <span slot="dataType" slot-scope="text">{{ enums.commonFunctionDataTypeEnum.getDisplay(text) }}</span>
                     <span slot="transferType" slot-scope="record">{{ record.getTransferType() }}</span>
                     <div slot="operators" slot-scope="record">
-                      <span class="clickable" @click="editFunction(record)">编辑</span>
+                      <span class="clickable" @click="editCombinedFunction(record)">编辑</span>
                       <a-popconfirm
                         title="确定要删除嘛？"
                         ok-text="确定"
@@ -456,7 +456,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction, editCombinedFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import CombinedFunctionPoint from '@/assets/classes/CombinedFunctionPoint'
@@ -709,7 +709,7 @@ export default {
           result = await postCombinedFunction(this, funObj, '保存组合功能点成功', '保存组合功能点失败')
         } else {
           funObj.index = this.combinedFunctionEditDrawer.index
-          result = await editFunction(this, funObj, '修改组合功能点成功', '修改组合功能点失败')
+          result = await editCombinedFunction(this, funObj, '修改组合功能点成功', '修改组合功能点失败')
         }
         this.combinedFunctionEditDrawer.posting = false
         if (result.flag) {
@@ -740,6 +740,20 @@ export default {
       setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
       this.$nextTick(() => {
         setFormItems(functionPoint.toFormObject(), this.functionEditDrawer.functionForm)
+      })
+    },
+    editCombinedFunction(functionPoint) {
+      this.combinedFunctionEditDrawer.mode = '编辑'
+      this.combinedFunctionEditDrawer.display = true
+      this.combinedFunctionEditDrawer.index = functionPoint.index
+      let combinations = []
+      for (let item of functionPoint.combination) {
+        combinations.push(String(item))
+      }
+      this.combinedFunctionEditDrawer.selectedKeys = []
+      this.combinedFunctionEditDrawer.targetKeys = combinations
+      this.$nextTick(() => {
+        setFormItems(functionPoint.toFormObject(), this.combinedFunctionEditDrawer.combinedFunctionForm)
       })
     },
     async deleteFunction(functionPoint) {

@@ -210,6 +210,7 @@ export const postCustomFunction = postRequestFactory('/thing-models/functions/cu
 export const editFunction = postRequestFactory('/thing-models/functions/opts/put')
 
 export const postCombinedFunction = postRequestFactory('/thing-models/functions/combine')
+export const editCombinedFunction = postRequestFactory('/thing-models/functions/combine/put')
 
 export const deleteFunction = postRequestFactory('/thing-models/functions/opts/delete/{pid}:{index}')
 
