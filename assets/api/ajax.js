@@ -205,6 +205,7 @@ export const getProductDetailWithDeviceStastic = getRequestFactory('/devmng/devi
 // 功能点
 export const getFunctionList = getRequestFactory('/thing-models/functions/opts')
 
+export const postStandardFunction = postRequestFactory('/thing-models/functions/imp-standard')
 export const postCustomFunction = postRequestFactory('/thing-models/functions/custom')
 export const editFunction = postRequestFactory('/thing-models/functions/opts/put')
 

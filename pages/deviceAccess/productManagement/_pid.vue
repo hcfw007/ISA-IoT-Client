@@ -78,7 +78,7 @@
                   <span class="function-table-subtitle">标准功能无法满足你的需求时，你可以添加自定义功能</span>
                 </a-col>
                 <a-col :span="8" class="text-right">
-                  <div class="add-function-button">
+                  <div class="add-function-button" @click="selectStandardFunction">
                     <div class="add-function-icon">+</div>
                     <div class="add-function-text">标准功能点</div>
                   </div>
@@ -378,11 +378,34 @@
         <a-button type="primary" class="execute-btn" @click="saveParam">保存</a-button>
       </div>
     </a-drawer>
+    <a-drawer
+      title="选择要添加的标准功能点"
+      :visible="standardFunctionSelectionDrawer.display"
+      :width="drawerConfig.width"
+      :body-style="{ paddingBottom: '80px' }"
+      @close="standardFunctionSelectionDrawer.display = false"
+    >
+      <a-transfer
+        :data-source="remoteData.standardFunctionList"
+        :titles="['全部标准功能点', '要添加的功能点']"
+        :rowKey="record => record.index"
+        :render="item => item.name"
+        :target-keys="standardFunctionSelectionDrawer.targetKeys"
+        :selected-keys="standardFunctionSelectionDrawer.selectedKeys"
+        @change="handleChange"
+        @selectChange="handleSelectChange"
+      >
+      </a-transfer>
+      <div class="drawer-feet">
+        <a-button @click="standardFunctionSelectionDrawer.display = false" class="dismiss-btn">取消</a-button>
+        <a-button type="primary" class="execute-btn" @click="saveStandardFunction" :loading="standardFunctionSelectionDrawer.posting">保存</a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import Param from '@/assets/classes/Param'
@@ -433,6 +456,12 @@ export default {
         mode: '新增',
         index: 0,
       },
+      standardFunctionSelectionDrawer: {
+        display: false,
+        targetKeys: [],
+        selectedKeys: [],
+        posting: false,
+      },
     }
   },
   async created() {
@@ -467,6 +496,12 @@ export default {
       }
       this.remoteData.combinedFunctionList = functionList
     },
+    handleChange(nextTargetKeys) {
+      this.standardFunctionSelectionDrawer.targetKeys = nextTargetKeys
+    },
+    handleSelectChange(sourceSelectedKeys, targetSelectedKeys) {
+      this.standardFunctionSelectionDrawer.selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
+    },
     async getStandardFunctionList() {
       let industry_id = this.remoteData.product.industry_id
       let category_id = this.remoteData.product.category_id
@@ -475,7 +510,7 @@ export default {
       for (let item of this.remoteData.original.standardFunctionList.functions) {
         functionList.push(new FunctionPoint(item))
       }
-      this.remoteData.combinedFunctionList = functionList
+      this.remoteData.standardFunctionList = functionList
     },
     async handleImportUpload(event) {
       this.contentControl.uploadingFunctionFile = true
@@ -524,6 +559,11 @@ export default {
       this.combinedFunctionEditDrawer.combinedFunctionForm.resetFields()
       this.combinedFunctionEditDrawer.display = true
     },
+    selectStandardFunction() {
+      this.standardFunctionSelectionDrawer.targetKeys = []
+      this.standardFunctionSelectionDrawer.selectedKeys = []
+      this.standardFunctionSelectionDrawer.display = true
+    },
     async saveFunction() {
       this.functionEditDrawer.functionForm.validateFields(async (err, values) => {
         if (err) return
@@ -545,6 +585,20 @@ export default {
           this.getFunctionList()
         }
       })
+    },
+    async saveStandardFunction() {
+      this.standardFunctionSelectionDrawer.posting = true
+      let pid = this.$route.params.pid
+      let functionObj = {
+        product_id: pid,
+        indexes: this.standardFunctionSelectionDrawer.targetKeys,
+      }
+      let result = await postStandardFunction(this, functionObj, '添加标准功能点成功', '添加标准功能点失败')
+      if (result.flag) {
+        this.standardFunctionSelectionDrawer.display = false
+        this.getFunctionList()
+      }
+      this.standardFunctionSelectionDrawer.posting = false
     },
     saveParam() {
       this.paramEditDrawer.paramForm.validateFields(async (err, values) => {
