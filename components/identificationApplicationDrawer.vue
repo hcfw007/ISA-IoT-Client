@@ -177,20 +177,19 @@ export default {
     displayApplication() {
       this.deviceApplicationDrawer.display = true
       this.deviceApplicationDrawer.title = '详情'
-      let application = this.application
-      for (let product of this.remoteData.productList) {
-        console.log(product.pid, application.product_id, product.pid === application.product_id)
-        if (product.pid === application.product_id) {
-          application.industry_id = product.industry_id
-          this.drawerIndustryChangeHandler(product.industry_id)
-          application.category_id = product.category_id
-          this.drawerCategoryChangeHandler(product.category_id)
-          this.drwerProductChangeHandler(product.pid)
-          break
-        }
-      }
       this.$nextTick(() => {
+        let application = JSON.parse(JSON.stringify(this.application))
+        for (let product of this.remoteData.productList) {
+          if (product.pid === application.product_id) {
+            application.industry_id = product.industry_id
+            this.drawerIndustryChangeHandler(product.industry_id)
+            application.category_id = product.category_id
+            this.drawerCategoryChangeHandler(product.category_id)
+            break
+          }
+        }
         setFormItems(application, this.deviceApplicationDrawer.applicationForm)
+        this.drwerProductChangeHandler(application.product_id)
       })
     },
     closeDrawer() {
