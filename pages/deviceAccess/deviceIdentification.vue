@@ -49,7 +49,9 @@
                 <div slot="operators" slot-scope="record">
                   <span class="clickable">查看详情</span>
                   <span class="clickable" v-if="record.status === 'APPROVED'">下载设备标识</span>
-                  <span class="clickable" v-if="record.status === 'REJECTED'">查看驳回原因</span>
+                  <a-tooltip placement="bottom" :title="record.remark || '未知'" trigger="click" v-if="record.status === 'REJECTED'">
+                    <span class="clickable">查看驳回原因</span>
+                  </a-tooltip>
                 </div>
                 <template slot="status" slot-scope="text">
                   <span class="good" v-if="text === 'APPROVED'">已通过</span>
