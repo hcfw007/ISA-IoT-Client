@@ -8,22 +8,26 @@
     <div class="main-content">
       <a-row class="block-normal block-white">
         <a-col :span="16">
-          <a-select default-value="all" class="regular-input">
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.status">
             <a-select-option value="all">
               全部
             </a-select-option>
-          </a-select>
-          <a-range-picker />
-          <a-select default-value="all" class="regular-input">
-            <a-select-option value="all">
-              全部
+            <a-select-option value="APPROVED">
+              已通过
+            </a-select-option>
+            <a-select-option value="APPLYING">
+              待审批
+            </a-select-option>
+            <a-select-option value="REJECTED">
+              已驳回
             </a-select-option>
           </a-select>
-          <a-input placeholder="请输入产品名称搜索" class="regular-input" />
+          <a-range-picker v-model="contentControl.filters.dateRange" />
+          <a-input placeholder="请输入产品名称搜索" class="regular-input" v-model="contentControl.filters.product_name"/>
         </a-col>
         <a-col :span="8" class="text-right">
-          <a-button type="primary">查询</a-button>
-          <a-button>重置</a-button>
+          <a-button type="primary" @click="executeFilter">查询</a-button>
+          <a-button @click="resetFilter">重置</a-button>
         </a-col>
       </a-row>
       <a-row class="block-normal block-white">
@@ -129,6 +133,15 @@ import { deviceIdentificationListTable } from '@/assets/tables'
 import { getDeviceIdentificationList, getProductList, getIndustryList, getCategoryList, postDeviceIdentification } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import DeviceID from '@/assets/classes/DeviceID'
+import { dateTimeFormatter } from '@/assets/utils'
+
+const getBaseFilter = () => {
+  return {
+    status: 'all',
+    dateRange: [],
+    product_name: '',
+  }
+}
 
 export default {
   data() {
@@ -151,6 +164,10 @@ export default {
         filteredCategoryList: [],
         filteredProductList: [],
       },
+      contentControl: {
+        filters: getBaseFilter(),
+        cachedFilters: getBaseFilter(),
+      },
     }
   },
   created() {
@@ -160,8 +177,30 @@ export default {
   },
   methods: {
     async getDeviceIdentificationList() {
-      await getDeviceIdentificationList(this, {obj: this.remoteData.original, name: 'deviceIdentificationList'})
+      let filters = this.contentControl.cachedFilters
+      let filterObj = {}
+      for (let key in filters) {
+        if (key === 'dateRange') continue
+        if (filters[key] !== 'all' && filters[key] !== '') {
+          filterObj[key] = filters[key]
+        }
+      }
+      if (filters.dateRange.length > 0) {
+        filterObj.fromDateTime = dateTimeFormatter(new Date(filters.dateRange[0]), 'yyyy-MM-dd') + ' 00:00:00.000'
+        filterObj.toDateTime = dateTimeFormatter(new Date(filters.dateRange[1]), 'yyyy-MM-dd') + ' 23:59:59.999'
+      }
+      await getDeviceIdentificationList(this, {obj: this.remoteData.original, name: 'deviceIdentificationList'}, filterObj)
       this.remoteData.deviceIdentificationList = this.remoteData.original.deviceIdentificationList.identities
+    },
+    executeFilter() {
+      let filters = this.contentControl.filters
+      this.contentControl.cachedFilters = JSON.parse(JSON.stringify(filters))
+      this.getDeviceIdentificationList()
+    },
+    resetFilter() {
+      this.contentControl.filters = getBaseFilter()
+      this.contentControl.cachedFilters = getBaseFilter()
+      this.getDeviceIdentificationList()
     },
     getStaticData() {
       getIndustryList(this, { obj: this.remoteData, name: 'industryList' }, {}, '', '获取行业列表失败')
