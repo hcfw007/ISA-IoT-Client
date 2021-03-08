@@ -14,7 +14,7 @@
     >
       <a-form-item label="选择产品" style="margin-bottom: 0" required>
         <a-form-item :style="{ display: 'inline-block', width: 'calc(33% - 16px)' }">
-          <a-select placeholder="请选择产品行业" @change="drawerIndustryChangeHandler" v-decorator="['industry_id', { rules: [ validators.requiredRuleFactory('产品行业', 'select')]}]">
+          <a-select placeholder="请选择产品行业" @change="drawerIndustryChangeHandler" v-decorator="['industry_id', { rules: [ validators.requiredRuleFactory('产品行业', 'select')]}]" :disabled="mode === 'display'">
             <a-select-option v-for="(item, index) in remoteData.industryList" :key="`industry${ index }`" :value="item.id">
               {{ item.name }}
             </a-select-option>
@@ -24,7 +24,7 @@
           -
         </span>
         <a-form-item :style="{ display: 'inline-block', width: 'calc(33% - 16px)' }">
-          <a-select placeholder="请选择产品类型" @change="drawerCategoryChangeHandler" v-decorator="['category_id', { rules: [ validators.requiredRuleFactory('产品类型', 'select')]}]">
+          <a-select placeholder="请选择产品类型" @change="drawerCategoryChangeHandler" v-decorator="['category_id', { rules: [ validators.requiredRuleFactory('产品类型', 'select')]}]" :disabled="mode === 'display'">
             <a-select-option v-for="(item, index) in deviceApplicationDrawer.filteredCategoryList" :key="`category${ index }`" :value="item.id">
               {{ item.name }}
             </a-select-option>
@@ -34,7 +34,7 @@
           -
         </span>
         <a-form-item :style="{ display: 'inline-block', width: 'calc(33% - 16px)' }">
-          <a-select placeholder="请选择产品" v-decorator="['product_id', { rules: [ validators.requiredRuleFactory('产品', 'select')]}]" @change="drwerProductChangeHandler">
+          <a-select placeholder="请选择产品" v-decorator="['product_id', { rules: [ validators.requiredRuleFactory('产品', 'select')]}]" @change="drwerProductChangeHandler" :disabled="mode === 'display'">
             <a-select-option v-for="(item, index) in deviceApplicationDrawer.filteredProductList" :key="`product${ index }`" :value="item.pid">
               {{ item.name }}
             </a-select-option>
@@ -45,21 +45,22 @@
         <a-input v-decorator="['protocol', { rules: [ validators.requiredRuleFactory('协议类型')]}]" placeholder="请选择产品" disabled />
       </a-form-item>
       <a-form-item label="操作系统">
-        <a-input v-decorator="['product_system']" placeholder="请选择设备节点" placehoder="请填写操作系统" />
+        <a-input v-decorator="['product_system']" placeholder="请选择设备节点" placehoder="请填写操作系统" :disabled="mode === 'display'"/>
       </a-form-item>
       <a-form-item label="申请数量">
-        <a-input-number v-decorator="['amount', { rules: [ validators.requiredRuleFactory('申请数量'), validators.integerChecker ]}]" placeholder="请选择设备节点" placehoder="每个产品单次最多申请100,000个" />
+        <a-input-number v-decorator="['amount', { rules: [ validators.requiredRuleFactory('申请数量'), validators.integerChecker ]}]" placeholder="请选择设备节点" placehoder="每个产品单次最多申请100,000个" :disabled="mode === 'display'"/>
       </a-form-item>
       <a-form-item label="联系人">
-        <a-input v-decorator="['contact', { rules: [ validators.requiredRuleFactory('联系人') ]}]" placeholder="请填写联系人姓名" />
+        <a-input v-decorator="['contact', { rules: [ validators.requiredRuleFactory('联系人') ]}]" placeholder="请填写联系人姓名" :disabled="mode === 'display'"/>
       </a-form-item>
       <a-form-item label="联系电话">
-        <a-input v-decorator="['contact_tel', { rules: [ validators.requiredRuleFactory('联系电话') ]}]" placeholder="请填写联系电话" />
+        <a-input v-decorator="['contact_tel', { rules: [ validators.requiredRuleFactory('联系电话') ]}]" placeholder="请填写联系电话" :disabled="mode === 'display'"/>
       </a-form-item>
     </a-form>
     <div class="drawer-feet">
-      <a-button @click="deviceApplicationDrawer.display = false" class="dismiss-btn">取消</a-button>
-      <a-button type="primary" class="execute-btn" @click="saveApplication" :loading="deviceApplicationDrawer.posting">保存</a-button>
+      <a-button @click="deviceApplicationDrawer.display = false" class="dismiss-btn" v-if="mode === 'new'">取消</a-button>
+      <a-button type="primary" class="execute-btn" @click="saveApplication" :loading="deviceApplicationDrawer.posting" v-if="mode === 'new'">保存</a-button>
+      <a-button @click="deviceApplicationDrawer.display = false" class="dismiss-btn" v-if="mode === 'display'">取消</a-button>
     </div>
   </a-drawer>
 </template>
@@ -68,6 +69,7 @@
 import { getProductList, getIndustryList, getCategoryList, postDeviceIdentification } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import DeviceID from '@/assets/classes/DeviceID'
+import { setFormItems } from '~/assets/utils'
 
 export default {
   data() {
@@ -108,6 +110,8 @@ export default {
       if (val) {
         if (this.mode === 'new') {
           this.createApplication()
+        } else {
+          this.displayApplication()
         }
       }
     },
@@ -169,6 +173,25 @@ export default {
       this.deviceApplicationDrawer.applicationForm.resetFields()
       this.deviceApplicationDrawer.industry_id = ''
       this.deviceApplicationDrawer.category_id = ''
+    },
+    displayApplication() {
+      this.deviceApplicationDrawer.display = true
+      this.deviceApplicationDrawer.title = '详情'
+      let application = this.application
+      for (let product of this.remoteData.productList) {
+        console.log(product.pid, application.product_id, product.pid === application.product_id)
+        if (product.pid === application.product_id) {
+          application.industry_id = product.industry_id
+          this.drawerIndustryChangeHandler(product.industry_id)
+          application.category_id = product.category_id
+          this.drawerCategoryChangeHandler(product.category_id)
+          this.drwerProductChangeHandler(product.pid)
+          break
+        }
+      }
+      this.$nextTick(() => {
+        setFormItems(application, this.deviceApplicationDrawer.applicationForm)
+      })
     },
     closeDrawer() {
       this.deviceApplicationDrawer.display = false

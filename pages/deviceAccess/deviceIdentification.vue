@@ -39,7 +39,7 @@
               </h5>
             </a-col>
             <a-col class="text-right" :span="16">
-              <a-button type="primary" @click="deviceApplicationDrawer.display = true">申请设备标识</a-button>
+              <a-button type="primary" @click="createApplication">申请设备标识</a-button>
             </a-col>
           </a-row>
           <a-row class="block-content-row">
@@ -47,7 +47,7 @@
               <a-table :columns="config.deviceIdentificationListTable" :data-source="remoteData.deviceIdentificationList" bordered :rowKey="record => record.apply_sn">
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
                 <div slot="operators" slot-scope="record">
-                  <span class="clickable">查看详情</span>
+                  <span class="clickable" @click="displayApplication(record)">查看详情</span>
                   <span class="clickable" v-if="record.status === 'APPROVED'">下载设备标识</span>
                   <a-tooltip placement="bottom" :title="record.remark || '未知'" trigger="click" v-if="record.status === 'REJECTED'">
                     <span class="clickable">查看驳回原因</span>
@@ -64,7 +64,7 @@
         </a-col>
       </a-row>
     </div>
-    <identification-application-drawer :display="deviceApplicationDrawer.display" @close="drawerCloseHandler" @created="getDeviceIdentificationList" />
+    <identification-application-drawer :display="deviceApplicationDrawer.display" @close="drawerCloseHandler" @created="getDeviceIdentificationList" :mode="deviceApplicationDrawer.mode" :application="deviceApplicationDrawer.application" />
   </div>
 </template>
 
@@ -94,6 +94,8 @@ export default {
       },
       deviceApplicationDrawer: {
         display: false,
+        mode: 'new',
+        application: null,
       },
       contentControl: {
         filters: getBaseFilter(),
@@ -139,6 +141,15 @@ export default {
     },
     drawerCloseHandler() {
       this.deviceApplicationDrawer.display = false
+    },
+    createApplication() {
+      this.deviceApplicationDrawer.mode = 'new'
+      this.deviceApplicationDrawer.display = true
+    },
+    displayApplication(application) {
+      this.deviceApplicationDrawer.mode = 'display'
+      this.deviceApplicationDrawer.application = application
+      this.deviceApplicationDrawer.display = true
     },
   },
 }
