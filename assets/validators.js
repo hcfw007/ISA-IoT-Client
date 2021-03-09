@@ -14,6 +14,10 @@ const charTypeMappings = {
     reg: '_',
     msg: '下划线',
   },
+  hyphen: {
+    reg: '-',
+    msg: '连字号',
+  },
   Chinese: {
     reg: '\\u4E00-\\u9FA5',
     msg: '汉字',
@@ -101,6 +105,7 @@ export const validators = {
   maxWordsFactory(length) {
     return {
       validator: (rule, value, callback) => {
+        if (!value) return true
         return value.length < length
       },
       message: `不超过${ length }个字符`,

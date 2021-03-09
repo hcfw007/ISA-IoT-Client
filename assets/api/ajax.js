@@ -224,6 +224,8 @@ export const getDeviceIdentificationList = getRequestFactory('/devmng/devices/id
 
 export const postDeviceIdentification = postRequestFactory('/devmng/devices/identities/ops')
 
+export const getDeviceIdentificationNumberAvailable = getRequestFactory('/devmng/devices/identities/avail/{pid}')
+
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {
     headers: {
