@@ -44,20 +44,42 @@ export const productListTable = [
 export const deviceListTable = [
   {
     title: '设备标识（展示后缀）',
+    dataIndex: 'sn',
   }, {
     title: '设备名称',
+    dataIndex: 'name',
   }, {
     title: '所属产品',
+    dataIndex: 'product_name',
   }, {
     title: '设备状态',
+    dataIndex: 'status',
+    scopedSlots: {
+      customRender: 'status',
+    },
   }, {
     title: '节点类型',
+    dataIndex: 'product_node_type',
+    scopedSlots: {
+      customRender: 'node',
+    },
   }, {
     title: '最近在线时间',
+    dataIndex: 'operated_at',
+    scopedSlots: {
+      customRender: 'latest_at',
+    },
   }, {
     title: '添加时间',
+    dataIndex: 'created_at',
+    scopedSlots: {
+      customRender: 'created_at',
+    },
   }, {
     title: '操作',
+    scopedSlots: {
+      customRender: 'operators',
+    },
   },
 ]
 

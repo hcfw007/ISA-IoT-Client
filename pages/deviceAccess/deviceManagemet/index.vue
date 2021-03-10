@@ -48,27 +48,42 @@
       </a-row>
       <a-row class="block-normal block-white">
         <a-col :span="16">
-          <a-select default-value="all" class="regular-input">
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.pid">
             <a-select-option value="all">
-              全部
+              全部产品
+            </a-select-option>
+            <a-select-option v-for="(item, index) in remoteData.productList" :key="`product${ index }`" :value="item.pid">
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.status">
+            <a-select-option value="all">
+              全部设备状态
+            </a-select-option>
+            <a-select-option value="ON_LINE">
+              在线
+            </a-select-option>
+            <a-select-option value="OFF_LINE">
+              离线
+            </a-select-option>
+            <a-select-option value="UNACTIVATED ">
+              未激活
             </a-select-option>
           </a-select>
           <a-select default-value="all" class="regular-input">
             <a-select-option value="all">
-              全部
+              全部节点类型
+            </a-select-option>
+            <a-select-option v-for="(item, index) of enums.deviceTypeEnum.transferList" :key="`deviceType${ index }`" :value="item">
+              {{ enums.deviceTypeEnum.getDisplay(item) }}
             </a-select-option>
           </a-select>
-          <a-select default-value="all" class="regular-input">
-            <a-select-option value="all">
-              全部
-            </a-select-option>
-          </a-select>
-          <a-input placeholder="请输入完整设备标识或后缀搜索" class="regular-input" />
-          <a-input placeholder="请输入设备名称搜索" class="regular-input" />
+          <a-input placeholder="请输入完整设备标识或后缀搜索" class="regular-input" v-model="contentControl.filters.sn" />
+          <a-input placeholder="请输入设备名称搜索" class="regular-input" v-model="contentControl.filters.name" />
         </a-col>
         <a-col :span="8" class="text-right">
-          <a-button type="primary">查询</a-button>
-          <a-button>重置</a-button>
+          <a-button type="primary" @click="executeFilter">查询</a-button>
+          <a-button @click="resetFilter">重置</a-button>
         </a-col>
       </a-row>
       <a-row class="block-normal block-white">
@@ -80,7 +95,7 @@
               </h5>
             </a-col>
             <a-col class="text-right" :span="16">
-              <a-button>批量删除</a-button>
+              <a-button @click="confirmDeletion(deleteConfirmationModal.tableSelectedDevices)">批量删除</a-button>
               <a-button>导出设备</a-button>
               <a-button>批量导入设备</a-button>
               <a-button type="primary" @click="addDevice">添加单个设备</a-button>
@@ -88,7 +103,26 @@
           </a-row>
           <a-row class="block-content-row">
             <a-col :span="24">
-              <a-table :columns="config.deviceListTable" :data-source="remoteData.deviceList" bordered :row-selection="contentControl.deviceListSelection" />
+              <a-table
+                :columns="config.deviceListTable"
+                :data-source="remoteData.deviceList"
+                bordered
+                :row-key="record => record.sn"
+                :row-selection="{ selectedRowKeys: contentControl.deviceListSelection, onChange: onDeviceTableSelectChange }"
+              >
+                <span slot="node" slot-scope="text">{{ enums.deviceTypeEnum.getDisplay(text) }}</span>
+                <span slot="latest_at" slot-scope="text">{{ text.split('.')[0] }}</span>
+                <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
+                <template slot="status" slot-scope="text">
+                  <span v-if="text === 'UNACTIVATED'" class="pending">未激活</span>
+                  <span v-if="text === 'ON_LINE'" class="good">在线</span>
+                  <span v-if="text === 'OFF_LINE'" class="bad">离线</span>
+                </template>
+                <div slot="operators" slot-scope="record">
+                  <span class="clickable"><nuxt-link :to="`/deviceAccess/deviceManagemet/${ record.sn }`">查看详情</nuxt-link></span>
+                  <span class="clickable" @click="confirmDeletion([record])">删除</span>
+                </div>
+              </a-table>
             </a-col>
           </a-row>
         </a-col>
@@ -201,17 +235,45 @@
         <a-button type="primary" class="execute-btn" @click="saveAddress">确定</a-button>
       </div>
     </a-drawer>
+    <a-modal v-model="deleteConfirmationModal.display" title="操作确认" class="deleteConfirmationModal">
+      <template slot="footer">
+        <a-button @click="deleteConfirmationModal.display = false">
+          取消
+        </a-button>
+        <a-button type="danger" @click="executeDelete" :loading="deleteConfirmationModal.loading">
+          删除
+        </a-button>
+      </template>
+      <a-row class="title-row">
+        <a-col :span="2"><a-icon type="question-circle" /></a-col>
+        <a-col :span="22">确认删除以下产品？</a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="22" :offset="2">
+          {{ deleteConfirmationModal.deviceNameStr }}
+        </a-col>
+      </a-row>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { deviceListTable } from '@/assets/tables'
-import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable } from '@/assets/api/ajax'
+import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable, deleteDevice } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
+import DeviceID from '@/assets/classes/DeviceID'
 import BaiduMap from 'vue-baidu-map/components/map/Map'
 import { BmCityList } from 'vue-baidu-map/components'
 
-
+const getBaseFilter = () => {
+  return {
+    pid: 'all',
+    status: 'all',
+    product_node_type: 'all',
+    sn: '',
+    name: '',
+  }
+}
 
 export default {
   components: {
@@ -230,7 +292,9 @@ export default {
         productList: [],
       },
       contentControl: {
-        deviceListSelection: {},
+        deviceListSelection: [],
+        filters: getBaseFilter(),
+        cachedFilters: getBaseFilter(),
       },
       deviceAddDrawer: {
         display: false,
@@ -253,6 +317,13 @@ export default {
         lng: 0,
         geocoder: null,
       },
+      deleteConfirmationModal: {
+        display: false,
+        deviceNameStr: '',
+        devices: [],
+        tableSelectedDevices: [],
+        loading: false,
+      },
     }
   },
   created() {
@@ -260,8 +331,44 @@ export default {
     this.getProductList()
   },
   methods: {
-    getDeviceList() {
-      getDeviceList(this, {obj: this.remoteData.original, name: 'deviceList'})
+    executeFilter() {
+      let filters = this.contentControl.filters
+      this.contentControl.cachedFilters = JSON.parse(JSON.stringify(filters))
+      this.getDeviceList()
+    },
+    resetFilter() {
+      this.contentControl.filters = getBaseFilter()
+      this.contentControl.cachedFilters = getBaseFilter()
+      this.getDeviceList()
+    },
+    onDeviceTableSelectChange(selectedRowKeys) {
+      this.contentControl.deviceListSelection = selectedRowKeys
+      let deviceSelectedList = []
+      for (let sn of selectedRowKeys) {
+        for (let device of this.remoteData.deviceList) {
+          if (device.sn === sn) {
+            deviceSelectedList.push(device)
+            break
+          }
+        }
+      }
+      this.deleteConfirmationModal.tableSelectedDevices = deviceSelectedList
+    },
+    async getDeviceList() {
+      let filters = this.contentControl.cachedFilters
+      let filterObj = {}
+      for (let key in filters) {
+        if (filters[key] !== 'all' && filters[key] !== '') {
+          filterObj[key] = filters[key]
+        }
+      }
+      await getDeviceList(this, {obj: this.remoteData.original, name: 'deviceList'}, filterObj)
+      this.remoteData.deviceList = this.remoteData.original.deviceList.devices
+      let deviceList = []
+      for (let item of this.remoteData.original.deviceList.devices) {
+        deviceList.push(new DeviceID.Device(item))
+      }
+      this.remoteData.deviceList = deviceList
     },
     addDevice() {
       this.deviceAddDrawer.deviceAddForm.resetFields()
@@ -352,9 +459,43 @@ export default {
         let result = await postDevice(this, values, '添加设备成功', '添加设备失败')
         if (result.flag) {
           this.deviceAddDrawer.display = false
+          this.getDeviceList()
         }
         this.deviceAddDrawer.posting = false
       })
+    },
+    confirmDeletion(devices) {
+      if (devices.length === 0) {
+        this.$toast('请先选择设备')
+        return
+      }
+      let str = ''
+      for (let index in devices) {
+        let item = devices[index]
+        // if (item.status === 'ON_LINE') {
+        //   this.$toast(`无法删除${ item.name }， 该设备目前在线`)
+        //   return
+        // }
+        if (index > 0) {
+          str += '，'
+        }
+        str += item.name
+      }
+      this.deleteConfirmationModal.deviceNameStr = str
+      this.deleteConfirmationModal.devices = devices
+      this.deleteConfirmationModal.display = true
+    },
+    async executeDelete() {
+      let devices = this.deleteConfirmationModal.devices
+      let promises = []
+      this.deleteConfirmationModal.loading = true
+      for (let device of devices) {
+        promises.push(deleteDevice(this, null, `删除${ device.name }成功`, `删除${ device.name }失败`, {sn: device.sn}))
+      }
+      await Promise.all(promises)
+      this.deleteConfirmationModal.loading = false
+      this.deleteConfirmationModal.display = false
+      this.getDeviceList()
     },
   },
 }

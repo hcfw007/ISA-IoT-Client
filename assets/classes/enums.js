@@ -109,6 +109,12 @@ export const eventTypeEnum = enumCreator({
   FAULT: '故障型',
 })
 
+export const deviceStatusEnum = enumCreator({
+  UNACTIVATED: '未激活',
+  ON_LINE: '在线',
+  OFF_LINE: '离线',
+})
+
 export default {
   protocolEnum,
   deviceTypeEnum,
@@ -118,4 +124,5 @@ export default {
   transferTypeEnum,
   eventTypeEnum,
   paramDataTypeEnum,
+  deviceStatusEnum,
 }

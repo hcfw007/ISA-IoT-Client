@@ -38,8 +38,48 @@ class DeviceIdenticationApplication extends BaseClass {
   }
 }
 
+class Device extends BaseClass {
+  constructor(device) {
+    let structure = {
+      sn: {
+        type: 'string',
+        required: true,
+        description: '设备标识',
+      },
+      name: {
+        type: 'string',
+        required: true,
+        description: '设备名称',
+      },
+      status: {
+        type: 'string',
+        required: true,
+        description: '设备状态',
+      },
+      product_node_type: {
+        type: 'string',
+        required: true,
+        description: '节点类型',
+      },
+      operated_at: {
+        type: 'string',
+        required: true,
+        description: '最近在线时间',
+      },
+      created_at: {
+        type: 'created_at',
+        required: true,
+        description: '添加时间',
+      },
+    }
+    super(device, structure)
+  }
+}
+
+
 const DeviceID = {
   DeviceIdenticationApplication,
+  Device,
 }
 
 export default DeviceID
