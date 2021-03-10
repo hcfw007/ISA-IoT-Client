@@ -67,9 +67,14 @@ class Device extends BaseClass {
         description: '最近在线时间',
       },
       created_at: {
-        type: 'created_at',
+        type: 'string',
         required: true,
         description: '添加时间',
+      },
+      activated_at: {
+        type: 'string',
+        required: true,
+        description: '激活时间',
       },
     }
     super(device, structure)

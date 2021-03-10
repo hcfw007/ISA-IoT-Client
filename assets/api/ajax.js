@@ -221,6 +221,8 @@ export const postDevice = postRequestFactory('/devmng/devices/ops')
 
 export const deleteDevice = postRequestFactory('/devmng/devices/ops/delete/{sn}')
 
+export const getDeviceDetail = getRequestFactory('/devmng/devices/ops/{sn}')
+
 // 设备标识
 export const getDeviceIdentificationList = getRequestFactory('/devmng/devices/identities/ops')
 
