@@ -38,7 +38,7 @@ instance.interceptors.request.use(
         Vue.prototype.$toast('重复请求，请3秒后再试...', failureToastOption)
       } else {
         requestList.push(requestFlag)
-        setTimeout(() => removeFlag(requestFlag), 3000)
+        setTimeout(() => removeFlag(requestFlag), 2000)
       }
     })
 
@@ -216,6 +216,7 @@ export const deleteFunction = postRequestFactory('/thing-models/functions/opts/d
 
 // 设备
 export const getDeviceList = getRequestFactory('/devmng/devices/ops')
+export const getDeviceStatistics = getRequestFactory('/devmng/devices/statistics')
 
 export const postDevice = postRequestFactory('/devmng/devices/ops')
 
@@ -229,6 +230,9 @@ export const getDeviceIdentificationList = getRequestFactory('/devmng/devices/id
 export const postDeviceIdentification = postRequestFactory('/devmng/devices/identities/ops')
 
 export const getDeviceIdentificationNumberAvailable = getRequestFactory('/devmng/devices/identities/avail/{pid}')
+
+// commands
+export const postCommand = postRequestFactory('/devices/write/commands')
 
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {

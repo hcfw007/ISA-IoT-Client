@@ -59,3 +59,14 @@ export const drawerConfig = {
     },
   },
 }
+
+export const contentConfig = {
+  form: {
+    labelCol: {
+      span: 4,
+    },
+    wrapperCol: {
+      span: 18,
+    },
+  },
+}

@@ -259,7 +259,7 @@
 
 <script>
 import { deviceListTable } from '@/assets/tables'
-import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable, deleteDevice } from '@/assets/api/ajax'
+import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable, deleteDevice, getDeviceStatistics } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import DeviceID from '@/assets/classes/DeviceID'
 import BaiduMap from 'vue-baidu-map/components/map/Map'
@@ -329,6 +329,7 @@ export default {
   created() {
     this.getDeviceList()
     this.getProductList()
+    this.getDeviceStatistics()
   },
   methods: {
     executeFilter() {
@@ -369,6 +370,11 @@ export default {
         deviceList.push(new DeviceID.Device(item))
       }
       this.remoteData.deviceList = deviceList
+    },
+    async getDeviceStatistics() {
+      await getDeviceStatistics(this, {obj: this.remoteData.original, name: 'deviceStatistics'})
+      console.log(this.remoteData.original.deviceStatistics)
+      // this.remoteData.deviceList = this.remoteData.original.deviceList.devices
     },
     addDevice() {
       this.deviceAddDrawer.deviceAddForm.resetFields()
