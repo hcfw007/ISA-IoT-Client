@@ -68,7 +68,7 @@
                 <div slot="operators" slot-scope="record">
                   <span class="clickable"><nuxt-link :to="`/deviceAccess/productManagement/${ record.pid }`">查看详情</nuxt-link></span>
                   <span class="clickable" v-if="record.publish">申请设备标识</span>
-                  <span class="clickable">设备管理</span>
+                  <span class="clickable"><nuxt-link :to="`/deviceAccess/deviceManagement?productPid=${ record.pid }`">设备管理</nuxt-link></span>
                   <span class="clickable" @click="editProduct(record)">编辑</span>
                   <span class="clickable" v-if="!record.publish" @click="confirmDeletion([record])">删除</span>
                   <span class="clickable" v-if="!record.publish" @click="publishProduct(record)">发布</span>

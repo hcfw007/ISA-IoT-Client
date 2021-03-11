@@ -12,8 +12,8 @@ export const menuStructure = [{
     title: '产品管理',
     available: true,
   }, {
-    id: 'deviceManagemet',
-    addr: '/deviceAccess/deviceManagemet',
+    id: 'deviceManagement',
+    addr: '/deviceAccess/deviceManagement',
     title: '设备管理',
     available: true,
   }, {

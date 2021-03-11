@@ -327,10 +327,15 @@ export default {
       },
     }
   },
-  created() {
+  async created() {
     this.getDeviceList()
-    this.getProductList()
     this.getDeviceStatistics()
+    await this.getProductList()
+    if (this.$route.query.productPid) {
+      let pid = this.$route.query.productPid
+      this.contentControl.filters.pid = pid
+      this.executeFilter()
+    }
   },
   methods: {
     executeFilter() {
