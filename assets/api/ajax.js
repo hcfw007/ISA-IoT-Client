@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
+import { Base64 } from 'js-base64'
 
 const baseURL = '/isa-api'
 const headers = {}
@@ -165,6 +166,23 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
   }
 }
 
+// 对下载文件名进行base64解码
+const downloadProcessor = (response) => {
+  let data = response.data
+  let url = window.URL.createObjectURL(data)
+  let download = document.createElement('a')
+  download.href = url
+  try {
+    let disposition = response.headers['content-disposition']
+    let filename = disposition.split(';')[1].split('?UTF8?B?')[1]
+    download.download = Base64.decode(filename)
+  } catch (e) {
+    console.debug(e.message)
+  }
+  download.click()
+  window.URL.revokeObjectURL(download.href)
+}
+
 export const getVerifyImg = uuid =>
   instance.get('/usrmng/user/register/picture-code', {
     responseType: 'blob',
@@ -246,3 +264,8 @@ export const postFunctionFile = (data, progressCallback) =>
       }
     },
   })
+
+export const exportFunction = pid =>
+  instance.get('/thing-models/functions/export?pid=' + pid, {
+    responseType: 'blob',
+  }).then(downloadProcessor)

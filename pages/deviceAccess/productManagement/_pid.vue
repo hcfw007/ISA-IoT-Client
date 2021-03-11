@@ -63,7 +63,7 @@
         </a-col>
         <a-col :span="14" class="function-info-operators text-right">
           <a-button :loading="contentControl.uploadingFunctionFile" @click="chooseImportFile">导入功能点</a-button>
-          <a-button>导出功能点</a-button>
+          <a-button @click="exportFunction">导出功能点</a-button>
           <a-button type="primary">下载SDK</a-button>
           <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
         </a-col>
@@ -456,7 +456,7 @@
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction, editCombinedFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction, editCombinedFunction, exportFunction } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import CombinedFunctionPoint from '@/assets/classes/CombinedFunctionPoint'
@@ -787,6 +787,17 @@ export default {
       setFormItems(param.toFormObject(), this.paramEditDrawer.paramForm)
       this.$nextTick(() => {
         setFormItems(param.toFormObject(), this.paramEditDrawer.paramForm)
+      })
+    },
+    exportFunction() {
+      let pid = this.$route.params.pid
+      exportFunction(pid).catch((err) => {
+        this.$toast('导出失败，消息为' + err.message, {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
       })
     },
   },
