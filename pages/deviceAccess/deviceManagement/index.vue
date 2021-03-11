@@ -96,8 +96,9 @@
             </a-col>
             <a-col class="text-right" :span="16">
               <a-button @click="confirmDeletion(deleteConfirmationModal.tableSelectedDevices)">批量删除</a-button>
-              <a-button>导出设备</a-button>
-              <a-button>批量导入设备</a-button>
+              <a-button @click="exportDevices">导出设备</a-button>
+              <a-button @click="chooseImportFile" :loading="contentControl.uploadingDeviceFile">批量导入设备</a-button>
+              <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
               <a-button type="primary" @click="addDevice">添加单个设备</a-button>
             </a-col>
           </a-row>
@@ -259,7 +260,7 @@
 
 <script>
 import { deviceListTable } from '@/assets/tables'
-import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable, deleteDevice, getDeviceStatistics } from '@/assets/api/ajax'
+import { getDeviceList, postDevice, getProductList, getDeviceIdentificationNumberAvailable, deleteDevice, getDeviceStatistics, exportDevices, postDeviceFile } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import DeviceID from '@/assets/classes/DeviceID'
 import BaiduMap from 'vue-baidu-map/components/map/Map'
@@ -296,6 +297,7 @@ export default {
         deviceListSelection: [],
         filters: getBaseFilter(),
         cachedFilters: getBaseFilter(),
+        uploadingDeviceFile: false,
       },
       deviceAddDrawer: {
         display: false,
@@ -342,6 +344,23 @@ export default {
       let filters = this.contentControl.filters
       this.contentControl.cachedFilters = JSON.parse(JSON.stringify(filters))
       this.getDeviceList()
+    },
+    exportDevices() {
+      let filters = this.contentControl.cachedFilters
+      let filterObj = {}
+      for (let key in filters) {
+        if (filters[key] !== 'all' && filters[key] !== '') {
+          filterObj[key] = filters[key]
+        }
+      }
+      exportDevices(filterObj).catch((err) => {
+        this.$toast('导出失败，消息为' + err.message, {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+      })
     },
     resetFilter() {
       this.contentControl.filters = getBaseFilter()
@@ -508,6 +527,44 @@ export default {
       this.deleteConfirmationModal.display = false
       this.getDeviceList()
     },
+    chooseImportFile() {
+      document.getElementById('import').click()
+    },
+    async handleImportUpload(event) {
+      this.contentControl.uploadingDeviceFile = true
+      let file = event.target.files[0]
+      let data = new FormData()
+      data.append('file', file)
+      await postDeviceFile(data).then((response) => {
+        let data = response.data
+        if (data.code === 200) {
+          this.$toast('导入成功', {
+            customCss: {
+              'background-color': '#67C23A',
+              color: '#fff',
+            },
+          })
+          this.getDeviceList()
+        } else {
+          this.$toast('导入失败， 消息为：' + data.msg, {
+            customCss: {
+              'background-color': '#E6A23C',
+              color: '#fff',
+            },
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$toast('导入失败', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+      })
+      this.contentControl.uploadingDeviceFile = false
+    },
+
   },
 }
 </script>

@@ -172,6 +172,7 @@ const downloadProcessor = (response) => {
   let url = window.URL.createObjectURL(data)
   let download = document.createElement('a')
   download.href = url
+  download.target = '_blank'
   try {
     let disposition = response.headers['content-disposition']
     let filename = disposition.split(';')[1].split('?UTF8?B?')[1]
@@ -265,7 +266,35 @@ export const postFunctionFile = (data, progressCallback) =>
     },
   })
 
+export const postDeviceFile = (data, progressCallback) =>
+  instance.post('/devmng/devices/import', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    onUploadProgress: (progressEvent) => {
+      let complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+      if (progressCallback) {
+        progressCallback(complete)
+      }
+    },
+  })
+
 export const exportFunction = pid =>
   instance.get('/thing-models/functions/export?pid=' + pid, {
     responseType: 'blob',
   }).then(downloadProcessor)
+
+export const exportDevices = queryObject =>
+  instance.get('/thing-models/functions/export' + queryStringfy(queryObject), {
+    responseType: 'blob',
+  }).then(downloadProcessor)
+
+const queryStringfy = (qsObj) => {
+  let count = 0
+  let str = ''
+  for (let key in qsObj) {
+    str += count > 0 ? '&' : '?'
+    str += `${key}=${qsObj[key]}`
+  }
+  return str
+}
