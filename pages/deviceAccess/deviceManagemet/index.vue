@@ -14,7 +14,7 @@
               设备总数
             </div>
             <div class="device-info-value">
-              2000
+              {{ remoteData.deviceStatistics.device_amount }}
             </div>
           </div>
           <div class="device-info-block">
@@ -23,7 +23,7 @@
               已激活设备数
             </div>
             <div class="device-info-value">
-              1000
+              {{ remoteData.deviceStatistics.activated_amount }}
             </div>
           </div>
           <div class="device-info-block">
@@ -32,7 +32,7 @@
               在线设备数
             </div>
             <div class="device-info-value">
-              20
+              {{ remoteData.deviceStatistics.online_amount }}
             </div>
           </div>
           <div class="device-info-block">
@@ -41,7 +41,7 @@
               离线设备数
             </div>
             <div class="device-info-value">
-              980
+              {{ remoteData.deviceStatistics.offline_amount }}
             </div>
           </div>
         </a-col>
@@ -290,6 +290,7 @@ export default {
         },
         deviceList: [],
         productList: [],
+        deviceStatistics: {},
       },
       contentControl: {
         deviceListSelection: [],
@@ -373,8 +374,7 @@ export default {
     },
     async getDeviceStatistics() {
       await getDeviceStatistics(this, {obj: this.remoteData.original, name: 'deviceStatistics'})
-      console.log(this.remoteData.original.deviceStatistics)
-      // this.remoteData.deviceList = this.remoteData.original.deviceList.devices
+      this.remoteData.deviceStatistics = this.remoteData.original.deviceStatistics
     },
     addDevice() {
       this.deviceAddDrawer.deviceAddForm.resetFields()
