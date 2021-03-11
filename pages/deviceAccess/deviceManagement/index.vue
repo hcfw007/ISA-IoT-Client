@@ -97,8 +97,7 @@
             <a-col class="text-right" :span="16">
               <a-button @click="confirmDeletion(deleteConfirmationModal.tableSelectedDevices)">批量删除</a-button>
               <a-button @click="exportDevices">导出设备</a-button>
-              <a-button @click="chooseImportFile" :loading="contentControl.uploadingDeviceFile">批量导入设备</a-button>
-              <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
+              <a-button @click="importDevice">批量导入设备</a-button>
               <a-button type="primary" @click="addDevice">添加单个设备</a-button>
             </a-col>
           </a-row>
@@ -255,6 +254,66 @@
         </a-col>
       </a-row>
     </a-modal>
+    <a-drawer
+      title="导入设备"
+      :visible="deviceImportDrawer.display"
+      :width="drawerConfig.width"
+      :body-style="{ paddingBottom: '80px' }"
+      @close="deviceImportDrawer.display = false"
+    >
+      <a-form
+        :layout="'vertical'"
+        class="drawer-form"
+      >
+        <a-form-item label="所属产品" required>
+          <a-select placeholder="请选择产品" v-model="deviceImportDrawer.pid" @change="productChangeHandler">
+            <a-select-option v-for="(item, index) in remoteData.productList" :key="`product${ index }`" :value="item.pid">
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item>
+          <span>*添加设备需要消耗已申请的设备标识，添加设备时请确保有充足的可用设备标识。</span>
+        </a-form-item>
+        <a-form-item>
+          <a-row>
+            <a-col :span="16">
+              <span>剩余可用设备标识：{{ deviceAddDrawer.identificationNumberAvailable }}</span>
+            </a-col>
+            <a-col :span="8" class="text-right">
+              <span class="clickable" @click="deviceApplicationDrawer.display = true">申请设备标识</span>
+            </a-col>
+          </a-row>
+        </a-form-item>
+        <a-form-item>
+          <p>
+            使用模板文件批量导入设备，格式.xlsx，最大2M，单次最多可添加500个设备
+          </p>
+          <p>
+            设备名称：1-32个字符，英文字母、数字及符号_-，以英文字母开头
+          </p>
+          <p>
+            设备描述：1-500个字符
+          </p>
+        </a-form-item>
+        <a-form-item>
+          <span class="clickable" @click="simpleDownload('/devmng/devices/template')">
+            模板文件下载
+          </span>
+        </a-form-item>
+        <a-form-item label="上传设备信息文件" required :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+          <span class="clickable" @click="chooseImportFile">上传文件</span>
+          <input id="import" type="file" style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleImportUpload($event)">
+        </a-form-item>
+        <a-form-item>
+          <span>{{ deviceImportDrawer.filename }}</span>
+          <a-progress :percent="deviceImportDrawer.progress" />
+        </a-form-item>
+      </a-form>
+      <div class="drawer-feet">
+        <a-button @click="deviceImportDrawer.display = false" class="dismiss-btn">确定</a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
@@ -306,6 +365,13 @@ export default {
         identificationNumberAvailable: 0,
         location: '',
       },
+      deviceImportDrawer: {
+        display: false,
+        posting: false,
+        pid: undefined,
+        progress: 0,
+        filename: '',
+      },
       deviceApplicationDrawer: {
         display: false,
       },
@@ -340,6 +406,12 @@ export default {
     }
   },
   methods: {
+    importDevice() {
+      this.deviceImportDrawer.display = true
+      this.deviceImportDrawer.pid = undefined
+      this.deviceImportDrawer.filename = ''
+      this.deviceImportDrawer.progress = 0
+    },
     executeFilter() {
       let filters = this.contentControl.filters
       this.contentControl.cachedFilters = JSON.parse(JSON.stringify(filters))
@@ -528,14 +600,27 @@ export default {
       this.getDeviceList()
     },
     chooseImportFile() {
+      if (!this.deviceImportDrawer.pid) {
+        this.$toast('请先选择产品', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+        return
+      }
       document.getElementById('import').click()
     },
     async handleImportUpload(event) {
       this.contentControl.uploadingDeviceFile = true
       let file = event.target.files[0]
       let data = new FormData()
+      this.deviceImportDrawer.filename = file.name
       data.append('file', file)
-      await postDeviceFile(data).then((response) => {
+      data.append('pid', this.deviceImportDrawer.pid)
+      await postDeviceFile(data, (progress) => {
+        this.deviceImportDrawer.progress = progress
+      }).then((response) => {
         let data = response.data
         if (data.code === 200) {
           this.$toast('导入成功', {

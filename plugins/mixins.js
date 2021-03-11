@@ -2,6 +2,7 @@ import Vue from 'vue'
 import enums from '~/assets/classes/enums'
 import { validators } from '~/assets/validators'
 import { drawerConfig } from '~/assets/config'
+import { simpleDownload } from '~/assets/api/ajax'
 
 Vue.mixin({
   data() {
@@ -10,5 +11,10 @@ Vue.mixin({
       validators,
       drawerConfig,
     }
+  },
+  methods: {
+    simpleDownload(url, queryObject) {
+      simpleDownload(url, queryObject)
+    },
   },
 })

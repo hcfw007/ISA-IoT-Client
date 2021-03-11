@@ -285,9 +285,15 @@ export const exportFunction = pid =>
   }).then(downloadProcessor)
 
 export const exportDevices = queryObject =>
-  instance.get('/thing-models/functions/export' + queryStringfy(queryObject), {
+  instance.get('/devmng/devices/export' + queryStringfy(queryObject), {
     responseType: 'blob',
   }).then(downloadProcessor)
+
+export const simpleDownload = (url, queryObject = {}) => {
+  instance.get(url + queryStringfy(queryObject), {
+    responseType: 'blob',
+  }).then(downloadProcessor)
+}
 
 const queryStringfy = (qsObj) => {
   let count = 0
