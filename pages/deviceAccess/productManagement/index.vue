@@ -93,7 +93,7 @@
         class="drawer-form"
       >
         <a-form-item label="产品名称">
-          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('产品名称') ]}]" placeholder="请输入产品名称" />
+          <a-input v-decorator="['name', { rules: [ validators.requiredRuleFactory('产品名称'), validators.legalCharTypeFactory(['letter', 'number', 'Chinese']) ]}]" placeholder="请输入产品名称" />
         </a-form-item>
         <a-form-item label="行业-产品类别" style="margin-bottom: 0" required>
           <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
