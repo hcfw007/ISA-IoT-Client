@@ -141,7 +141,7 @@ export default {
         let applicationObj = new DeviceID.DeviceIdenticationApplication(values)
         let result = await postDeviceIdentification(this, applicationObj, '新建设备标识申请成功', '新建设备标识申请失败')
         if (result.flag) {
-          this.deviceApplicationDrawer.display = false
+          this.closeDrawer()
           this.$emit('created')
         }
         this.deviceApplicationDrawer.posting = false
