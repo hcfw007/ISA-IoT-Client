@@ -228,8 +228,11 @@ export default {
     onProductTableSelectChange(selectedRowKeys) {
       this.contentControl.productListSelection = selectedRowKeys
       let productSelectedList = []
+      console.log(selectedRowKeys)
       for (let pid of selectedRowKeys) {
-        for (let product of this.remoteData.productList.products) {
+        console.log(pid)
+        for (let product of this.remoteData.productList) {
+          console.log(product)
           if (product.pid === pid) {
             productSelectedList.push(product)
             break

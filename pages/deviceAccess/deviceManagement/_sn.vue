@@ -514,6 +514,9 @@ export default {
         selectedKeys: [],
         posting: false,
       },
+      sdkDrawer: {
+        display: false,
+      },
     }
   },
   async created() {
