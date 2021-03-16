@@ -279,6 +279,12 @@ export const postDeviceFile = (data, progressCallback) =>
     },
   })
 
+export const downloadSDK = pid => {
+  instance.get(`/devices/${pid}/sdk`, {
+    responseType: 'blob',
+  }).then(downloadProcessor)
+}
+
 export const exportFunction = pid =>
   instance.get('/thing-models/functions/export?pid=' + pid, {
     responseType: 'blob',

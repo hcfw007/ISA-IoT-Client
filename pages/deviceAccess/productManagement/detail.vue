@@ -68,7 +68,7 @@
         <a-col :span="14" class="function-info-operators text-right">
           <a-button :loading="contentControl.uploadingFunctionFile" @click="chooseImportFile">导入功能点</a-button>
           <a-button @click="exportFunction">导出功能点</a-button>
-          <a-button type="primary">下载SDK</a-button>
+          <a-button type="primary" @click="selectStructure">下载SDK</a-button>
           <input id="import" type="file" style="display: none" accept="application/json" @change="handleImportUpload($event)">
         </a-col>
       </a-row>
@@ -456,11 +456,33 @@
         <a-button type="primary" class="execute-btn" @click="saveCombinedFunction" :loading="combinedFunctionEditDrawer.posting">保存</a-button>
       </div>
     </a-drawer>
+    <a-modal
+      title="下载SDK"
+      :visible="sdkDownloadModal.display"
+      @ok="downloadSdk"
+      @cancel="sdkDownloadModal.display = false"
+    >
+      <p>现在接口并不能接受核心架构参数。</p>
+      <a-radio-group v-model="sdkDownloadModal.structure">
+        <a-radio value="x86">
+          x86
+        </a-radio>
+        <a-radio value="ARMv7">
+          ARMv7
+        </a-radio>
+        <a-radio value="ARMv8">
+          ARMv7
+        </a-radio>
+        <a-radio value="other">
+          其他
+        </a-radio>
+      </a-radio-group>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction, editCombinedFunction, exportFunction } from '@/assets/api/ajax'
+import { getProductDetailWithDeviceStastic, postFunctionFile, getFunctionList, postCustomFunction, editFunction, deleteFunction, postStandardFunction, postCombinedFunction, editCombinedFunction, exportFunction, downloadSDK } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import FunctionPoint from '@/assets/classes/FunctionPoint'
 import CombinedFunctionPoint from '@/assets/classes/CombinedFunctionPoint'
@@ -522,6 +544,10 @@ export default {
         targetKeys: [],
         selectedKeys: [],
         posting: false,
+      },
+      sdkDownloadModal: {
+        display: false,
+        structure: 'x86',
       },
     }
   },
@@ -807,6 +833,16 @@ export default {
           },
         })
       })
+    },
+    selectStructure() {
+      this.sdkDownloadModal.structure = 'x86'
+      this.sdkDownloadModal.display = true
+    },
+    downloadSdk() {
+      let structure = this.sdkDownloadModal.structure
+      let pid = this.$route.query.pid
+      downloadSDK(pid, structure)
+      this.sdkDownloadModal.display = false
     },
   },
 }
