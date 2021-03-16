@@ -28,6 +28,12 @@ const CommonFunctionTypeMapping = {
   },
 }
 
+const noAdditionalDataFunctionTypeList = [
+  'STRING',
+  'BUFFER',
+  'DATE',
+]
+
 export default class FunctionPoint extends BaseClass {
   constructor(functionPoint) {
     let structure = {
@@ -113,6 +119,7 @@ export default class FunctionPoint extends BaseClass {
     }
     // 处理数据类型
     if (functionPoint.fn_type === 'COMMON') {
+
       if (functionPoint.type in CommonFunctionTypeMapping) {
         let type = CommonFunctionTypeMapping[functionPoint.type]
         if (functionPoint[type.propertyName]) {
@@ -121,7 +128,9 @@ export default class FunctionPoint extends BaseClass {
           functionPoint[type.propertyName] = new type.type(functionPoint).trim()
         }
       } else {
-        throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
+        if (!noAdditionalDataFunctionTypeList.includes(functionPoint.type)) {
+          throw new Error('Cannot create corresponding data type object for ' + functionPoint.type)
+        }
       }
     }
 
