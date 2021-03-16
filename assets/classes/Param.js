@@ -22,6 +22,11 @@ const paramTypeMapping = {
   },
 }
 
+const noAdditionalDataParamTypeList = [
+  'STRING',
+]
+
+
 export default class Param extends BaseClass {
   constructor(param) {
     let structure = {
@@ -71,7 +76,9 @@ export default class Param extends BaseClass {
         param[type.propertyName] = new type.type(param).trim()
       }
     } else {
-      throw new Error('Cannot create corresponding data type object for ' + param.type)
+      if (!noAdditionalDataParamTypeList.includes(param.type)) {
+        throw new Error('Cannot create corresponding data type object for ' + param.type)
+      }
     }
     super(param, structure)
 
