@@ -119,7 +119,7 @@
                   <span v-if="text === 'OFF_LINE'" class="bad">离线</span>
                 </template>
                 <div slot="operators" slot-scope="record">
-                  <span class="clickable"><nuxt-link :to="`/deviceAccess/deviceManagement/${ record.sn }`">查看详情</nuxt-link></span>
+                  <span class="clickable"><nuxt-link :to="`/deviceAccess/deviceManagement/detail?sn=${ record.sn }`">查看详情</nuxt-link></span>
                   <span class="clickable" @click="confirmDeletion([record])">删除</span>
                 </div>
               </a-table>

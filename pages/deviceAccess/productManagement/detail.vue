@@ -522,6 +522,10 @@ export default {
     }
   },
   async created() {
+    let pid = this.$route.query.pid
+    if (!pid) {
+      this.$router.push('/deviceAccess/productManagement')
+    }
     this.getFunctionList()
     this.getCombinedFunctionList()
     await this.getProductDetail()
@@ -544,14 +548,14 @@ export default {
       this.combinedFunctionEditDrawer.transferType = transferType
     },
     async getProductDetail() {
-      let pid =  this.$route.params.pid
+      let pid =  this.$route.query.pid
       await getProductDetailWithDeviceStastic(this, {obj: this.remoteData.original, name: 'product'}, null, '', '', {pid})
       this.remoteData.product = new Product(this.remoteData.original.product.product)
       this.remoteData.totalDevice = this.remoteData.original.product.device_total
       this.remoteData.totalDeviceIdentity = this.remoteData.original.product.device_identity_total
     },
     async getFunctionList() {
-      let pid = this.$route.params.pid
+      let pid = this.$route.query.pid
       await getFunctionList(this, {obj: this.remoteData.original, name: 'functionList'}, { pid, meta_type: 'BASE', standard: false }, '', '')
       let functionList = []
       let functionListForTransfer = []
@@ -568,7 +572,7 @@ export default {
       this.remoteData.functionList = functionList
     },
     async getCombinedFunctionList() {
-      let pid = this.$route.params.pid
+      let pid = this.$route.query.pid
       await getFunctionList(this, {obj: this.remoteData.original, name: 'combinedFunctionList'}, { pid, meta_type: 'COMBINE', standard: false }, '', '')
       let functionList = []
       for (let item of this.remoteData.original.combinedFunctionList.functions) {
@@ -663,7 +667,7 @@ export default {
     async saveFunction() {
       this.functionEditDrawer.functionForm.validateFields(async (err, values) => {
         if (err) return
-        values.product_id = this.$route.params.pid
+        values.product_id = this.$route.query.pid
         this.functionEditDrawer.posting = true
         let funObj = new FunctionPoint(values)
         let result
@@ -684,7 +688,7 @@ export default {
     },
     async saveStandardFunction() {
       this.standardFunctionSelectionDrawer.posting = true
-      let pid = this.$route.params.pid
+      let pid = this.$route.query.pid
       let functionObj = {
         product_id: pid,
         indexes: this.standardFunctionSelectionDrawer.targetKeys,
@@ -700,7 +704,7 @@ export default {
       this.combinedFunctionEditDrawer.combinedFunctionForm.validateFields(async (err, values) => {
         if (err) return
         this.combinedFunctionEditDrawer.posting = true
-        values.product_id = this.$route.params.pid
+        values.product_id = this.$route.query.pid
         values.combination = []
         this.combinedFunctionEditDrawer.targetKeys.forEach(ele => {
           values.combination.push({
@@ -762,7 +766,7 @@ export default {
       })
     },
     async deleteFunction(functionPoint) {
-      let pid = this.$route.params.pid
+      let pid = this.$route.query.pid
       let index = functionPoint.index
       let result = await deleteFunction(this, null, '删除功能点成功', '删除功能点失败', { pid, index})
       if (result.flag) {
@@ -790,7 +794,7 @@ export default {
       })
     },
     exportFunction() {
-      let pid = this.$route.params.pid
+      let pid = this.$route.query.pid
       exportFunction(pid).catch((err) => {
         this.$toast('导出失败，消息为' + err.message, {
           customCss: {
