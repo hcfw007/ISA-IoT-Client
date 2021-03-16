@@ -1,8 +1,12 @@
 <template>
   <div class="device-detail">
     <a-row class="page-title-row">
-      <a-col :span="24">
+      <a-col :span="12">
         <h4 class="page-title">设备详情</h4>
+      </a-col>
+      <a-col :span="12" class="text-right page-operators">
+        <a-button class="page-title-button" @click="goBack"><a-icon type="left" />返回</a-button>
+        <a-button class="page-title-button" @click="refresh"><a-icon type="sync" />刷新</a-button>
       </a-col>
     </a-row>
     <div class="main-content">

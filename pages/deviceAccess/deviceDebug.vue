@@ -1,94 +1,104 @@
 <template>
-  <div class="device-debug main-content">
-    <a-row class="block-white block-normal">
-      <a-col :span="12" class="debug-form">
-        <a-form
-          :form="debugInfo.debugForm"
-          :label-col="contentConfig.form.labelCol"
-          :wrapper-col="contentConfig.form.wrapperCol"
-          class="content-form"
-        >
-          <a-form-item label="所属产品">
-            <a-select placeholder="请选择产品" v-decorator="['pid', { rules: [ validators.requiredRuleFactory('产品', 'select')]}]" @change="productChangeHandler">
-              <a-select-option v-for="(item, index) in remoteData.productList" :key="`product${ index }`" :value="item.pid">
-                {{ item.name }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="选择设备">
-            <a-select placeholder="请选择设备" v-decorator="['sn', { rules: [ validators.requiredRuleFactory('设备', 'select')]}]">
-              <a-select-option v-for="(item, index) in remoteData.deviceList" :key="`device${ index }`" :value="item.sn">
-                {{ item.name }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="消息类型">
-            <a-radio-group v-decorator="['messageType', { initialValue: 'down' }]" @change="messageTypeChangeHandler">
-              <a-radio value="down">功能点下发</a-radio>
-              <a-radio value="up">功能点上报</a-radio>
-            </a-radio-group>
-          </a-form-item>
-          <a-form-item label="功能点">
-            <a-select placeholder="请选择功能点" v-decorator="['index', { rules: [ validators.requiredRuleFactory('功能点', 'select')]}]" @change="functionChangeHandler">
-              <a-select-option v-for="(item, index) in filteredFunctionList" :key="`function${ index }`" :value="item.id">
-                {{ item.name }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="数据类型">
-            {{ debugInfo.dataType }}
-          </a-form-item>
-          <a-form-item label="功能点值">
-            <a-textarea placeholder="最多255个字符，应符合JSON格式" v-decorator="['value', { rules: [ validators.requiredRuleFactory('功能点值'), validators.maxWordsFactory(255), ]}]" :rows='5'></a-textarea>
-          </a-form-item>
-          <a-form-item label="发送设置">
-            <a-select v-model="debugInfo.requestType" placeholder="请选择发送模式">
-              <a-select-option value="once">单次发送</a-select-option>
-              <a-select-option value="loop">循环发送</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item v-if="debugInfo.requestType === 'loop'" label="发送间隔">
-            <a-input-number v-model="debugInfo.requestInterval" placeholder="3-3600, 单位秒" min="3" max="3600" />
-          </a-form-item>
-        </a-form>
-        <a-row>
-          <a-col :span="22" class="text-right">
-            <a-button v-if="looping" type="primary" :loading="shakeproof" class="stop-button" @click="stop">停止</a-button>
-            <a-button v-else :loading="shakeproof" type="primary" @click="executeCommand">发送</a-button>
-            <a-button @click="reset">重置</a-button>
-          </a-col>
-        </a-row>
+  <div class="device-debug">
+    <a-row class="page-title-row">
+      <a-col :span="12">
+        <h4 class="page-title">设备调试</h4>
       </a-col>
-      <a-col :span="12" class="message-log">
-        <a-row>
-          <a-col :span="12">
-            <span class="message-log-title">消息日志</span>
-          </a-col>
-          <a-col :span="12" class="text-right">
-            <span class="clickable" @click="messageLogList = []">清屏</span>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col v-if="messageLogList.length > 0" :span="24" class="message-log-container">
-            <div v-for="(log, index) in messageLogList" :key="'log' + index" class="message-block">
-              <!-- <div class="message-timestamp">
-                获取属性 {{ log.time }}
-              </div> -->
-              <div class="message-result">
-                result: {{ log.result }}
-              </div>
-              <div class="message-message">
-                message: {{ log.message }}
-              </div>
-              <div v-if="index < (messageLogList.length - 1)" class="message-seperator" />
-            </div>
-          </a-col>
-          <a-col v-else :span="24">
-            <h4>暂无数据</h4>
-          </a-col>
-        </a-row>
+      <a-col :span="12" class="text-right page-operators">
+        <a-button class="page-title-button" @click="refresh"><a-icon type="sync" />刷新</a-button>
       </a-col>
     </a-row>
+    <div class="main-content">
+      <a-row class="block-white block-normal">
+        <a-col :span="12" class="debug-form">
+          <a-form
+            :form="debugInfo.debugForm"
+            :label-col="contentConfig.form.labelCol"
+            :wrapper-col="contentConfig.form.wrapperCol"
+            class="content-form"
+          >
+            <a-form-item label="所属产品">
+              <a-select placeholder="请选择产品" v-decorator="['pid', { rules: [ validators.requiredRuleFactory('产品', 'select')]}]" @change="productChangeHandler">
+                <a-select-option v-for="(item, index) in remoteData.productList" :key="`product${ index }`" :value="item.pid">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="选择设备">
+              <a-select placeholder="请选择设备" v-decorator="['sn', { rules: [ validators.requiredRuleFactory('设备', 'select')]}]">
+                <a-select-option v-for="(item, index) in remoteData.deviceList" :key="`device${ index }`" :value="item.sn">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="消息类型">
+              <a-radio-group v-decorator="['messageType', { initialValue: 'down' }]" @change="messageTypeChangeHandler">
+                <a-radio value="down">功能点下发</a-radio>
+                <a-radio value="up">功能点上报</a-radio>
+              </a-radio-group>
+            </a-form-item>
+            <a-form-item label="功能点">
+              <a-select placeholder="请选择功能点" v-decorator="['index', { rules: [ validators.requiredRuleFactory('功能点', 'select')]}]" @change="functionChangeHandler">
+                <a-select-option v-for="(item, index) in filteredFunctionList" :key="`function${ index }`" :value="item.id">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="数据类型">
+              {{ debugInfo.dataType }}
+            </a-form-item>
+            <a-form-item label="功能点值">
+              <a-textarea placeholder="最多255个字符，应符合JSON格式" v-decorator="['value', { rules: [ validators.requiredRuleFactory('功能点值'), validators.maxWordsFactory(255), ]}]" :rows='5'></a-textarea>
+            </a-form-item>
+            <a-form-item label="发送设置">
+              <a-select v-model="debugInfo.requestType" placeholder="请选择发送模式">
+                <a-select-option value="once">单次发送</a-select-option>
+                <a-select-option value="loop">循环发送</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item v-if="debugInfo.requestType === 'loop'" label="发送间隔">
+              <a-input-number v-model="debugInfo.requestInterval" placeholder="3-3600, 单位秒" min="3" max="3600" />
+            </a-form-item>
+          </a-form>
+          <a-row>
+            <a-col :span="22" class="text-right">
+              <a-button v-if="looping" type="primary" :loading="shakeproof" class="stop-button" @click="stop">停止</a-button>
+              <a-button v-else :loading="shakeproof" type="primary" @click="executeCommand">发送</a-button>
+              <a-button @click="reset">重置</a-button>
+            </a-col>
+          </a-row>
+        </a-col>
+        <a-col :span="12" class="message-log">
+          <a-row>
+            <a-col :span="12">
+              <span class="message-log-title">消息日志</span>
+            </a-col>
+            <a-col :span="12" class="text-right">
+              <span class="clickable" @click="messageLogList = []">清屏</span>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col v-if="messageLogList.length > 0" :span="24" class="message-log-container">
+              <div v-for="(log, index) in messageLogList" :key="'log' + index" class="message-block">
+                <!-- <div class="message-timestamp">
+                  获取属性 {{ log.time }}
+                </div> -->
+                <div class="message-result">
+                  result: {{ log.result }}
+                </div>
+                <div class="message-message">
+                  message: {{ log.message }}
+                </div>
+                <div v-if="index < (messageLogList.length - 1)" class="message-seperator" />
+              </div>
+            </a-col>
+            <a-col v-else :span="24">
+              <h4>暂无数据</h4>
+            </a-col>
+          </a-row>
+        </a-col>
+      </a-row>
+    </div>
   </div>
 </template>
 

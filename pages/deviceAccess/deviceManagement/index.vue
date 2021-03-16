@@ -1,8 +1,11 @@
 <template>
   <div class="device-management">
     <a-row class="page-title-row">
-      <a-col :span="24">
+      <a-col :span="12">
         <h4 class="page-title">设备管理</h4>
+      </a-col>
+      <a-col :span="12" class="text-right page-operators">
+        <a-button class="page-title-button" @click="refresh"><a-icon type="sync" />刷新</a-button>
       </a-col>
     </a-row>
     <div class="main-content">

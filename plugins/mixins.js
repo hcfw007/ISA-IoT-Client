@@ -16,5 +16,11 @@ Vue.mixin({
     simpleDownload(url, queryObject) {
       simpleDownload(url, queryObject)
     },
+    goBack() {
+      this.$router.go(-1)
+    },
+    refresh() {
+      this.$router.replace(`/blank?path=${this.$route.path}`)
+    },
   },
 })

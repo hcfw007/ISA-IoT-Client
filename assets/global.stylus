@@ -68,3 +68,8 @@ a
   min-height: 80px
   width: 0
   border: solid 1px #CCC
+
+.page-title-button
+  margin-top: 10px
+  &:not(:first-child)
+    margin-left: 10px
