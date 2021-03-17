@@ -4,7 +4,7 @@
       <a-col :span="24" class="platform-info-container">
         <div class="platform-info-block info-color-1">
           <div class="platform-info-value">
-            22
+            {{ remoteData.deviceStatistics.product_amount }}
           </div>
           <div class="platform-info-label">
             产品总数
@@ -12,34 +12,34 @@
         </div>
         <div class="platform-info-block info-color-2">
           <div class="platform-info-value">
-            22
+            {{ remoteData.deviceStatistics.device_amount }}
           </div>
           <div class="platform-info-label">
-            产品总数
+            设备总数
           </div>
         </div>
         <div class="platform-info-block info-color-3">
           <div class="platform-info-value">
-            22
+            {{ remoteData.deviceStatistics.activated_amount }}
           </div>
           <div class="platform-info-label">
-            产品总数
+            已激活设备数
           </div>
         </div>
         <div class="platform-info-block info-color-4">
           <div class="platform-info-value">
-            22
+            {{ remoteData.deviceStatistics.online_amount }}
           </div>
           <div class="platform-info-label">
-            产品总数
+            在线设备数
           </div>
         </div>
         <div class="platform-info-block info-color-5">
           <div class="platform-info-value">
-            22
+            {{ remoteData.deviceStatistics.offline_amount }}
           </div>
           <div class="platform-info-label">
-            产品总数
+            离线设备数
           </div>
         </div>
       </a-col>
@@ -120,15 +120,29 @@
 </template>
 
 <script>
+import { getDeviceStatistics } from '@/assets/api/ajax'
+
 export default {
   data() {
     return {
       current: 0,
+      remoteData: {
+        original: {
+        },
+        deviceStatistics: {},
+      },
     }
+  },
+  created() {
+    this.getDeviceStatistics()
   },
   methods: {
     onStepChange(current) {
       this.current = current
+    },
+    async getDeviceStatistics() {
+      await getDeviceStatistics(this, {obj: this.remoteData.original, name: 'deviceStatistics'})
+      this.remoteData.deviceStatistics = this.remoteData.original.deviceStatistics
     },
   },
 }
