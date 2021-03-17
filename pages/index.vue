@@ -53,37 +53,31 @@
         </a-row>
         <a-row>
           <a-col span="24" class="function-container">
-            <div class="function-block">
+            <div class="function-block" @click="goto('/deviceAccess/productManagement')">
               <img src="@/static/images/index/add-product.svg" alt="" class="function-img">
               <div class="function-title">
                 添加产品
               </div>
             </div>
-            <div class="function-block">
-              <img src="@/static/images/index/add-product.svg" alt="" class="function-img">
-              <div class="function-title">
-                添加产品
-              </div>
-            </div>
-            <div class="function-block">
+            <div class="function-block" @click="goto('/deviceAccess/deviceManagement')">
               <img src="@/static/images/index/add-device.svg" alt="" class="function-img">
               <div class="function-title">
                 添加设备
               </div>
             </div>
-            <div class="function-block">
+            <div class="function-block" @click="goto('/deviceAccess/deviceIdentification')">
               <img src="@/static/images/index/device-identification.svg" alt="" class="function-img">
               <div class="function-title">
                 设备标识申请
               </div>
             </div>
-            <div class="function-block">
+            <div class="function-block" @click="goto('/deviceAccess/deviceDebug')">
               <img src="@/static/images/index/device-debug.svg" alt="" class="function-img">
               <div class="function-title">
                 设备调试
               </div>
             </div>
-            <div class="function-block">
+            <div class="function-block" @click="goto('/deviceOperation/deviceLog')">
               <img src="@/static/images/index/device-log.svg" alt="" class="function-img">
               <div class="function-title">
                 设备日志

@@ -22,5 +22,8 @@ Vue.mixin({
     refresh() {
       this.$router.replace(`/blank?path=${this.$route.path}`)
     },
+    goto(url) {
+      this.$router.push(url)
+    },
   },
 })
