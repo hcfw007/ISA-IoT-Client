@@ -70,7 +70,7 @@
                 </template>
                 <div slot="operators" slot-scope="record">
                   <span class="clickable"><nuxt-link :to="`/deviceAccess/productManagement/detail?pid=${ record.pid }`">查看详情</nuxt-link></span>
-                  <span class="clickable" v-if="record.publish">申请设备标识</span>
+                  <span class="clickable" v-if="record.publish" @click="createApplication">申请设备标识</span>
                   <span class="clickable"><nuxt-link :to="`/deviceAccess/deviceManagement?productPid=${ record.pid }`">设备管理</nuxt-link></span>
                   <span class="clickable" @click="editProduct(record)">编辑</span>
                   <span class="clickable" v-if="!record.publish" @click="confirmDeletion([record])">删除</span>
@@ -169,6 +169,7 @@
         </a-col>
       </a-row>
     </a-modal>
+    <identification-application-drawer :display="deviceApplicationDrawer.display" @close="drawerCloseHandler"  :mode="deviceApplicationDrawer.mode" :application="deviceApplicationDrawer.application" />
   </div>
 </template>
 
@@ -201,6 +202,11 @@ export default {
         industryList: [],
         categoryList: [],
       },
+      deviceApplicationDrawer: {
+        display: false,
+        mode: 'new',
+        application: null,
+      },
       contentControl: {
         productListSelection: [],
         filters: getBaseFilter(),
@@ -228,6 +234,13 @@ export default {
     this.getStaticData()
   },
   methods: {
+    drawerCloseHandler() {
+      this.deviceApplicationDrawer.display = false
+    },
+    createApplication() {
+      this.deviceApplicationDrawer.mode = 'new'
+      this.deviceApplicationDrawer.display = true
+    },
     onProductTableSelectChange(selectedRowKeys) {
       this.contentControl.productListSelection = selectedRowKeys
       let productSelectedList = []
