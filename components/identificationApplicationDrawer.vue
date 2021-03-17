@@ -58,9 +58,9 @@
       </a-form-item>
     </a-form>
     <div class="drawer-feet">
-      <a-button @click="deviceApplicationDrawer.display = false" class="dismiss-btn" v-if="mode === 'new'">取消</a-button>
+      <a-button @click="closeDrawer" class="dismiss-btn" v-if="mode === 'new'">取消</a-button>
       <a-button type="primary" class="execute-btn" @click="saveApplication" :loading="deviceApplicationDrawer.posting" v-if="mode === 'new'">保存</a-button>
-      <a-button @click="deviceApplicationDrawer.display = false" class="dismiss-btn" v-if="mode === 'display'">确定</a-button>
+      <a-button @click="closeDrawer" class="dismiss-btn" v-if="mode === 'display'">确定</a-button>
     </div>
   </a-drawer>
 </template>
