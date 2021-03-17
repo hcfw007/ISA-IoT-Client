@@ -73,7 +73,7 @@
               未激活
             </a-select-option>
           </a-select>
-          <a-select default-value="all" class="regular-input">
+          <a-select default-value="all" class="regular-input" v-model="contentControl.filters.product_node_type">
             <a-select-option value="all">
               全部节点类型
             </a-select-option>
