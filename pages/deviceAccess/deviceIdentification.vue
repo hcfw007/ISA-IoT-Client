@@ -51,7 +51,7 @@
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
                 <div slot="operators" slot-scope="record">
                   <span class="clickable" @click="displayApplication(record)">查看详情</span>
-                  <span class="clickable" v-if="record.status === 'APPROVED'">下载设备标识</span>
+                  <span class="clickable" v-if="record.status === 'APPROVED'" @click="downloadIdentification(record.apply_sn)">下载设备标识</span>
                   <a-tooltip placement="bottom" :title="record.remark || '未知'" trigger="click" v-if="record.status === 'REJECTED'">
                     <span class="clickable">查看驳回原因</span>
                   </a-tooltip>
@@ -73,7 +73,7 @@
 
 <script>
 import { deviceIdentificationListTable } from '@/assets/tables'
-import { getDeviceIdentificationList, getIndustryList, getCategoryList } from '@/assets/api/ajax'
+import { getDeviceIdentificationList, getIndustryList, getCategoryList, downloadIdentification } from '@/assets/api/ajax'
 import { dateTimeFormatter } from '@/assets/utils'
 
 const getBaseFilter = () => {
@@ -153,6 +153,9 @@ export default {
       this.deviceApplicationDrawer.mode = 'display'
       this.deviceApplicationDrawer.application = application
       this.deviceApplicationDrawer.display = true
+    },
+    downloadIdentification(sn) {
+      downloadIdentification(sn)
     },
   },
 }

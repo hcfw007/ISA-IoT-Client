@@ -285,6 +285,12 @@ export const downloadSDK = pid => {
   }).then(downloadProcessor)
 }
 
+export const downloadIdentification = sn => {
+  instance.get(`/devmng/devices/identities/download/${sn}`, {
+    responseType: 'blob',
+  }).then(downloadProcessor)
+}
+
 export const exportFunction = pid =>
   instance.get('/thing-models/functions/export?pid=' + pid, {
     responseType: 'blob',
