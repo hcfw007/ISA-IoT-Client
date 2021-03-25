@@ -50,7 +50,7 @@
                     </a-row>
                     <a-row style="margin-top: 10px">
                       <a-col :span="12" class="text-center key-action">
-                        <span class="clickable" @click="copyToClipboard(remoteData.device.dev_key)">复制密码</span>
+                        <span class="clickable" @click="copyToClipboard(remoteData.device.dev_key)">复制密钥</span>
                       </a-col>
                       <a-col :span="12" class="text-center key-action" @click="renewKey">
                         <span>更新密钥</span>
