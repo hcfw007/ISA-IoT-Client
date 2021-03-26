@@ -53,18 +53,19 @@ instance.interceptors.request.use(
 // 回到登录
 const loginUrl = '/user/login'
 
-const gotoLogin = (() => {
+export const gotoLogin = (() => {
   let goingBack = false
   return (vueObj) => {
     const jump = () => {
       vueObj.$router.push(loginUrl)
+      goingBack = false
     }
 
     if (goingBack) {
       return
     } else {
       goingBack = true
-      vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
+      vueObj.$toast('登录已过期，3秒后回到登录页面。')
       setTimeout(jump, 3000)
     }
   }
@@ -208,6 +209,8 @@ export const postUserRegister = postRequestFactory('/usrmng/user/register')
 export const postUserPasswordLogin = postRequestFactory('/usrmng/user/login/account')
 export const postUserMailLogin = postRequestFactory('/usrmng/user/login/quick/email')
 export const postUserMobileLogin = postRequestFactory('/usrmng/user/login/quick/phone')
+
+export const logout = postRequestFactory('/usrmng/user/logout')
 
 export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
 

@@ -1,19 +1,36 @@
 <template>
   <div class="navbar">
-    <a-breadcrumb>
-      <a-breadcrumb-item>首页</a-breadcrumb-item>
-      <a-breadcrumb-item v-for="(item, index) in path" :key="'breadcrumb' + String(index)">{{ item.title }}</a-breadcrumb-item>
-    </a-breadcrumb>
+    <a-row>
+      <a-col :span="18">
+        <a-breadcrumb>
+          <a-breadcrumb-item>首页</a-breadcrumb-item>
+          <a-breadcrumb-item v-for="(item, index) in path" :key="'breadcrumb' + String(index)">{{ item.title }}</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+      <a-col :span="6" class="text-right" style="line-height: 1.5">
+        <a-dropdown :trigger="['click']">
+          <span class="pointer">欢迎，{{ user.userName }}</span>
+          <a-menu slot="overlay">
+            <a-menu-item class="text-center" @click="logout">
+              登出
+            </a-menu-item>
+          </a-menu>
+        </a-dropdown>
+      </a-col>
+    </a-row>
+
   </div>
 </template>
 
 <script>
 import { menuStructure } from '~/assets/config'
+import { logout, gotoLogin } from '~/assets/api/ajax'
 
 export default {
   data() {
     return {
       path: [],
+      user: {},
     }
   },
   watch: {
@@ -23,8 +40,17 @@ export default {
   },
   created() {
     this.getPath(this.$route.path)
+    this.getUser()
   },
   methods: {
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('userInfo'))
+      this.user = user
+    },
+    logout() {
+      logout()
+      gotoLogin(this)
+    },
     getPath(url) {
       let paths = url.split('/')
       let currentMenu = menuStructure

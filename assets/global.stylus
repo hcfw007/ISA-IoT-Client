@@ -73,3 +73,6 @@ a
   margin-top: 10px
   &:not(:first-child)
     margin-left: 10px
+
+.pointer
+  cursor: pointer
