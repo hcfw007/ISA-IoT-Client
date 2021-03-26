@@ -53,13 +53,22 @@ instance.interceptors.request.use(
 // 回到登录
 const loginUrl = '/user/login'
 
-const gotoLogin = () => {
-  const jump = () => {
-    location.href = loginUrl
-  }
+const gotoLogin = (() => {
+  let goingBack = false
+  return (vueObj) => {
+    const jump = () => {
+      vueObj.$router.push(loginUrl)
+    }
 
-  setTimeout(jump, 3000)
-}
+    if (goingBack) {
+      return
+    } else {
+      goingBack = true
+      vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
+      setTimeout(jump, 3000)
+    }
+  }
+})()
 
 const successToastOption = {
   customCss: {
@@ -110,8 +119,7 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
     if (error.message === 'dense requests') return
     if (error.response && error.response.status === 401) {
       if (vueObj) {
-        vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
-        gotoLogin()
+        gotoLogin(vueObj)
       }
       return
     }
@@ -150,8 +158,7 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     if (error.message === 'dense requests') return
     if (error.response && error.response.status === 401) {
       if (vueObj) {
-        vueObj.$toast('鉴权失败，登录已过期，3秒后回到登录页面。')
-        gotoLogin()
+        gotoLogin(vueObj)
       }
       return
     }
