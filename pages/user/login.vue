@@ -116,10 +116,10 @@ export default {
           let { mobileOrMail } = values
           if (/^1[0-9]{10}$/.test(mobileOrMail)) {
             let mobile = mobileOrMail
-            getSMSCode(this, null, { phone: mobile }, '发送验证码成功！', '发送验证码失败')
+            getSMSCode(this, undefined, { phone: mobile }, '发送验证码成功！', '发送验证码失败')
           } else {
             let mail = mobileOrMail
-            getMailCode(this, null, { email: mail }, '发送验证码成功！', '发送验证码失败')
+            getMailCode(this, undefined, { email: mail }, '发送验证码成功！', '发送验证码失败')
           }
         }
       })

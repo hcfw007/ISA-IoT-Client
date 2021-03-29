@@ -117,6 +117,9 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
   }).catch((error) => {
     flag = false
     payload = error.message
+    if (dataItem.obj && dataItem.name) {
+      dataItem.obj[dataItem.name] = {}
+    }
     if (error.message === 'dense requests') return
     if (error.response && error.response.status === 401) {
       if (vueObj) {
