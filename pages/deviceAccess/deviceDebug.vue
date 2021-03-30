@@ -266,6 +266,7 @@ export default {
       })
     },
     async request(data) {
+      console.log(data)
       let result = await postCommand(this, data, '发送命令成功', '发送命令失败')
       let log = {
         message: result.payload.message,

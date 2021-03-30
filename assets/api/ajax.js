@@ -164,7 +164,6 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
-    console.log(JSON.stringify(error))
     if (error.response && error.response.status === 401 && error.response.data.msg === '鉴权失败！') {
       if (vueObj) {
         gotoLogin(vueObj)
@@ -173,7 +172,7 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     }
     if (vueObj && failureToast.length > 0) {
       let message = error.message
-      if (error.reponse && error.reponse.data) {
+      if (error.response && error.response.data) {
         message = error.response.data.msg
       }
       vueObj.$toast(failureToast + `，消息是${message}`, failureToastOption)
