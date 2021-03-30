@@ -86,7 +86,7 @@ export const commonFunctionDataTypeEnum = enumCreator({
   EXCEPTION: '故障型',
   STRING: '字符串型',
   BUFFER: '透传型',
-  DATE: '日期型',
+  // DATE: '日期型',
 })
 
 export const paramDataTypeEnum = enumCreator({
