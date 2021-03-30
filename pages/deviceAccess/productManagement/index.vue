@@ -321,6 +321,7 @@ export default {
       this.productDrawer.pid = product.pid
       this.$nextTick(() => {
         setFormItems(product, this.productDrawer.productForm)
+        this.drawerIndustryChangeHandler(product.industry_id)
       })
     },
     confirmDeletion(products) {
