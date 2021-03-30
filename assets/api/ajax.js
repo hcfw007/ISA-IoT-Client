@@ -272,7 +272,8 @@ export const postDeviceIdentification = postRequestFactory('/devmng/devices/iden
 export const getDeviceIdentificationNumberAvailable = getRequestFactory('/devmng/devices/identities/avail/{pid}')
 
 // commands
-export const postCommand = postRequestFactory('/devices/write/commands')
+export const postWriteCommand = postRequestFactory('/devices/write/commands')
+export const postReadCommand = postRequestFactory('/devices/read/commands')
 
 export const postFunctionFile = (data, progressCallback) =>
   instance.post('/functions/import/', data, {

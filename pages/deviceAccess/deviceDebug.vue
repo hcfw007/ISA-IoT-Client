@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { getProductList, getDeviceList, getFunctionList, postCommand } from '@/assets/api/ajax'
+import { getProductList, getDeviceList, getFunctionList, postWriteCommand, postReadCommand } from '@/assets/api/ajax'
 import Product from '@/assets/classes/Product'
 import DeviceID from '@/assets/classes/DeviceID'
 import { contentConfig } from '@/assets/config'
@@ -266,8 +266,8 @@ export default {
       })
     },
     async request(data) {
-      console.log(data)
-      let result = await postCommand(this, data, '发送命令成功', '发送命令失败')
+      let targetCommand = this.debugInfo.messageType === 'down' ? postWriteCommand : postReadCommand
+      let result = await targetCommand(this, data, '发送命令成功', '发送命令失败')
       let log = {
         message: result.payload.message,
         result: result.payload.success ? '成功' : '失败',
