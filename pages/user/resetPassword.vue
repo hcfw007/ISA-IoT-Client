@@ -143,10 +143,10 @@ export default {
             password: this.resetInfo.password,
             verifyCode: this.resetInfo.code,
           }
-          if (/^1[0-9]{10}$/.test(values.mobileOrMail)) {
-            infoObj.phone = values.mobileOrMail
+          if (/^1[0-9]{10}$/.test(this.resetInfo.mobileOrMail)) {
+            infoObj.phone = this.resetInfo.mobileOrMail
           } else {
-            infoObj.email = values.mobileOrMail
+            infoObj.email = this.resetInfo.mobileOrMail
           }
           let { flag } = await postPasswordReset(this, infoObj, '重置成功', '重置失败')
           if (flag) {
