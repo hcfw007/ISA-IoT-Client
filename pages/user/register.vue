@@ -99,7 +99,7 @@ export default {
       callback()
     },
     register() {
-      this.registerForm.validateFields((err, values) => {
+      this.registerForm.validateFields(async (err, values) => {
         if (!err) {
           let infoObj = {
             userName: values.username,
@@ -109,7 +109,7 @@ export default {
             verifyNumber: values.mobileOrMail,
             veryCode: values.code,
           }
-          let { flag } = postUserRegister(this, infoObj, '注册成功！', '注册失败')
+          let { flag } = await postUserRegister(this, infoObj, '注册成功！', '注册失败')
           if (flag) {
             this.$router.push('/user/login')
           }

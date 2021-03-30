@@ -55,7 +55,7 @@ const loginUrl = '/user/login'
 
 export const gotoLogin = (() => {
   let goingBack = false
-  return (vueObj) => {
+  return (vueObj, msg = '登录已过期') => {
     const jump = () => {
       vueObj.$router.push(loginUrl)
       goingBack = false
@@ -65,7 +65,7 @@ export const gotoLogin = (() => {
       return
     } else {
       goingBack = true
-      vueObj.$toast('登录已过期，3秒后回到登录页面。')
+      vueObj.$toast(`${ msg }，3秒后回到登录页面。`)
       setTimeout(jump, 3000)
     }
   }
@@ -108,7 +108,7 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
     }
     flag = true
     payload = response.data.data
-    if (dataItem.obj && dataItem.name) {
+    if (dataItem && dataItem.obj && dataItem.name) {
       dataItem.obj[dataItem.name] = payload
     }
     if (vueObj && successToast.length > 0) {
@@ -121,14 +121,18 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
       dataItem.obj[dataItem.name] = {}
     }
     if (error.message === 'dense requests') return
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 && error.response.data.msg === '鉴权失败！') {
       if (vueObj) {
         gotoLogin(vueObj)
       }
       return
     }
     if (vueObj && failureToast.length > 0) {
-      vueObj.$toast(failureToast + `，消息是${error.message }`, failureToastOption)
+      let message = error.message
+      if (error.reponse && error.reponse.data) {
+        message = error.response.data.msg
+      }
+      vueObj.$toast(failureToast + `，消息是${message }`, failureToastOption)
     }
   })
 
@@ -160,14 +164,19 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
-    if (error.response && error.response.status === 401) {
+    console.log(JSON.stringify(error))
+    if (error.response && error.response.status === 401 && error.response.data.msg === '鉴权失败！') {
       if (vueObj) {
         gotoLogin(vueObj)
       }
       return
     }
     if (vueObj && failureToast.length > 0) {
-      vueObj.$toast(failureToast + `，消息是${error.message}`, failureToastOption)
+      let message = error.message
+      if (error.reponse && error.reponse.data) {
+        message = error.response.data.msg
+      }
+      vueObj.$toast(failureToast + `，消息是${message}`, failureToastOption)
     }
   })
 

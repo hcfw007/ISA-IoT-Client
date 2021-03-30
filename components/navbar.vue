@@ -49,7 +49,7 @@ export default {
     },
     logout() {
       logout()
-      gotoLogin(this)
+      gotoLogin(this, '登出成功')
     },
     getPath(url) {
       let paths = url.split('/')
