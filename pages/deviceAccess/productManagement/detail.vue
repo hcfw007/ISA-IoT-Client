@@ -51,7 +51,7 @@
             基础功能点
           </div>
           <div class="function-info-value">
-            {{ 0 }}
+            {{ remoteData.functionList.length }}
           </div>
         </a-col>
         <a-col :span="2">
@@ -62,7 +62,7 @@
             组合功能点
           </div>
           <div class="function-info-value">
-            {{ 0 }}
+            {{ remoteData.combinedFunctionList.length }}
           </div>
         </a-col>
         <a-col :span="14" class="function-info-operators text-right">
