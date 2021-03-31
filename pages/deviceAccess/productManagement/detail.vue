@@ -262,6 +262,13 @@
               <span>最大长度不超过255字节</span>
             </a-form-item>
           </section>
+          <a-form-item label="传输类型">
+            <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型">
+              <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`">
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
         </section>
         <section v-if="functionEditDrawer.functionForm.getFieldValue('fn_type') === 'EVENT'">
           <a-form-item label="事件类型">
@@ -274,14 +281,14 @@
           <a-form-item label="输出参数">
             <param-display v-decorator="['params', { initialValue: [] }]" @addParam="addParamHandler" @deleteParam="deleteParamHandler" @editParam="editParamHandler" />
           </a-form-item>
+          <a-form-item label="传输类型">
+            <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'up'}]" placeholder="请选择传输类型" disabled>
+              <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`">
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
         </section>
-        <a-form-item label="传输类型">
-          <a-select v-decorator="['transferType', { rules: [ validators.requiredRuleFactory('传输类型', 'select')], initialValue: 'upAndDown'}]" placeholder="请选择传输类型">
-            <a-select-option v-for="(item, index) in enums.transferTypeEnum.displayList" :value="enums.transferTypeEnum.getTransfer(item)" :key="`transferType${ index }`" >
-              {{ item }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
         <a-form-item label="备注">
           <a-textarea v-decorator="['remark']" :maxLength="100" placeholder="最多100字符" />
         </a-form-item>

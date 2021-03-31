@@ -34,7 +34,7 @@
             <a-form-item label="消息类型">
               <a-radio-group v-decorator="['messageType', { initialValue: 'down' }]" @change="messageTypeChangeHandler">
                 <a-radio value="down">功能点下发</a-radio>
-                <a-radio value="up">功能点上报</a-radio>
+                <a-radio value="up">功能点查询</a-radio>
               </a-radio-group>
             </a-form-item>
             <a-form-item label="功能点">
