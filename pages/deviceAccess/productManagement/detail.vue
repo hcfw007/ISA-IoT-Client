@@ -891,6 +891,22 @@ export default {
       &:not(:first-child)
         border-left: solid 1px #bbb
 
+    @media screen and (max-width: 1919px)
+      .product-info-block
+        min-width: 80px
+
+        .product-info-label, .product-info-value
+          text-align: center
+
+        .product-info-label
+          font-size: 12px
+
+        .product-info-value
+          font-size: 10px
+
+        .product-info-datetime
+          font-size: 10px
+
     .product-name
       display: inline-block
       vertical-align: middle

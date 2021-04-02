@@ -864,6 +864,7 @@ export default {
       &:not(:first-child)
         border-left: solid 1px #bbb
 
+
     .device-name
       display: inline-block
       vertical-align: middle
@@ -872,6 +873,26 @@ export default {
 
       div:not(:first-child)
         margin-top: 10px
+
+    @media screen and (max-width: 1919px)
+      .device-info-block
+        min-width: 80px
+
+        .device-info-label, .device-info-value
+          text-align: center
+
+        .device-info-label
+          font-size: 12px
+
+        .device-info-value
+          font-size: 10px
+
+        .device-info-datetime
+          font-size: 10px
+
+      .device-name
+        width: 150px
+        font-size: 12px
 
   .function-info-label
     color: #666
