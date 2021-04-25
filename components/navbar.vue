@@ -9,7 +9,7 @@
       </a-col>
       <a-col :span="6" class="text-right" style="line-height: 1.5">
         <a-dropdown :trigger="['click']">
-          <span class="pointer">欢迎，{{ user.userName }}</span>
+          <span class="pointer">欢迎，{{ user.name }}</span>
           <a-menu slot="overlay">
             <a-menu-item class="text-center" @click="logout">
               登出
@@ -24,7 +24,7 @@
 
 <script>
 import { menuStructure } from '~/assets/config'
-import { logout, gotoLogin } from '~/assets/api/ajax'
+import { logout, gotoLogin, getUserInfo } from '~/assets/api/ajax'
 
 export default {
   data() {
@@ -43,12 +43,17 @@ export default {
     this.getUser()
   },
   methods: {
-    getUser() {
-      let user = JSON.parse(localStorage.getItem('userInfo'))
+    async getUser() {
+      let user = (await getUserInfo()).payload
       this.user = user
+      localStorage.setItem('userInfo', JSON.stringify(user))
+      if (user.verified === 0) {
+        this.$router.push('/user/identification')
+      }
     },
     logout() {
       logout()
+      localStorage.removeItem('userInfo')
       gotoLogin(this, '登出成功')
     },
     getPath(url) {

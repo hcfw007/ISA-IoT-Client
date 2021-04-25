@@ -221,6 +221,8 @@ export const postUserPasswordLogin = postRequestFactory('/usrmng/user/login/acco
 export const postUserMailLogin = postRequestFactory('/usrmng/user/login/quick/email')
 export const postUserMobileLogin = postRequestFactory('/usrmng/user/login/quick/phone')
 
+export const getUserInfo = getRequestFactory('/usrmng/user/info')
+
 export const logout = postRequestFactory('/usrmng/user/logout')
 
 export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
