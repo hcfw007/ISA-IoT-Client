@@ -74,7 +74,7 @@ export default {
   proxy: {
     '/isa-api': {
       changeOrigin: true,
-      target: 'http://10.10.22.3:8765',
+      target: 'http://10.10.21.3:8765',
       pathRewrite: {
         '/isa-api': '',
       },
