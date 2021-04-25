@@ -182,7 +182,8 @@ export default {
         width: 30px
         border: solid 1px #fff
         margin: auto
-        margin-top: calc(50% + 40px)
+        margin-top: 50vh
+        transform: translateY(-50%)
 
     .card-right
       background-color: #fff

@@ -160,8 +160,6 @@ export default {
       if (flag) {
         let token = payload.token
         localStorage.setItem('token', token)
-        let userInfo = decode(token.split('.')[1])
-        localStorage.setItem('userInfo', userInfo)
         this.$router.push('/')
       }
     },
@@ -184,8 +182,8 @@ export default {
     height: 620px
     width: 850px
     display: inline-block
-    margin: auto
-    margin-top: calc(50vh - 380px)
+    margin-top: 50vh
+    transform: translateY(-50%)
 
     &>div
       height: 100%

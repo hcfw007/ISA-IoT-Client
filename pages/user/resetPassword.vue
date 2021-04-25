@@ -175,7 +175,8 @@ export default {
     width: 850px
     display: inline-block
     margin: auto
-    margin-top: calc(50vh - 380px)
+    margin-top: 50vh
+    transform: translateY(-50%)
 
     &>div
       height: 100%
