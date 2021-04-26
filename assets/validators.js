@@ -41,6 +41,14 @@ export const validators = {
     pattern: /^[A-Za-z0-9\u4E00-\u9FA5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
     message: '请输入合法的邮箱地址',
   },
+  personalId: {
+    pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+    message: '请输入合法的身份证号码',
+  },
+  organizationId: {
+    pattern: /^([0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}|[1-9]\d{14})$/,
+    message: '请输入合法的社会信用代码',
+  },
   mobileOrMail: {
     validator: (rule, value, callback) => {
       if (!value || value.length == 0) callback()

@@ -227,6 +227,11 @@ export const logout = postRequestFactory('/usrmng/user/logout')
 
 export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset')
 
+// 用户实名认证相关
+
+export const postPersonalIdApplication = postRequestFactory('/usrmng/identity/person/apply')
+export const postOrganizationIdApplication = postRequestFactory('/usrmng/identity/enterprise/apply')
+
 // 产品信息子模块
 export const getProductList = getRequestFactory('/thing-models/products/ops')
 

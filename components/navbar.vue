@@ -44,10 +44,17 @@ export default {
   },
   methods: {
     async getUser() {
-      let user = (await getUserInfo()).payload
+      let {result, payload} = await getUserInfo(this)
+      let user = payload
       this.user = user
       localStorage.setItem('userInfo', JSON.stringify(user))
-      if (user.verified === 0) {
+      if (user.verified === 3) {
+        this.$toast('请先进行实名认证，方能使用系统功能', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
         this.$router.push('/user/identification')
       }
     },
