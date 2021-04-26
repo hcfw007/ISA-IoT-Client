@@ -232,6 +232,8 @@ export const postPasswordReset = postRequestFactory('/usrmng/user/password/reset
 export const postPersonalIdApplication = postRequestFactory('/usrmng/identity/person/apply')
 export const postOrganizationIdApplication = postRequestFactory('/usrmng/identity/enterprise/apply')
 
+export const getUserIdInfo = getRequestFactory('/usrmng/user/{userId}/identity')
+
 // 产品信息子模块
 export const getProductList = getRequestFactory('/thing-models/products/ops')
 

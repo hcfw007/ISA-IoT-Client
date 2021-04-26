@@ -57,6 +57,24 @@ export default {
         })
         this.$router.push('/user/identification')
       }
+      if (user.verified === 0) {
+        this.$toast('实名认证审核中，请耐心等待', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+        this.$router.push('/user/result')
+      }
+      if (user.verified === 2) {
+        this.$toast('实名认证审核失败，请查看原因', {
+          customCss: {
+            'background-color': '#E6A23C',
+            color: '#fff',
+          },
+        })
+        this.$router.push('/user/result')
+      }
     },
     logout() {
       logout()
