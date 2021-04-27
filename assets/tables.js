@@ -192,3 +192,75 @@ export const combinedFunctionListTable = [
     },
   },
 ]
+
+export const deviceFunctionTable = [
+  {
+    title: '功能名称',
+    dataIndex: 'name',
+  }, {
+    title: '功能类型',
+    scopedSlots: {
+      customRender: 'functionType',
+    },
+  }, {
+    title: '字段名称',
+    dataIndex: 'subject',
+  }, {
+    title: '数据类型',
+    dataIndex: 'type',
+    scopedSlots: {
+      customRender: 'dataType',
+    },
+  }, {
+    title: '数据值定义',
+    scopedSlots: {
+      customRender: 'dataDefinition',
+    },
+  }, {
+    title: '传输类型',
+    scopedSlots: {
+      customRender: 'transferType',
+    },
+  }, {
+    title: '最新值',
+    dataIndex: 'up_value',
+  }, {
+    title: '更新时间',
+    dataIndex: 'updated_at',
+    scopedSlots: {
+      customRender: 'updated_at',
+    },
+  },
+]
+
+export const deviceEventTable = [
+  {
+    title: '事件名称',
+    dataIndex: 'name',
+  }, {
+    title: '功能类型',
+    scopedSlots: {
+      customRender: 'functionType',
+    },
+  }, {
+    title: '字段名称',
+    dataIndex: 'subject',
+  }, {
+    title: '事件类型',
+    dataIndex: 'event_type',
+    scopedSlots: {
+      customRender: 'eventType',
+    },
+  }, {
+    title: '时间',
+    dataIndex: 'updated_at',
+    scopedSlots: {
+      customRender: 'updated_at',
+    },
+  }, {
+    title: '输出参数',
+    scopedSlots: {
+      customRender: 'params',
+    },
+  },
+]

@@ -3,7 +3,7 @@ import BooleanValue from './BooleanValue'
 import EnumValue from './EnumValue'
 import NumberValue from './NumberValue'
 import ExceptionValue from './ExceptionValue'
-import { transferTypeEnum } from './enums'
+import { transferTypeEnum, paramDataTypeEnum } from './enums'
 
 const CommonFunctionTypeMapping = {
   INTEGER: {
@@ -116,6 +116,21 @@ export default class FunctionPoint extends BaseClass {
         required: false,
         description: '序号，比id更常用',
       },
+      updated_at: {
+        type: 'string',
+        required: false,
+        description: '更新时间',
+      },
+      up_value: {
+        type: 'string',
+        required: false,
+        description: '上报值（最新值）',
+      },
+      function_id: {
+        type: 'string',
+        required: false,
+        description: '父功能点id',
+      },
     }
     // 处理数据类型
     if (functionPoint.fn_type === 'COMMON') {
@@ -182,5 +197,41 @@ export default class FunctionPoint extends BaseClass {
     flatternObject(obj, this)
     obj.transferType = this.getFormTransferType()
     return obj
+  }
+
+  getdataDefinition() {
+    if (this.fn_type !== 'COMMON' || noAdditionalDataFunctionTypeList.includes(this.type)) {
+      return ''
+    }
+    let type = CommonFunctionTypeMapping[this.type].propertyName
+    let fnObj = this[type]
+    let str = ''
+    let count = 0
+    for (let item in fnObj) {
+      let description = fnObj.$Structure[item].description
+      if (count > 0) {
+        str += '；'
+      }
+      str += `${description}为${Array.isArray(fnObj[item]) ? fnObj[item].join('/') : fnObj[item] }`
+      count ++
+    }
+    return str
+  }
+
+  getParams() {
+    if (this.fn_type !== 'EVENT') {
+      return ''
+    }
+    let str = ''
+    let count = 0
+    for (let item in this.params) {
+      let param = this.params[item]
+      if (count > 0) {
+        str += '；'
+      }
+      str += `${ param.name }，${ paramDataTypeEnum.getDisplay(param.type) }`
+      count ++
+    }
+    return str
   }
 }
