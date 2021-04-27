@@ -244,11 +244,8 @@ export default {
     onProductTableSelectChange(selectedRowKeys) {
       this.contentControl.productListSelection = selectedRowKeys
       let productSelectedList = []
-      console.log(selectedRowKeys)
       for (let pid of selectedRowKeys) {
-        console.log(pid)
         for (let product of this.remoteData.productList) {
-          console.log(product)
           if (product.pid === pid) {
             productSelectedList.push(product)
             break
@@ -260,6 +257,15 @@ export default {
     drawerIndustryChangeHandler(industryId) {
       let categoryList = this.remoteData.categoryList
       this.productDrawer.filteredCategoryList = categoryList.filter(ele => ele.industry === industryId)
+      let category_id = this.productDrawer.productForm.getFieldValue('category_id')
+      let clear = true
+      for (let category of this.productDrawer.filteredCategoryList) {
+        if (category_id === category.id) {
+          clear = false
+          break
+        }
+      }
+      if (clear) this.productDrawer.productForm.resetFields(['category_id'])
     },
     resetFilter() {
       this.contentControl.filters = getBaseFilter()
