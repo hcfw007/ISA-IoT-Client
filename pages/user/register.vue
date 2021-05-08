@@ -166,8 +166,8 @@ export default {
     height: 620px
     width: 850px
     display: inline-block
-    margin: auto
-    margin-top: calc(50vh - 380px)
+    margin-top: 50vh
+    transform: translateY(-50%)
 
     &>div
       height: 100%
@@ -182,8 +182,7 @@ export default {
         width: 30px
         border: solid 1px #fff
         margin: auto
-        margin-top: 50vh
-        transform: translateY(-50%)
+        margin-top: calc(50% + 40px)
 
     .card-right
       background-color: #fff
