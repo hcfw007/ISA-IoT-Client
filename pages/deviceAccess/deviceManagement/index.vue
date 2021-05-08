@@ -114,7 +114,7 @@
                 :row-selection="{ selectedRowKeys: contentControl.deviceListSelection, onChange: onDeviceTableSelectChange }"
               >
                 <span slot="node" slot-scope="text">{{ enums.deviceTypeEnum.getDisplay(text) }}</span>
-                <span slot="latest_at" slot-scope="text">{{ text.split('.')[0] }}</span>
+                <span slot="latest_at" slot-scope="text">{{ text ? text.split('.')[0] : '' }}</span>
                 <span slot="created_at" slot-scope="text">{{ text.split('.')[0] }}</span>
                 <template slot="status" slot-scope="text">
                   <span v-if="text === 'UNACTIVATED'" class="pending">未激活</span>
