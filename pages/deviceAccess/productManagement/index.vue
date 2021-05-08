@@ -10,7 +10,7 @@
     </a-row>
     <div class="main-content">
       <a-row class="block-normal block-white">
-        <a-col :span="16">
+        <a-col :span="20">
           <a-select default-value="all" class="regular-input" v-model="contentControl.filters.industry">
             <a-select-option value="all">
               全部行业类型
@@ -32,7 +32,7 @@
           </a-select>
           <a-input placeholder="请输入产品名称搜索" class="regular-input" v-model="contentControl.filters.name" />
         </a-col>
-        <a-col :span="8" class="text-right">
+        <a-col :span="4" class="text-right">
           <a-button type="primary" @click="executeFilter">查询</a-button>
           <a-button @click="resetFilter">重置</a-button>
         </a-col>

@@ -50,7 +50,7 @@
         </a-col>
       </a-row>
       <a-row class="block-normal block-white">
-        <a-col :span="16">
+        <a-col :span="20">
           <a-select default-value="all" class="regular-input" v-model="contentControl.filters.pid">
             <a-select-option value="all">
               全部产品
@@ -84,7 +84,7 @@
           <a-input placeholder="请输入完整设备标识或后缀搜索" class="regular-input" v-model="contentControl.filters.sn" />
           <a-input placeholder="请输入设备名称搜索" class="regular-input" v-model="contentControl.filters.name" />
         </a-col>
-        <a-col :span="8" class="text-right">
+        <a-col :span="4" class="text-right">
           <a-button type="primary" @click="executeFilter">查询</a-button>
           <a-button @click="resetFilter">重置</a-button>
         </a-col>

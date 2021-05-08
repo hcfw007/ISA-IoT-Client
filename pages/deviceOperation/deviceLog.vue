@@ -10,7 +10,7 @@
     </a-row>
     <div class="main-content">
       <a-row class="block-normal block-white">
-        <a-col :span="16">
+        <a-col :span="20">
           <a-select default-value="all" class="regular-input">
             <a-select-option value="all">
               全部
@@ -26,10 +26,10 @@
               全部
             </a-select-option>
           </a-select>
-          <a-range-picker />
+          <a-range-picker style="width: 200px" />
           <a-input placeholder="请输入设备名称搜索" class="regular-input" />
         </a-col>
-        <a-col :span="8" class="text-right">
+        <a-col :span="4" class="text-right">
           <a-button type="primary">查询</a-button>
           <a-button>重置</a-button>
         </a-col>
@@ -82,4 +82,8 @@ export default {
 .device-log
   .block-title
     color: #E98B25
+
+  @media screen and (max-width: 1919px)
+    .ant-calendar-picker
+      width: 250px
 </style>
