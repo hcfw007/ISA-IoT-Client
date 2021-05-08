@@ -20,7 +20,7 @@ Vue.mixin({
       this.$router.go(-1)
     },
     refresh() {
-      this.$router.replace(`/blank?path=${this.$route.path}`)
+      this.$router.replace(`/blank?path=${this.$route.fullPath}`)
     },
     goto(url) {
       this.$router.push(url)
