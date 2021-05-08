@@ -3,7 +3,6 @@
     <div class="login-card">
       <a-row>
         <a-col :span="10" class="card-left">
-          <div class="rectangle" />
         </a-col>
         <a-col :span="14" class="card-right">
           <a-row>
@@ -189,16 +188,12 @@ export default {
       height: 100%
 
     .card-left
-      background-color: rgba(64, 158, 255, 1)
+      background-color: rgb(20, 92, 195)
       height: 100%
       border-radius: 10px 0 0 10px
-
-      .rectangle
-        height: 80px
-        width: 30px
-        border: solid 1px #fff
-        margin: auto
-        margin-top: calc(50% + 40px)
+      background-image: url('~static/images/user/left-rect.png')
+      background-repeat: no-repeat
+      background-position: center
 
     .card-right
       background-color: #fff
