@@ -212,7 +212,12 @@ export default class FunctionPoint extends BaseClass {
       if (count > 0) {
         str += '；'
       }
-      str += `${description}为${Array.isArray(fnObj[item]) ? fnObj[item].join('/') : fnObj[item] }`
+      if (Array.isArray(fnObj[item])) {
+        fnObj.[item].forEach((ele, index, arr) => {
+          arr[index] = JSON.stringify(ele)
+        })
+      }
+      str += `${description}为${Array.isArray(fnObj[item]) ? fnObj[item].join('/ ') : fnObj[item] }`
       count ++
     }
     return str
