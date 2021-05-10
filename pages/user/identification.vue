@@ -147,7 +147,7 @@ function getImageBase64(img, type, callback) {
     let width = image.width
     let height = image.height
     if (width > height && (height > 800 || width > 800)) {
-      height = Math.round(800 * width / height)
+      height = Math.round(800 * height / width)
       width = 800
     } else {
       width = Math.round(800 * width / height)
@@ -208,7 +208,7 @@ export default {
             color: '#fff',
           },
         })
-        this.$router.push('/')
+        // this.$router.push('/')
       }
       if (user.verified === 0) {
         this.$toast('实名认证审核中，请耐心等待', {
