@@ -2,8 +2,7 @@
   <div class="identification">
     <div class="identification-card">
       <a-row>
-        <a-col :span="10" class="card-left">
-        </a-col>
+        <user-card-left />
         <a-col :span="14" class="card-right">
           <a-row>
             <a-col :span="18" :offset="3">
@@ -333,14 +332,6 @@ export default {
 
     &>div
       height: 100%
-
-    .card-left
-      background-color: rgb(20, 92, 195)
-      height: 100%
-      border-radius: 10px 0 0 10px
-      background-image: url('~static/images/user/left-rect.png')
-      background-repeat: no-repeat
-      background-position: center
 
     .card-right
       background-color: #fff
