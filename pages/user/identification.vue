@@ -208,7 +208,7 @@ export default {
             color: '#fff',
           },
         })
-        // this.$router.push('/')
+        this.$router.push('/')
       }
       if (user.verified === 0) {
         this.$toast('实名认证审核中，请耐心等待', {
