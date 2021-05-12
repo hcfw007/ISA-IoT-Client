@@ -121,7 +121,7 @@ const getRequestFactory = url => async (vueObj, dataItem = {}, params = {}, succ
       dataItem.obj[dataItem.name] = {}
     }
     if (error.message === 'dense requests') return
-    if (error.response && error.response.status === 401 && error.response.data.msg === '鉴权失败！') {
+    if (error.response && error.response.status === 401) {
       if (vueObj) {
         gotoLogin(vueObj)
       }
@@ -164,7 +164,7 @@ const postRequestFactory = url => async (vueObj, data = {}, successToast = '', f
     flag = false
     payload = error.message
     if (error.message === 'dense requests') return
-    if (error.response && error.response.status === 401 && error.response.data.msg === '鉴权失败！') {
+    if (error.response && error.response.status === 401) {
       if (vueObj) {
         gotoLogin(vueObj)
       }
