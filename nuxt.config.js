@@ -76,7 +76,7 @@ export default {
       changeOrigin: true,
       target: 'http://10.10.21.3:8765',
       pathRewrite: {
-        '/isa-api': '',
+        '/isa-client': '',
       },
     },
   },

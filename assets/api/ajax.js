@@ -2,7 +2,7 @@ import axios from 'axios'
 import Vue from 'vue'
 import { Base64 } from 'js-base64'
 
-const baseURL = '/isa-api'
+const baseURL = '/isa-client'
 const headers = {}
 
 const instance = axios.create({
