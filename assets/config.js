@@ -26,11 +26,11 @@ export const menuStructure = [{
     addr: '/deviceAccess/deviceDebug',
     title: '设备调试',
     available: true,
-  }, {
-    id: 'customProtocolAccess',
-    addr: '/deviceAccess/customProtocolAccess',
-    title: '自定义协议接入',
-    available: true,
+  // }, {
+  //   id: 'customProtocolAccess',
+  //   addr: '/deviceAccess/customProtocolAccess',
+  //   title: '自定义协议接入',
+  //   available: true,
   }],
 }, {
   id: 'deviceOperation',
@@ -40,11 +40,11 @@ export const menuStructure = [{
     addr: '/deviceOperation/deviceLog',
     title: '设备日志',
     available: true,
-  }, {
-    id: 'remoteUpgrade',
-    addr: '/deviceOperation/remoteUpgrade',
-    title: '远程升级',
-    available: true,
+  // }, {
+  //   id: 'remoteUpgrade',
+  //   addr: '/deviceOperation/remoteUpgrade',
+  //   title: '远程升级',
+  //   available: true,
   }],
 }]
 
