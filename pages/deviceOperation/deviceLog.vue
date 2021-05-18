@@ -37,13 +37,10 @@
       <a-row class="block-normal block-white">
         <a-col :span="24">
           <a-row class="block-control-row">
-            <a-col :span="8">
+            <a-col :span="24">
               <h5 class="block-title">
                 <a-icon type="info-circle" />系统默认展示近15分钟最新产品的数据，修改筛选条件后请点击“<span style="color: rgb(0, 121, 254)">查询</span>”按钮
               </h5>
-            </a-col>
-            <a-col class="text-right" :span="16">
-              <a-button type="primary">申请设备标识</a-button>
             </a-col>
           </a-row>
           <a-row class="block-content-row">
