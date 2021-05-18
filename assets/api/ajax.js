@@ -67,7 +67,7 @@ export const gotoLogin = (() => {
       goingBack = true
       localStorage.clear()
       vueObj.$toast(`${ msg }，3秒后回到登录页面。`)
-      // setTimeout(jump, 3000)
+      setTimeout(jump, 3000)
     }
   }
 })()
