@@ -46,6 +46,10 @@ export default {
     async getUser() {
       let {result, payload} = await getUserInfo(this)
       let user = payload
+      if (!user) {
+        user = {}
+        gotoLogin(this)
+      }
       this.user = user
       localStorage.setItem('userInfo', JSON.stringify(user))
       if (user.verified === 3) {

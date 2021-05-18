@@ -65,18 +65,15 @@ export default {
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
-  build: {
-    transpile: [/^element-ui/],
-  },
   router: {
     base: '/ISA-client/',
   },
   proxy: {
-    '/isa-api': {
+    '/isa-client': {
       changeOrigin: true,
       target: 'http://10.32.21.153:8765',
       pathRewrite: {
-        '/isa-client': '',
+        // '/isa-client': '',
       },
     },
   },
